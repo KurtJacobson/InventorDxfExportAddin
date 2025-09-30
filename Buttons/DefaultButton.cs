@@ -11,13 +11,13 @@ namespace InventorDxfExportAddin.Buttons
             MessageBox.Show($"Current document name: {inventor.ActiveDocument.DisplayName}");
         }
 
-        protected override string RibbonName => InventorRibbons.Drawing;
+        protected override string RibbonName => InventorRibbons.Part;
 
-        protected override string RibbonTabName => DrawingRibbonTabs.PlaceViews;
+        protected override string RibbonTabName => PartRibbonTabs.SheetMetal;
 
-        protected override string RibbonPanelName => "InventorDxfExportAddin";
+        protected override string RibbonPanelName => "Schroeder DXF Export";
 
-        protected override string Label => "DefaultButton";
+        protected override string Label => "Export\nDXF";
 
         protected override string Description => "Default Button Description";
 
