@@ -31,10 +31,31 @@
       <None Update="InventorDxfExportAddin.addin">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Properties\DxfSettings.settings">
+        <Generator>SettingsSingleFileGenerator</Generator>
+        <LastGenOutput>DxfSettings.Designer.cs</LastGenOutput>
+      </None>
+      <None Update="Properties\Settings.settings">
+        <Generator>SettingsSingleFileGenerator</Generator>
+        <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="Buttons\Assets\Default-Light.png" />
       <EmbeddedResource Include="Buttons\Assets\Default-Dark.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Properties\DxfSettings.Designer.cs">
+        <DesignTimeSharedInput>True</DesignTimeSharedInput>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>DxfSettings.settings</DependentUpon>
+      </Compile>
+      <Compile Update="Properties\Settings.Designer.cs">
+        <DesignTimeSharedInput>True</DesignTimeSharedInput>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Settings.settings</DependentUpon>
+      </Compile>
     </ItemGroup>    
 </Project>
