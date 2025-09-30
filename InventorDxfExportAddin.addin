@@ -1,0 +1,14 @@
+<Addin Type="Standard">
+  <!--Created for Autodesk Inventor Version 22.0-->
+  <ClassId>{E640038B-84E1-4611-952F-CA2C15C294D1}</ClassId>
+  <ClientId>{E640038B-84E1-4611-952F-CA2C15C294D1}</ClientId>
+  <DisplayName>InventorDxfExportAddin</DisplayName>
+  <Description>InventorDxfExportAddin Addin</Description>
+  <Assembly>InventorDxfExportAddin.dll</Assembly>
+  <LoadOnStartUp>1</LoadOnStartUp>
+  <UserUnloadable>1</UserUnloadable>
+  <Hidden>0</Hidden>
+  <SupportedSoftwareVersionGreaterThan>19..</SupportedSoftwareVersionGreaterThan>
+  <DataVersion>1</DataVersion>
+  <UserInterfaceVersion>1</UserInterfaceVersion>
+</Addin>

@@ -1,0 +1,9 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "InventorDxfExportAddin": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\Autodesk\\Inventor 2026\\Bin\\Inventor.exe"
+    }
+  }
+}
