@@ -1,6 +1,7 @@
-﻿using System.Windows.Forms;
-using Inventor;
+﻿using Inventor;
 using Inventor.InternalNames.Ribbon;
+using System.Windows.Forms;
+using static System.Windows.Forms.DataFormats;
 
 namespace InventorDxfExportAddin.Buttons
 {
@@ -8,7 +9,10 @@ namespace InventorDxfExportAddin.Buttons
     {
         protected override void Execute(NameValueMap context, Inventor.Application inventor)
         {
-            MessageBox.Show($"Current document name: {inventor.ActiveDocument.DisplayName}");
+            //MessageBox.Show($"Current document name: {inventor.ActiveDocument.DisplayName}");
+            Form DxfSettings = new FormDxfSettings();
+            DxfSettings.ShowDialog();
+
         }
 
         protected override string RibbonName => InventorRibbons.Part;
