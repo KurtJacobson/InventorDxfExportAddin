@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="dxf-export.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="10.248373"
+     inkscape:cx="252.0888"
+     inkscape:cy="386.25645"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <rect
+       x="300.27487"
+       y="374.51562"
+       width="125.8505"
+       height="115.91493"
+       id="rect32721" />
+    <rect
+       x="252.11497"
+       y="383.07124"
+       width="52.851688"
+       height="47.055942"
+       id="rect22713" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 66.145833,97.895833 0,8.202087 h 6.614584 V 100.0125 L 70.64375,97.895833 Z"
+       id="path1053"
+       sodipodi:nodetypes="cccccc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 70.643749,97.895832 v 2.144038 l 2.116667,-0.0274"
+       id="path2966" />
+    <path
+       style="fill:#198de2;stroke:#198de2;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       d="m 69.735823,103.32586 h 2.135889 v -1.02231 l 2.622471,1.51408 -2.572909,1.48547 v -1.02796 h -2.185451 z"
+       id="path3995"
+       sodipodi:nodetypes="cccccccc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="71.141487"
+       y="102.72343"
+       id="text9224"><tspan
+         sodipodi:role="line"
+         id="tspan9222"
+         style="stroke-width:0.264583"
+         x="71.141487"
+         y="102.72343" /><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.264583"
+         x="71.141487"
+         y="115.95255"
+         id="tspan12652" /></text>
+    <text
+       xml:space="preserve"
+       transform="scale(0.26458333)"
+       id="text22711"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect22713);fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="252.11523"
+         y="465.51758"
+         id="tspan44063"><tspan
+           dx="0 30.800781 27.402344 23.007812"
+           id="tspan44061">DXF
+</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.05452604,0,0,0.05452604,50.929824,80.158294)"
+       id="text32719"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect32721);fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="300.27539"
+         y="409.90625"
+         id="tspan44065">dxf</tspan></text>
+  </g>
+</svg>

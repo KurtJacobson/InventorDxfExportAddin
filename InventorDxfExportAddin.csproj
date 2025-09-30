@@ -44,6 +44,8 @@
     <ItemGroup>
       <EmbeddedResource Include="Buttons\Assets\Default-Light.png" />
       <EmbeddedResource Include="Buttons\Assets\Default-Dark.png" />
+      <EmbeddedResource Include="Buttons\Assets\Export-Light.png" />
+      <EmbeddedResource Include="Buttons\Assets\Settings-Dark.png" />
     </ItemGroup>
 
     <ItemGroup>
