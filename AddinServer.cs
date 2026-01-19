@@ -6,6 +6,7 @@ using Serilog.Sinks.File;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Reflection;
 using System.Windows.Forms;
 
 
@@ -49,6 +50,14 @@ namespace InventorDxfExportAddin
 
             Log.Information("=========================== RELOAD ===========================");
             Log.Information($"Logging to: {_filePathHook.Path}");
+
+
+            var version = Assembly.GetExecutingAssembly()
+                               .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                               ?.InformationalVersion;
+
+            Log.Information($"AddIn Version: {version}");
+
         }
     }
 

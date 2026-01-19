@@ -8,17 +8,28 @@
     </PropertyGroup>
 
 
-    <Target Name="GenerateVersion" BeforeTargets="BeforeBuild">
-      <Exec Command="git describe --tags --long --dirty --always &gt; version.txt" />
-      <ReadLinesFromFile File="version.txt">
-        <Output TaskParameter="Lines" PropertyName="GitVersion" />
-      </ReadLinesFromFile>
+    <PropertyGroup>
+      <!-- NuGet/Package version must be SemVer without '+' -->
+      <Version>$(GitVersion_NuGetVersionV2)</Version>
+      <PackageVersion>$(GitVersion_NuGetVersionV2)</PackageVersion>
 
-      <PropertyGroup>
-        <Version>$(GitVersion)</Version>
-        <AssemblyInformationalVersion>$(GitVersion)</AssemblyInformationalVersion>
-      </PropertyGroup>
-    </Target>
+      <!-- Assembly versions must be numeric dotted-quads -->
+      <AssemblyVersion>$(GitVersion_AssemblySemVer)</AssemblyVersion>
+      <FileVersion>$(GitVersion_AssemblySemFileVer)</FileVersion>
+
+      <!-- Informational can include branch/sha etc. (may contain '+') -->
+      <InformationalVersion>$(GitVersion_InformationalVersion)</InformationalVersion>
+    </PropertyGroup>
+
+
+    
+<Target Name="ShowGitVersion" AfterTargets="GitVersionTask">
+  <Message Importance="High" Text="GitVersion_NuGetVersionV2: $(GitVersion_NuGetVersionV2)" />
+  <Message Importance="High" Text="GitVersion_InformationalVersion: $(GitVersion_InformationalVersion)" />
+  <Message Importance="High" Text="GitVersion_AssemblySemVer: $(GitVersion_AssemblySemVer)" />
+  <Message Importance="High" Text="GitVersion_AssemblySemFileVer: $(GitVersion_AssemblySemFileVer)" />
+</Target>
+
 
 
     <PropertyGroup>
