@@ -25,10 +25,10 @@ namespace InventorDxfExportAddin.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("DashDot")]
-        public global::System.Drawing.Drawing2D.DashStyle OuterProfileLineType {
+        [global::System.Configuration.DefaultSettingValueAttribute("kDefaultLineType")]
+        public global::Inventor.LineTypeEnum OuterProfileLineType {
             get {
-                return ((global::System.Drawing.Drawing2D.DashStyle)(this["OuterProfileLineType"]));
+                return ((global::Inventor.LineTypeEnum)(this["OuterProfileLineType"]));
             }
             set {
                 this["OuterProfileLineType"] = value;

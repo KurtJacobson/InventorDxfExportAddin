@@ -1,26 +1,43 @@
+using Inventor;
+using InventorDxfExportAddin.DxfExport;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using Point = System.Drawing.Point;
 
 namespace InventorDxfExportAddin.Custom_Controls
 {
 
     public partial class LineTypeComboBox : ComboBox
     {
-
-        // Data for each line type in the list
-        public class LineInfo
+        public class LineStyle
         {
-            public string Text { get; set; }
-            public DashStyle Style { get; set; }
+            public string TypeName { get; set; }
 
-            public LineInfo(string text, DashStyle style)
+            public LineTypeEnum LineType { get; set; } = LineTypeEnum.kContinuousLineType;
+
+            public float[] DashPattern { get; set; }
+
+            public LineStyle(string typeName, LineTypeEnum lineType, float[] dashPattern)
             {
-                Text = text;
-                Style = style;
+                TypeName = typeName;
+                LineType = lineType;
+                DashPattern = dashPattern;
             }
         }
+
+        public static readonly List<LineStyle> Styles = new List<LineStyle>
+        {
+            new LineStyle("Continuous", LineTypeEnum.kContinuousLineType, new float[] { 100.0f, 0.01f }),
+            new LineStyle("Dashed", LineTypeEnum.kDashedLineType, new float[] { 4.0f, 1.0f}),
+            new LineStyle("Dotted", LineTypeEnum.kDottedLineType, new float[] { 1.0f, 1.0f}),
+            new LineStyle("Hidden", LineTypeEnum.kDashedHiddenLineType, new float[] { 4.0f, 4.0f }),
+            new LineStyle("Dash Dot", LineTypeEnum.kDashDottedLineType, new float[] { 4.0f, 1.0f, 1.0f, 1.0f }),
+            new LineStyle("Dash Double Dot", LineTypeEnum.kDoubleDashedDottedLineType, new float[] { 4.0f, 1.0f, 1.0f, 1.0f , 1.0f, 1.0f }),
+            new LineStyle("Dash Triple Dot", LineTypeEnum.kDashedTripleDottedLineType, new float[] { 4.0f, 1.0f, 1.0f, 1.0f , 1.0f, 1.0f, 1.0f, 1.0f }),
+         };
+
 
         public LineTypeComboBox()
         {
@@ -39,10 +56,10 @@ namespace InventorDxfExportAddin.Custom_Controls
         public void PopulateLineStyles()
         {
             Items.Clear();
-            Items.Add(new LineInfo("Continuous", DashStyle.Solid));
-            Items.Add(new LineInfo("Dashed", DashStyle.Dash));
-            Items.Add(new LineInfo("Dash Dot", DashStyle.DashDot));
-            Items.Add(new LineInfo("Dash Double Dot", DashStyle.DashDotDot));
+            foreach (var style in Styles)
+            {
+                Items.Add(style);
+            }
         }
 
         // Draw list item
@@ -51,7 +68,7 @@ namespace InventorDxfExportAddin.Custom_Controls
             if (e.Index >= 0)
             {
                 // Get this line style
-                LineInfo lineStyle = (LineInfo)Items[e.Index];
+                LineStyle lineStyle = (LineStyle)Items[e.Index];
 
                 // Fill background
                 e.DrawBackground();
@@ -62,10 +79,7 @@ namespace InventorDxfExportAddin.Custom_Controls
 
                 using (Pen linePen = new Pen(e.ForeColor, 1))
                 {
-
-                    float[] dashLengths = { 10, 1, 1, 1, };
-                    linePen.DashPattern = dashLengths;
-                    //DashDot.DashStyle = lineStyle.Style;
+                    linePen.DashPattern = lineStyle.DashPattern;
                     e.Graphics.DrawLine(linePen, p1, p2);
                 }
 
@@ -76,7 +90,7 @@ namespace InventorDxfExportAddin.Custom_Controls
                 else
                     brush = SystemBrushes.WindowText;
 
-                e.Graphics.DrawString(lineStyle.Text, Font, brush,
+                e.Graphics.DrawString(lineStyle.TypeName, Font, brush,
                     e.Bounds.X + p2.X + 2,
                     e.Bounds.Y + ((e.Bounds.Height - Font.Height) / 2));
 
@@ -86,11 +100,11 @@ namespace InventorDxfExportAddin.Custom_Controls
             }
         }
 
-        public new LineInfo SelectedItem
+        public new LineStyle SelectedItem
         {
             get
             {
-                return (LineInfo)base.SelectedItem;
+                return (LineStyle)base.SelectedItem;
             }
             set
             {
@@ -103,14 +117,14 @@ namespace InventorDxfExportAddin.Custom_Controls
             get
             {
                 if (SelectedIndex >= 0)
-                    return SelectedItem.Text;
-                return String.Empty;
+                    return SelectedItem.TypeName;
+                return "Continuous";
             }
             set
             {
                 for (int i = 0; i < Items.Count; i++)
                 {
-                    if (((LineInfo)Items[i]).Text == value)
+                    if (((LineStyle)Items[i]).TypeName == value)
                     {
                         SelectedIndex = i;
                         break;
@@ -119,19 +133,19 @@ namespace InventorDxfExportAddin.Custom_Controls
             }
         }
 
-        public new DashStyle SelectedValue
+        public new LineTypeEnum SelectedLineType
         {
             get
             {
                 if (SelectedIndex >= 0)
-                    return SelectedItem.Style;
-                return DashStyle.Solid;
+                    return SelectedItem.LineType;
+                return LineTypeEnum.kContinuousLineType;
             }
             set
             {
                 for (int i = 0; i < Items.Count; i++)
                 {
-                    if (((LineInfo)Items[i]).Style == value)
+                    if (((LineStyle)Items[i]).LineType == value)
                     {
                         SelectedIndex = i;
                         break;
@@ -143,12 +157,11 @@ namespace InventorDxfExportAddin.Custom_Controls
         private void OnSelectionChangeCommitted(object sender, EventArgs e)
         {
 
-            if (SelectedItem.Text == "Custom Color...")
+            if (SelectedItem.TypeName == "Custom Style...")
             {
+                // Custom line style not implemented
                 return;
             }
         }
-
     }
-
 }

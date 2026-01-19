@@ -27,7 +27,7 @@ namespace InventorDxfExportAddin
             // Initialize values
             this.tbOuterProfileLayer.Text = settings.OuterProfileLayer;
             this.cbOuterProfileLineColor.SelectedColor = settings.OuterProfileLayerColor;
-            //this.cbOuterProfileLineType.SelectedText = settings.OuterProfileLineType;
+            this.cbOuterProfileLineType.SelectedLineType = settings.OuterProfileLineType;
 
         }
 
@@ -51,6 +51,8 @@ namespace InventorDxfExportAddin
 
             settings.OuterProfileLayer = this.tbOuterProfileLayer.Text;
             settings.OuterProfileLayerColor = this.cbOuterProfileLineColor.SelectedColor;
+            settings.OuterProfileLineType = this.cbOuterProfileLineType.SelectedLineType;
+
 
             // Save settings
             settings.Save();

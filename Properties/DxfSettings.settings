@@ -2,8 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="InventorDxfExportAddin.Properties" GeneratedClassName="DxfSettings">
   <Profiles />
   <Settings>
-    <Setting Name="OuterProfileLineType" Type="System.Drawing.Drawing2D.DashStyle" Scope="User">
-      <Value Profile="(Default)">DashDot</Value>
+    <Setting Name="OuterProfileLineType" Type="Inventor.LineTypeEnum" Scope="User">
+      <Value Profile="(Default)">kDefaultLineType</Value>
     </Setting>
     <Setting Name="InteriorProfilesLayer" Type="System.String" Scope="User">
       <Value Profile="(Default)">InnerOutlines</Value>

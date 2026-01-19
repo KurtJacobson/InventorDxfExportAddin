@@ -1,11 +1,58 @@
-﻿using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Inventor;
+﻿using Inventor;
 using InventorDxfExportAddin.Buttons;
+using Microsoft.VisualBasic.Logging;
+using Serilog;
+using Serilog.Sinks.File;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
+
+
+internal class CaptureFilePathHook : FileLifecycleHooks
+{
+    public string? Path { get; private set; }
+    public override Stream OnFileOpened(string path, Stream underlyingStream, Encoding encoding)
+    {
+        Path = path;
+        return base.OnFileOpened(path, underlyingStream, encoding);
+    }
+}
 
 namespace InventorDxfExportAddin
 {
+
+    public static class LogManager
+    {
+        public static ILogger Log { get; private set; }
+
+        public static string addinPath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static string logFilePath = System.IO.Path.Combine(addinPath, "logs");
+
+        // Keep a reference to the hook so we can read it later
+        private static CaptureFilePathHook _filePathHook;
+
+        // Public accessor so other classes can read the current file path
+        public static string CurrentLogFilePath => _filePathHook?.Path;
+
+        static LogManager()
+        {
+            _filePathHook = new CaptureFilePathHook();
+
+            Log = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File(
+                    System.IO.Path.Combine(logFilePath, "event_log_.txt"),
+                    rollingInterval: RollingInterval.Day,
+                    hooks: _filePathHook)
+                .CreateLogger();
+
+            Log.Information("=========================== RELOAD ===========================");
+            Log.Information($"Logging to: {_filePathHook.Path}");
+        }
+    }
+
+
     /// <summary>
     /// This is the primary AddIn Server class that implements the ApplicationAddInServer interface
     /// that all Inventor AddIns are required to implement. The communication between Inventor and
@@ -38,14 +85,24 @@ namespace InventorDxfExportAddin
                 // If the addin is loaded for the first time, initialize the UI components
                 if (firstTime)
                 {
+                    LogManager.Log.Information($"Application Version: AutoDesk Inventor {InventorApp.SoftwareVersion.DisplayName}");
+
                     InitializeUIComponents();
+
+                    LogManager.Log.Information("Successfully loaded InventorDxfExportAddin");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not load InventorDxfExportAddin.\n\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                LogManager.Log.Error("Could not load InventorDxfExportAddin");
+                do
+                {
+                    LogManager.Log.Error("{0}\n{1}", ex.Message, ex.StackTrace);
+                }
+                while ((ex = ex.InnerException) != null);
 
+                MessageBox.Show($"Could not load InventorDxfExportAddin.\nSee log file for more info.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -88,6 +145,8 @@ namespace InventorDxfExportAddin
         /// </summary>
         public void Deactivate()
         {
+            LogManager.Log.Information("AddIn unloaded/deactivated");
+
             InventorApp = null;
 
             GC.Collect();
