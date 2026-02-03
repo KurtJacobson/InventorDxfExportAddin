@@ -30,6 +30,10 @@ namespace InventorDxfExportAddin
         public static string addinPath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static string logFilePath = System.IO.Path.Combine(addinPath, "logs");
 
+        public static string addinVersion = Assembly.GetExecutingAssembly()
+                   .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                   ?.InformationalVersion;
+
         // Keep a reference to the hook so we can read it later
         private static CaptureFilePathHook _filePathHook;
 
@@ -50,14 +54,7 @@ namespace InventorDxfExportAddin
 
             Log.Information("=========================== RELOAD ===========================");
             Log.Information($"Logging to: {_filePathHook.Path}");
-
-
-            var version = Assembly.GetExecutingAssembly()
-                               .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                               ?.InformationalVersion;
-
-            Log.Information($"AddIn Version: {version}");
-
+            Log.Information($"AddIn Version: {addinVersion}");
         }
     }
 

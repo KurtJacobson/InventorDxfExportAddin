@@ -24,7 +24,7 @@ namespace InventorDxfExportAddin.Forms
 
             this.lblInventorVersion.Text = $"{AddinServer.InventorApp.SoftwareVersion.DisplayName}";
             this.lblAddinPath.Text = LogManager.addinPath;
-            this.lblAddinVersion.Text = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
+            this.lblAddinVersion.Text = LogManager.addinVersion;
             this.lblLogFilePath.Text = LogManager.CurrentLogFilePath;
         }
 

@@ -8,28 +8,19 @@
     </PropertyGroup>
 
 
+
     <PropertyGroup>
-      <!-- NuGet/Package version must be SemVer without '+' -->
+      <!-- NuGet/Package version must NOT include '+', so use NuGetVersionV2 -->
       <Version>$(GitVersion_NuGetVersionV2)</Version>
       <PackageVersion>$(GitVersion_NuGetVersionV2)</PackageVersion>
 
-      <!-- Assembly versions must be numeric dotted-quads -->
+      <!-- Dotted-quads for assembly/file -->
       <AssemblyVersion>$(GitVersion_AssemblySemVer)</AssemblyVersion>
       <FileVersion>$(GitVersion_AssemblySemFileVer)</FileVersion>
 
-      <!-- Informational can include branch/sha etc. (may contain '+') -->
+      <!-- Rich info (branch/sha) for display -->
       <InformationalVersion>$(GitVersion_InformationalVersion)</InformationalVersion>
     </PropertyGroup>
-
-
-    
-<Target Name="ShowGitVersion" AfterTargets="GitVersionTask">
-  <Message Importance="High" Text="GitVersion_NuGetVersionV2: $(GitVersion_NuGetVersionV2)" />
-  <Message Importance="High" Text="GitVersion_InformationalVersion: $(GitVersion_InformationalVersion)" />
-  <Message Importance="High" Text="GitVersion_AssemblySemVer: $(GitVersion_AssemblySemVer)" />
-  <Message Importance="High" Text="GitVersion_AssemblySemFileVer: $(GitVersion_AssemblySemFileVer)" />
-</Target>
-
 
 
     <PropertyGroup>
