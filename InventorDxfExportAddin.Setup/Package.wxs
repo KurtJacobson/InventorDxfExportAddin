@@ -9,7 +9,8 @@
 
     <MediaTemplate EmbedCab="yes" />
 
-    <MajorUpgrade DowngradeErrorMessage="A newer version of Inventor DXF Export Addin is already installed." />
+    <MajorUpgrade AllowSameVersionUpgrades="yes"
+                DowngradeErrorMessage="A newer version of Inventor DXF Export Addin is already installed. Uninstall it first if you want to downgrade." />
 
     <!--
       Install to %ProgramData%\Autodesk\ApplicationPlugins\InventorDxfExport\.
@@ -29,19 +30,14 @@
               <File Source="$(var.AddinOutputDir)\Inventor.InternalNames.dll" />
               <File Source="$(var.AddinOutputDir)\Serilog.dll" />
               <File Source="$(var.AddinOutputDir)\Serilog.Sinks.File.dll" />
-              <File Source="$(var.AddinOutputDir)\Microsoft.Bcl.HashCode.dll" />
               <File Source="$(var.AddinOutputDir)\System.Buffers.dll" />
-              <File Source="$(var.AddinOutputDir)\System.Collections.Immutable.dll" />
               <File Source="$(var.AddinOutputDir)\System.Diagnostics.DiagnosticSource.dll" />
-              <File Source="$(var.AddinOutputDir)\System.Formats.Nrbf.dll" />
               <File Source="$(var.AddinOutputDir)\System.Memory.dll" />
               <File Source="$(var.AddinOutputDir)\System.Numerics.Vectors.dll" />
-              <File Source="$(var.AddinOutputDir)\System.Reflection.Metadata.dll" />
-<File Source="$(var.AddinOutputDir)\System.Runtime.CompilerServices.Unsafe.dll" />
+              <File Source="$(var.AddinOutputDir)\System.Runtime.CompilerServices.Unsafe.dll" />
               <File Source="$(var.AddinOutputDir)\System.Text.Encoding.CodePages.dll" />
               <File Source="$(var.AddinOutputDir)\System.Threading.Channels.dll" />
               <File Source="$(var.AddinOutputDir)\System.Threading.Tasks.Extensions.dll" />
-              <File Source="$(var.AddinOutputDir)\System.ValueTuple.dll" />
             </Component>
 
             <Directory Id="ConfigDir" Name="config">

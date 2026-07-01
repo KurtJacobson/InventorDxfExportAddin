@@ -12,6 +12,7 @@
     <!-- Pass AddinOutputDir as a WiX preprocessor variable so Package.wxs can reference it -->
     <DefineConstants>$(DefineConstants);AddinOutputDir=$(AddinOutputDir);Version=$(Version)</DefineConstants>
     <OutputName>InventorDxfExportAddin-$(Version)</OutputName>
+    <SuppressIces>ICE61</SuppressIces>
   </PropertyGroup>
 
   <ItemGroup>
