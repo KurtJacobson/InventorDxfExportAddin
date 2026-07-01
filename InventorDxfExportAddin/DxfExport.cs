@@ -48,7 +48,11 @@ namespace InventorDxfExportAddin.DxfExport
                 {
                     var fullFileName = partDoc.FullFileName;
                     if (!string.IsNullOrEmpty(fullFileName))
-                        return System.IO.Path.GetDirectoryName(fullFileName);
+                    {
+                        var dir = System.IO.Path.GetDirectoryName(fullFileName);
+                        System.IO.Directory.CreateDirectory(dir);
+                        return dir;
+                    }
 
                     // Document hasn't been saved as an IPT — prompt user for output location,
                     // defaulting to the source STP file's directory if we can find it.
