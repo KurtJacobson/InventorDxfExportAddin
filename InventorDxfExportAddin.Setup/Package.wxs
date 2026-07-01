@@ -4,6 +4,8 @@
            Version="$(var.Version)"
            UpgradeCode="{3F7A9B2E-4C6D-4E8F-A1B3-D5C7E9F20134}">
 
+    <MediaTemplate EmbedCab="yes" />
+
     <MajorUpgrade DowngradeErrorMessage="A newer version of Inventor DXF Export Addin is already installed." />
 
     <!--
