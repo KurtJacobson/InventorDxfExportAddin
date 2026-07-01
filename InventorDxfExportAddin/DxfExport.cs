@@ -41,23 +41,74 @@ namespace InventorDxfExportAddin.DxfExport
         }
 
         public string ExportDirectory
-        { 
-            get 
+        {
+            get
             {
-                if (this.exportDirectory == null) {
-                    return System.IO.Path.GetDirectoryName(partDoc.FullFileName);
+                if (this.exportDirectory == null)
+                {
+                    var fullFileName = partDoc.FullFileName;
+                    if (!string.IsNullOrEmpty(fullFileName))
+                        return System.IO.Path.GetDirectoryName(fullFileName);
+
+                    // Document hasn't been saved as an IPT — prompt user for output location,
+                    // defaulting to the source STP file's directory if we can find it.
+                    using var dialog = new SaveFileDialog
+                    {
+                        Title = "Save DXF As",
+                        Filter = "DXF Files (*.dxf)|*.dxf",
+                        FileName = ExportFilename,
+                        DefaultExt = "dxf",
+                        InitialDirectory = GetSourceStpDirectory()
+                    };
+
+                    if (dialog.ShowDialog() != DialogResult.OK)
+                        return null;
+
+                    this.exportFileName = System.IO.Path.GetFileName(dialog.FileName);
+                    this.exportDirectory = System.IO.Path.GetDirectoryName(dialog.FileName);
+                    return this.exportDirectory;
                 }
                 return this.exportDirectory;
             }
 
             set
-            { this.exportDirectory = value; } 
+            { this.exportDirectory = value; }
+        }
+
+        /// <summary>
+        /// Searches document property sets for a string value that points to a .stp/.step file
+        /// on disk, returning that file's directory. Falls back to the user's Documents folder.
+        /// </summary>
+        private string GetSourceStpDirectory()
+        {
+            try
+            {
+                foreach (PropertySet propSet in partDoc.PropertySets)
+                {
+                    foreach (Property prop in propSet)
+                    {
+                        if (prop.Value is string val &&
+                            (val.EndsWith(".stp", StringComparison.OrdinalIgnoreCase) ||
+                             val.EndsWith(".step", StringComparison.OrdinalIgnoreCase)) &&
+                            System.IO.File.Exists(val))
+                        {
+                            LogManager.Log.Information($"Found source STP path in property '{prop.Name}': {val}");
+                            return System.IO.Path.GetDirectoryName(val);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log.Warning($"Could not read document properties for STP path: {ex.Message}");
+            }
+
+            return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         }
 
         public string ExportFullPath
         {
             get {
-                // return "\"C:\\Users\\kjacobson\\Desktop\\test.dxf\"";
                 return System.IO.Path.Combine(ExportDirectory, ExportFilename); }
         }
 
@@ -72,6 +123,10 @@ namespace InventorDxfExportAddin.DxfExport
         {
             LogManager.Log.Information("------ Begin DXF export ------");
             LogManager.Log.Information($"CAD Model Name: {oDoc.DisplayName}");
+
+            // ExportDirectory may prompt user; if they cancel, abort silently
+            if (ExportDirectory == null) return;
+
             LogManager.Log.Information($"Export full path: {ExportFullPath}");
 
             SheetMetalComponentDefinition smCompDef;
