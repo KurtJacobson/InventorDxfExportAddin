@@ -4,6 +4,9 @@
            Version="$(var.Version)"
            UpgradeCode="{3F7A9B2E-4C6D-4E8F-A1B3-D5C7E9F20134}">
 
+    <Icon Id="AppIcon.ico" SourceFile="$(sys.SOURCEFILEDIR)48x48.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+
     <MediaTemplate EmbedCab="yes" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version of Inventor DXF Export Addin is already installed." />
