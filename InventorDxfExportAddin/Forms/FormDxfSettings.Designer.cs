@@ -173,8 +173,8 @@ namespace InventorDxfExportAddin
             cbOuterProfileLayerColor.Location = new Point(82, 32);
             cbOuterProfileLayerColor.Margin = new Padding(4, 3, 4, 3);
             cbOuterProfileLayerColor.Name = "cbOuterProfileLayerColor";
-            cbOuterProfileLayerColor.SelectedColor = System.Drawing.Color.White;
-            cbOuterProfileLayerColor.SelectedValue = System.Drawing.Color.White;
+            cbOuterProfileLayerColor.SelectedColor = Color.FromArgb(255, 255, 255);
+            cbOuterProfileLayerColor.SelectedValue = Color.FromArgb(255, 255, 255);
             cbOuterProfileLayerColor.Size = new Size(254, 24);
             cbOuterProfileLayerColor.TabIndex = 10;
             // 
@@ -286,8 +286,8 @@ namespace InventorDxfExportAddin
             cbInnerProfilesLayerColor.Location = new Point(82, 32);
             cbInnerProfilesLayerColor.Margin = new Padding(4, 3, 4, 3);
             cbInnerProfilesLayerColor.Name = "cbInnerProfilesLayerColor";
-            cbInnerProfilesLayerColor.SelectedColor = System.Drawing.Color.White;
-            cbInnerProfilesLayerColor.SelectedValue = System.Drawing.Color.White;
+            cbInnerProfilesLayerColor.SelectedColor = Color.FromArgb(255, 255, 255);
+            cbInnerProfilesLayerColor.SelectedValue = Color.FromArgb(255, 255, 255);
             cbInnerProfilesLayerColor.Size = new Size(254, 24);
             cbInnerProfilesLayerColor.TabIndex = 10;
             // 
@@ -399,8 +399,8 @@ namespace InventorDxfExportAddin
             cbBendLinesLayerColor.Location = new Point(82, 32);
             cbBendLinesLayerColor.Margin = new Padding(4, 3, 4, 3);
             cbBendLinesLayerColor.Name = "cbBendLinesLayerColor";
-            cbBendLinesLayerColor.SelectedColor = System.Drawing.Color.White;
-            cbBendLinesLayerColor.SelectedValue = System.Drawing.Color.White;
+            cbBendLinesLayerColor.SelectedColor = Color.FromArgb(255, 255, 255);
+            cbBendLinesLayerColor.SelectedValue = Color.FromArgb(255, 255, 255);
             cbBendLinesLayerColor.Size = new Size(254, 24);
             cbBendLinesLayerColor.TabIndex = 10;
             // 
@@ -452,9 +452,9 @@ namespace InventorDxfExportAddin
             cbEnableBendLinesDown.AutoSize = true;
             cbEnableBendLinesDown.Location = new Point(7, 0);
             cbEnableBendLinesDown.Name = "cbEnableBendLinesDown";
-            cbEnableBendLinesDown.Size = new Size(310, 19);
+            cbEnableBendLinesDown.Size = new Size(189, 19);
             cbEnableBendLinesDown.TabIndex = 1;
-            cbEnableBendLinesDown.Text = "Bend Lines Down [Uncheck for all bends on one layer]";
+            cbEnableBendLinesDown.Text = "Seperate Layer for Down Bends";
             cbEnableBendLinesDown.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel4
@@ -544,8 +544,8 @@ namespace InventorDxfExportAddin
             cbBendLinesDownLayerColor.Location = new Point(82, 32);
             cbBendLinesDownLayerColor.Margin = new Padding(4, 3, 4, 3);
             cbBendLinesDownLayerColor.Name = "cbBendLinesDownLayerColor";
-            cbBendLinesDownLayerColor.SelectedColor = System.Drawing.Color.White;
-            cbBendLinesDownLayerColor.SelectedValue = System.Drawing.Color.White;
+            cbBendLinesDownLayerColor.SelectedColor = Color.FromArgb(255, 255, 255);
+            cbBendLinesDownLayerColor.SelectedValue = Color.FromArgb(255, 255, 255);
             cbBendLinesDownLayerColor.Size = new Size(253, 24);
             cbBendLinesDownLayerColor.TabIndex = 10;
             // 
@@ -578,7 +578,7 @@ namespace InventorDxfExportAddin
             Name = "FormDxfSettings";
             SizeGripStyle = SizeGripStyle.Hide;
             StartPosition = FormStartPosition.CenterParent;
-            Text = "DXF Export Settings";
+            Text = "DXF Layer Settings";
             groupBox1.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
