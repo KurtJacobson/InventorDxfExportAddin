@@ -24,7 +24,7 @@
 
     <!-- Debug builds deploy directly to Inventor's plugin folder for rapid iteration -->
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-        <BaseOutputPath>C:\Users\kjacobson\AppData\Roaming\Autodesk\ApplicationPlugins\InventorDxfExport\</BaseOutputPath>
+        <BaseOutputPath>$(APPDATA)\Autodesk\ApplicationPlugins\InventorDxfExport\</BaseOutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
 
