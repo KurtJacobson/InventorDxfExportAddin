@@ -1,0 +1,52 @@
+name: Build MSI
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install WiX toolset
+        run: dotnet tool install --global wix --version 4.0.5
+
+      - name: Add WiX UI extension
+        run: wix extension add WixToolset.UI.wixext/4.0.5
+
+      - name: Restore NuGet packages
+        run: dotnet restore InventorDxfExportAddin/InventorDxfExportAddin.csproj
+
+      - name: Build addin (Release)
+        run: dotnet build InventorDxfExportAddin/InventorDxfExportAddin.csproj -c Release --no-restore
+
+      - name: Build MSI
+        run: dotnet build InventorDxfExportAddin.Setup/InventorDxfExportAddin.Setup.wixproj -c Release
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: InventorDxfExportAddin-MSI
+          path: InventorDxfExportAddin.Setup/bin/Release/**/*.msi
+          if-no-files-found: error
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $msi = Get-ChildItem -Recurse -Filter *.msi "InventorDxfExportAddin.Setup/bin/Release" | Select-Object -First 1
+          gh release create "${{ github.ref_name }}" $msi.FullName `
+            --title "Release ${{ github.ref_name }}" `
+            --generate-notes

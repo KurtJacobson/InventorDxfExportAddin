@@ -10,7 +10,7 @@
     <AddinOutputDir>$(MSBuildThisFileDirectory)..\InventorDxfExportAddin\bin\Release\net8.0-windows</AddinOutputDir>
 
     <!-- Pass AddinOutputDir as a WiX preprocessor variable so Package.wxs can reference it -->
-    <DefineConstants>$(DefineConstants);AddinOutputDir=$(AddinOutputDir)</DefineConstants>
+    <DefineConstants>$(DefineConstants);AddinOutputDir=$(AddinOutputDir);Version=$(Version)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
