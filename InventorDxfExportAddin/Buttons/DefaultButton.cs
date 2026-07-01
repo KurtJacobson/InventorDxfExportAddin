@@ -31,23 +31,23 @@ namespace InventorDxfExportAddin.Buttons
 
                 try
                 {
-                    export.ExportFlatDXF(partDoc);
+                    bool success = export.ExportFlatDXF(partDoc);
+                    if (success)
+                        MessageBox.Show($"DXF successfully exported to:\n{export.ExportFullPath}",
+                            "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
-                    LogManager.Log.Error("Exception saving DXF");
+                    Exception current = ex;
                     do
                     {
-                        LogManager.Log.Error("{0}\n{1}", ex.Message, ex.StackTrace);
+                        LogManager.Log.Error("{0}\n{1}", current.Message, current.StackTrace);
                     }
-                    while ((ex = ex.InnerException) != null);
+                    while ((current = current.InnerException) != null);
 
-                    MessageBox.Show(ex.Message,
-                        "Plugin Error - Exception exporting DXF!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"An error occurred while exporting the DXF.\nSee log for details.\n\n{ex.Message}",
+                        "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
-                MessageBox.Show($"DXF successfully exported to:\n{export.ExportFullPath}",
-                    "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 

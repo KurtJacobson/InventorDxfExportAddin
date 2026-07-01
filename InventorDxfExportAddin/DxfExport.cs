@@ -1,4 +1,4 @@
-﻿using Inventor;
+using Inventor;
 using InventorDxfExportAddin;
 using IxMilia;
 using IxMilia.Dxf;
@@ -77,9 +77,9 @@ namespace InventorDxfExportAddin.DxfExport
 
         /// <summary>
         /// Searches document property sets for a string value that points to a .stp/.step file
-        /// on disk, returning that file's directory. Falls back to the user's Documents folder.
+        /// on disk. Returns the full path, or null if not found.
         /// </summary>
-        private string GetSourceStpDirectory()
+        private string GetSourceStpPath()
         {
             try
             {
@@ -93,7 +93,7 @@ namespace InventorDxfExportAddin.DxfExport
                             System.IO.File.Exists(val))
                         {
                             LogManager.Log.Information($"Found source STP path in property '{prop.Name}': {val}");
-                            return System.IO.Path.GetDirectoryName(val);
+                            return val;
                         }
                     }
                 }
@@ -103,7 +103,15 @@ namespace InventorDxfExportAddin.DxfExport
                 LogManager.Log.Warning($"Could not read document properties for STP path: {ex.Message}");
             }
 
-            return System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
+            return null;
+        }
+
+        private string GetSourceStpDirectory()
+        {
+            var stpPath = GetSourceStpPath();
+            return stpPath != null
+                ? System.IO.Path.GetDirectoryName(stpPath)
+                : System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
         }
 
         public string ExportFullPath
@@ -119,13 +127,13 @@ namespace InventorDxfExportAddin.DxfExport
         }
 
 
-        public void ExportFlatDXF(PartDocument oDoc)
+        public bool ExportFlatDXF(PartDocument oDoc)
         {
             LogManager.Log.Information("------ Begin DXF export ------");
             LogManager.Log.Information($"CAD Model Name: {oDoc.DisplayName}");
 
             // ExportDirectory may prompt user; if they cancel, abort silently
-            if (ExportDirectory == null) return;
+            if (ExportDirectory == null) return false;
 
             LogManager.Log.Information($"Export full path: {ExportFullPath}");
 
@@ -134,7 +142,7 @@ namespace InventorDxfExportAddin.DxfExport
             if (oDoc == null)
             {
                 MessageBox.Show("Part document is null.", "Export error!");
-                return;
+                return false;
             }
 
             if (oDoc.DocumentType == DocumentTypeEnum.kPartDocumentObject)
@@ -151,7 +159,7 @@ namespace InventorDxfExportAddin.DxfExport
                 else
                 {
                     MessageBox.Show("The selected item is not a valid Sheetmetal component.", "Export Error!");
-                    return;
+                    return false;
                 }
 
                 // Unfold if we don't already have a flat pattern
@@ -165,7 +173,7 @@ namespace InventorDxfExportAddin.DxfExport
                     {
                         MessageBox.Show("Inventor encountered an error while unfolding the part.\n"
                                       + "Please correct the issue with the model and try again.", "Unfold error!");
-                        return;
+                        return false;
                     }
                 }
 
@@ -354,8 +362,10 @@ namespace InventorDxfExportAddin.DxfExport
 
                 LogManager.Log.Information($"Bend lines added, export complete.");
 
-                return;
+                return true;
             }
+
+            return false;
         }
     }
 
