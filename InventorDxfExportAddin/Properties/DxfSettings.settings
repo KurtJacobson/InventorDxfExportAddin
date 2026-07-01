@@ -38,5 +38,8 @@
     <Setting Name="BendDownLineType" Type="Inventor.LineTypeEnum" Scope="User">
       <Value Profile="(Default)">kDashedLineType</Value>
     </Setting>
+    <Setting Name="BendDownEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

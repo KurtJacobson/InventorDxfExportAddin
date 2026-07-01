@@ -35,32 +35,43 @@ namespace InventorDxfExportAddin
             label3 = new Label();
             label4 = new Label();
             label1 = new Label();
-            cbOuterProfileLineColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
+            cbOuterProfileLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
             tbOuterProfileLayer = new TextBox();
             groupBox2 = new GroupBox();
             tableLayoutPanel2 = new TableLayoutPanel();
-            lineTypeComboBox2 = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
+            cbInnerProfilesLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
             label2 = new Label();
             label5 = new Label();
             label6 = new Label();
-            colorComboBox1 = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
-            textBox2 = new TextBox();
+            cbInnerProfilesLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
+            tbInnerProfilesLayer = new TextBox();
             groupBox3 = new GroupBox();
             tableLayoutPanel3 = new TableLayoutPanel();
-            lineTypeComboBox3 = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
+            cbBendLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
             label7 = new Label();
             label8 = new Label();
             label9 = new Label();
-            colorComboBox2 = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
-            textBox3 = new TextBox();
+            cbBendLinesLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
+            tbBendLineLayer = new TextBox();
             btnSave = new Button();
             btnCancel = new Button();
+            groupBox4 = new GroupBox();
+            cbEnableBendLinesDown = new CheckBox();
+            tableLayoutPanel4 = new TableLayoutPanel();
+            cbBendDownLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
+            label10 = new Label();
+            label11 = new Label();
+            label12 = new Label();
+            cbBendLinesDownLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
+            tbBendLinesDownLayer = new TextBox();
             groupBox1.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             groupBox2.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             groupBox3.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
+            groupBox4.SuspendLayout();
+            tableLayoutPanel4.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox1
@@ -85,7 +96,7 @@ namespace InventorDxfExportAddin
             tableLayoutPanel1.Controls.Add(label3, 0, 0);
             tableLayoutPanel1.Controls.Add(label4, 0, 1);
             tableLayoutPanel1.Controls.Add(label1, 0, 2);
-            tableLayoutPanel1.Controls.Add(cbOuterProfileLineColor, 1, 1);
+            tableLayoutPanel1.Controls.Add(cbOuterProfileLayerColor, 1, 1);
             tableLayoutPanel1.Controls.Add(tbOuterProfileLayer, 1, 0);
             tableLayoutPanel1.Location = new Point(7, 22);
             tableLayoutPanel1.Margin = new Padding(4, 3, 4, 3);
@@ -113,8 +124,7 @@ namespace InventorDxfExportAddin
             cbOuterProfileLineType.Location = new Point(82, 65);
             cbOuterProfileLineType.Margin = new Padding(4, 3, 4, 3);
             cbOuterProfileLineType.Name = "cbOuterProfileLineType";
-            cbOuterProfileLineType.SelectedItem = null;
-            cbOuterProfileLineType.SelectedValue = "Continuous";
+            cbOuterProfileLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
             cbOuterProfileLineType.Size = new Size(254, 24);
             cbOuterProfileLineType.TabIndex = 3;
             // 
@@ -154,19 +164,19 @@ namespace InventorDxfExportAddin
             label1.Text = "Line Type";
             label1.TextAlign = ContentAlignment.MiddleRight;
             // 
-            // cbOuterProfileLineColor
+            // cbOuterProfileLayerColor
             // 
-            cbOuterProfileLineColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            cbOuterProfileLineColor.DrawMode = DrawMode.OwnerDrawFixed;
-            cbOuterProfileLineColor.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbOuterProfileLineColor.FormattingEnabled = true;
-            cbOuterProfileLineColor.Location = new Point(82, 32);
-            cbOuterProfileLineColor.Margin = new Padding(4, 3, 4, 3);
-            cbOuterProfileLineColor.Name = "cbOuterProfileLineColor";
-            cbOuterProfileLineColor.SelectedColor = Color.White;
-            cbOuterProfileLineColor.SelectedValue = Color.White;
-            cbOuterProfileLineColor.Size = new Size(254, 24);
-            cbOuterProfileLineColor.TabIndex = 10;
+            cbOuterProfileLayerColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            cbOuterProfileLayerColor.DrawMode = DrawMode.OwnerDrawFixed;
+            cbOuterProfileLayerColor.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbOuterProfileLayerColor.FormattingEnabled = true;
+            cbOuterProfileLayerColor.Location = new Point(82, 32);
+            cbOuterProfileLayerColor.Margin = new Padding(4, 3, 4, 3);
+            cbOuterProfileLayerColor.Name = "cbOuterProfileLayerColor";
+            cbOuterProfileLayerColor.SelectedColor = System.Drawing.Color.White;
+            cbOuterProfileLayerColor.SelectedValue = System.Drawing.Color.White;
+            cbOuterProfileLayerColor.Size = new Size(254, 24);
+            cbOuterProfileLayerColor.TabIndex = 10;
             // 
             // tbOuterProfileLayer
             // 
@@ -180,7 +190,7 @@ namespace InventorDxfExportAddin
             // groupBox2
             // 
             groupBox2.Controls.Add(tableLayoutPanel2);
-            groupBox2.Location = new Point(14, 144);
+            groupBox2.Location = new Point(14, 143);
             groupBox2.Margin = new Padding(4, 3, 4, 3);
             groupBox2.Name = "groupBox2";
             groupBox2.Padding = new Padding(4, 3, 4, 3);
@@ -195,12 +205,12 @@ namespace InventorDxfExportAddin
             tableLayoutPanel2.ColumnCount = 2;
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle());
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel2.Controls.Add(lineTypeComboBox2, 1, 2);
+            tableLayoutPanel2.Controls.Add(cbInnerProfilesLineType, 1, 2);
             tableLayoutPanel2.Controls.Add(label2, 0, 0);
             tableLayoutPanel2.Controls.Add(label5, 0, 1);
             tableLayoutPanel2.Controls.Add(label6, 0, 2);
-            tableLayoutPanel2.Controls.Add(colorComboBox1, 1, 1);
-            tableLayoutPanel2.Controls.Add(textBox2, 1, 0);
+            tableLayoutPanel2.Controls.Add(cbInnerProfilesLayerColor, 1, 1);
+            tableLayoutPanel2.Controls.Add(tbInnerProfilesLayer, 1, 0);
             tableLayoutPanel2.Location = new Point(7, 22);
             tableLayoutPanel2.Margin = new Padding(4, 3, 4, 3);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -218,19 +228,18 @@ namespace InventorDxfExportAddin
             tableLayoutPanel2.Size = new Size(340, 95);
             tableLayoutPanel2.TabIndex = 0;
             // 
-            // lineTypeComboBox2
+            // cbInnerProfilesLineType
             // 
-            lineTypeComboBox2.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            lineTypeComboBox2.DrawMode = DrawMode.OwnerDrawFixed;
-            lineTypeComboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
-            lineTypeComboBox2.FormattingEnabled = true;
-            lineTypeComboBox2.Location = new Point(82, 65);
-            lineTypeComboBox2.Margin = new Padding(4, 3, 4, 3);
-            lineTypeComboBox2.Name = "lineTypeComboBox2";
-            lineTypeComboBox2.SelectedItem = null;
-            lineTypeComboBox2.SelectedValue = "Continuous";
-            lineTypeComboBox2.Size = new Size(254, 24);
-            lineTypeComboBox2.TabIndex = 3;
+            cbInnerProfilesLineType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            cbInnerProfilesLineType.DrawMode = DrawMode.OwnerDrawFixed;
+            cbInnerProfilesLineType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbInnerProfilesLineType.FormattingEnabled = true;
+            cbInnerProfilesLineType.Location = new Point(82, 65);
+            cbInnerProfilesLineType.Margin = new Padding(4, 3, 4, 3);
+            cbInnerProfilesLineType.Name = "cbInnerProfilesLineType";
+            cbInnerProfilesLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
+            cbInnerProfilesLineType.Size = new Size(254, 24);
+            cbInnerProfilesLineType.TabIndex = 3;
             // 
             // label2
             // 
@@ -268,33 +277,33 @@ namespace InventorDxfExportAddin
             label6.Text = "Line Type";
             label6.TextAlign = ContentAlignment.MiddleRight;
             // 
-            // colorComboBox1
+            // cbInnerProfilesLayerColor
             // 
-            colorComboBox1.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            colorComboBox1.DrawMode = DrawMode.OwnerDrawFixed;
-            colorComboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
-            colorComboBox1.FormattingEnabled = true;
-            colorComboBox1.Location = new Point(82, 32);
-            colorComboBox1.Margin = new Padding(4, 3, 4, 3);
-            colorComboBox1.Name = "colorComboBox1";
-            colorComboBox1.SelectedColor = Color.White;
-            colorComboBox1.SelectedValue = Color.White;
-            colorComboBox1.Size = new Size(254, 24);
-            colorComboBox1.TabIndex = 10;
+            cbInnerProfilesLayerColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            cbInnerProfilesLayerColor.DrawMode = DrawMode.OwnerDrawFixed;
+            cbInnerProfilesLayerColor.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbInnerProfilesLayerColor.FormattingEnabled = true;
+            cbInnerProfilesLayerColor.Location = new Point(82, 32);
+            cbInnerProfilesLayerColor.Margin = new Padding(4, 3, 4, 3);
+            cbInnerProfilesLayerColor.Name = "cbInnerProfilesLayerColor";
+            cbInnerProfilesLayerColor.SelectedColor = System.Drawing.Color.White;
+            cbInnerProfilesLayerColor.SelectedValue = System.Drawing.Color.White;
+            cbInnerProfilesLayerColor.Size = new Size(254, 24);
+            cbInnerProfilesLayerColor.TabIndex = 10;
             // 
-            // textBox2
+            // tbInnerProfilesLayer
             // 
-            textBox2.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            textBox2.Location = new Point(82, 3);
-            textBox2.Margin = new Padding(4, 3, 4, 3);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(254, 23);
-            textBox2.TabIndex = 7;
+            tbInnerProfilesLayer.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            tbInnerProfilesLayer.Location = new Point(82, 3);
+            tbInnerProfilesLayer.Margin = new Padding(4, 3, 4, 3);
+            tbInnerProfilesLayer.Name = "tbInnerProfilesLayer";
+            tbInnerProfilesLayer.Size = new Size(254, 23);
+            tbInnerProfilesLayer.TabIndex = 7;
             // 
             // groupBox3
             // 
             groupBox3.Controls.Add(tableLayoutPanel3);
-            groupBox3.Location = new Point(14, 275);
+            groupBox3.Location = new Point(14, 272);
             groupBox3.Margin = new Padding(4, 3, 4, 3);
             groupBox3.Name = "groupBox3";
             groupBox3.Padding = new Padding(4, 3, 4, 3);
@@ -309,12 +318,12 @@ namespace InventorDxfExportAddin
             tableLayoutPanel3.ColumnCount = 2;
             tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle());
             tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel3.Controls.Add(lineTypeComboBox3, 1, 2);
+            tableLayoutPanel3.Controls.Add(cbBendLineType, 1, 2);
             tableLayoutPanel3.Controls.Add(label7, 0, 0);
             tableLayoutPanel3.Controls.Add(label8, 0, 1);
             tableLayoutPanel3.Controls.Add(label9, 0, 2);
-            tableLayoutPanel3.Controls.Add(colorComboBox2, 1, 1);
-            tableLayoutPanel3.Controls.Add(textBox3, 1, 0);
+            tableLayoutPanel3.Controls.Add(cbBendLinesLayerColor, 1, 1);
+            tableLayoutPanel3.Controls.Add(tbBendLineLayer, 1, 0);
             tableLayoutPanel3.Location = new Point(7, 22);
             tableLayoutPanel3.Margin = new Padding(4, 3, 4, 3);
             tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -332,19 +341,18 @@ namespace InventorDxfExportAddin
             tableLayoutPanel3.Size = new Size(340, 95);
             tableLayoutPanel3.TabIndex = 0;
             // 
-            // lineTypeComboBox3
+            // cbBendLineType
             // 
-            lineTypeComboBox3.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            lineTypeComboBox3.DrawMode = DrawMode.OwnerDrawFixed;
-            lineTypeComboBox3.DropDownStyle = ComboBoxStyle.DropDownList;
-            lineTypeComboBox3.FormattingEnabled = true;
-            lineTypeComboBox3.Location = new Point(82, 65);
-            lineTypeComboBox3.Margin = new Padding(4, 3, 4, 3);
-            lineTypeComboBox3.Name = "lineTypeComboBox3";
-            lineTypeComboBox3.SelectedItem = null;
-            lineTypeComboBox3.SelectedValue = "Continuous";
-            lineTypeComboBox3.Size = new Size(254, 24);
-            lineTypeComboBox3.TabIndex = 3;
+            cbBendLineType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            cbBendLineType.DrawMode = DrawMode.OwnerDrawFixed;
+            cbBendLineType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbBendLineType.FormattingEnabled = true;
+            cbBendLineType.Location = new Point(82, 65);
+            cbBendLineType.Margin = new Padding(4, 3, 4, 3);
+            cbBendLineType.Name = "cbBendLineType";
+            cbBendLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
+            cbBendLineType.Size = new Size(254, 24);
+            cbBendLineType.TabIndex = 3;
             // 
             // label7
             // 
@@ -382,32 +390,32 @@ namespace InventorDxfExportAddin
             label9.Text = "Line Type";
             label9.TextAlign = ContentAlignment.MiddleRight;
             // 
-            // colorComboBox2
+            // cbBendLinesLayerColor
             // 
-            colorComboBox2.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            colorComboBox2.DrawMode = DrawMode.OwnerDrawFixed;
-            colorComboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
-            colorComboBox2.FormattingEnabled = true;
-            colorComboBox2.Location = new Point(82, 32);
-            colorComboBox2.Margin = new Padding(4, 3, 4, 3);
-            colorComboBox2.Name = "colorComboBox2";
-            colorComboBox2.SelectedColor = Color.White;
-            colorComboBox2.SelectedValue = Color.White;
-            colorComboBox2.Size = new Size(254, 24);
-            colorComboBox2.TabIndex = 10;
+            cbBendLinesLayerColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            cbBendLinesLayerColor.DrawMode = DrawMode.OwnerDrawFixed;
+            cbBendLinesLayerColor.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbBendLinesLayerColor.FormattingEnabled = true;
+            cbBendLinesLayerColor.Location = new Point(82, 32);
+            cbBendLinesLayerColor.Margin = new Padding(4, 3, 4, 3);
+            cbBendLinesLayerColor.Name = "cbBendLinesLayerColor";
+            cbBendLinesLayerColor.SelectedColor = System.Drawing.Color.White;
+            cbBendLinesLayerColor.SelectedValue = System.Drawing.Color.White;
+            cbBendLinesLayerColor.Size = new Size(254, 24);
+            cbBendLinesLayerColor.TabIndex = 10;
             // 
-            // textBox3
+            // tbBendLineLayer
             // 
-            textBox3.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            textBox3.Location = new Point(82, 3);
-            textBox3.Margin = new Padding(4, 3, 4, 3);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(254, 23);
-            textBox3.TabIndex = 7;
+            tbBendLineLayer.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            tbBendLineLayer.Location = new Point(82, 3);
+            tbBendLineLayer.Margin = new Padding(4, 3, 4, 3);
+            tbBendLineLayer.Name = "tbBendLineLayer";
+            tbBendLineLayer.Size = new Size(254, 23);
+            tbBendLineLayer.TabIndex = 7;
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(186, 405);
+            btnSave.Location = new Point(184, 530);
             btnSave.Margin = new Padding(4, 3, 4, 3);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(88, 27);
@@ -418,7 +426,7 @@ namespace InventorDxfExportAddin
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(280, 405);
+            btnCancel.Location = new Point(280, 530);
             btnCancel.Margin = new Padding(4, 3, 4, 3);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(88, 27);
@@ -427,13 +435,137 @@ namespace InventorDxfExportAddin
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
             // 
+            // groupBox4
+            // 
+            groupBox4.Controls.Add(cbEnableBendLinesDown);
+            groupBox4.Controls.Add(tableLayoutPanel4);
+            groupBox4.Location = new Point(14, 401);
+            groupBox4.Margin = new Padding(4, 3, 4, 3);
+            groupBox4.Name = "groupBox4";
+            groupBox4.Padding = new Padding(4, 3, 4, 3);
+            groupBox4.Size = new Size(354, 123);
+            groupBox4.TabIndex = 3;
+            groupBox4.TabStop = false;
+            // 
+            // cbEnableBendLinesDown
+            // 
+            cbEnableBendLinesDown.AutoSize = true;
+            cbEnableBendLinesDown.Location = new Point(7, 0);
+            cbEnableBendLinesDown.Name = "cbEnableBendLinesDown";
+            cbEnableBendLinesDown.Size = new Size(310, 19);
+            cbEnableBendLinesDown.TabIndex = 1;
+            cbEnableBendLinesDown.Text = "Bend Lines Down [Uncheck for all bends on one layer]";
+            cbEnableBendLinesDown.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel4
+            // 
+            tableLayoutPanel4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel4.ColumnCount = 2;
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel4.Controls.Add(cbBendDownLineType, 1, 2);
+            tableLayoutPanel4.Controls.Add(label10, 0, 0);
+            tableLayoutPanel4.Controls.Add(label11, 0, 1);
+            tableLayoutPanel4.Controls.Add(label12, 0, 2);
+            tableLayoutPanel4.Controls.Add(cbBendLinesDownLayerColor, 1, 1);
+            tableLayoutPanel4.Controls.Add(tbBendLinesDownLayer, 1, 0);
+            tableLayoutPanel4.Location = new Point(8, 22);
+            tableLayoutPanel4.Margin = new Padding(4, 3, 4, 3);
+            tableLayoutPanel4.Name = "tableLayoutPanel4";
+            tableLayoutPanel4.RowCount = 3;
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.Size = new Size(339, 95);
+            tableLayoutPanel4.TabIndex = 0;
+            // 
+            // cbBendDownLineType
+            // 
+            cbBendDownLineType.Anchor = AnchorStyles.Left;
+            cbBendDownLineType.DrawMode = DrawMode.OwnerDrawFixed;
+            cbBendDownLineType.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbBendDownLineType.FormattingEnabled = true;
+            cbBendDownLineType.Location = new Point(82, 65);
+            cbBendDownLineType.Margin = new Padding(4, 3, 4, 3);
+            cbBendDownLineType.Name = "cbBendDownLineType";
+            cbBendDownLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
+            cbBendDownLineType.Size = new Size(253, 24);
+            cbBendDownLineType.TabIndex = 3;
+            // 
+            // label10
+            // 
+            label10.Anchor = AnchorStyles.Right;
+            label10.AutoSize = true;
+            label10.Location = new Point(4, 7);
+            label10.Margin = new Padding(4, 0, 4, 0);
+            label10.Name = "label10";
+            label10.Size = new Size(70, 15);
+            label10.TabIndex = 2;
+            label10.Text = "Layer Name";
+            label10.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // label11
+            // 
+            label11.Anchor = AnchorStyles.Right;
+            label11.AutoSize = true;
+            label11.Location = new Point(7, 36);
+            label11.Margin = new Padding(4, 0, 4, 0);
+            label11.Name = "label11";
+            label11.Size = new Size(67, 15);
+            label11.TabIndex = 3;
+            label11.Text = "Layer Color";
+            label11.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // label12
+            // 
+            label12.Anchor = AnchorStyles.Right;
+            label12.AutoSize = true;
+            label12.Location = new Point(18, 69);
+            label12.Margin = new Padding(4, 0, 4, 0);
+            label12.Name = "label12";
+            label12.Size = new Size(56, 15);
+            label12.TabIndex = 4;
+            label12.Text = "Line Type";
+            label12.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // cbBendLinesDownLayerColor
+            // 
+            cbBendLinesDownLayerColor.Anchor = AnchorStyles.Left;
+            cbBendLinesDownLayerColor.DrawMode = DrawMode.OwnerDrawFixed;
+            cbBendLinesDownLayerColor.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbBendLinesDownLayerColor.FormattingEnabled = true;
+            cbBendLinesDownLayerColor.Location = new Point(82, 32);
+            cbBendLinesDownLayerColor.Margin = new Padding(4, 3, 4, 3);
+            cbBendLinesDownLayerColor.Name = "cbBendLinesDownLayerColor";
+            cbBendLinesDownLayerColor.SelectedColor = System.Drawing.Color.White;
+            cbBendLinesDownLayerColor.SelectedValue = System.Drawing.Color.White;
+            cbBendLinesDownLayerColor.Size = new Size(253, 24);
+            cbBendLinesDownLayerColor.TabIndex = 10;
+            // 
+            // tbBendLinesDownLayer
+            // 
+            tbBendLinesDownLayer.Anchor = AnchorStyles.Left;
+            tbBendLinesDownLayer.Location = new Point(82, 3);
+            tbBendLinesDownLayer.Margin = new Padding(4, 3, 4, 3);
+            tbBendLinesDownLayer.Name = "tbBendLinesDownLayer";
+            tbBendLinesDownLayer.Size = new Size(253, 23);
+            tbBendLinesDownLayer.TabIndex = 7;
+            // 
             // FormDxfSettings
             // 
             AcceptButton = btnSave;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(379, 442);
+            ClientSize = new Size(379, 565);
             ControlBox = false;
+            Controls.Add(groupBox4);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);
             Controls.Add(groupBox3);
@@ -456,6 +588,10 @@ namespace InventorDxfExportAddin
             groupBox3.ResumeLayout(false);
             tableLayoutPanel3.ResumeLayout(false);
             tableLayoutPanel3.PerformLayout();
+            groupBox4.ResumeLayout(false);
+            groupBox4.PerformLayout();
+            tableLayoutPanel4.ResumeLayout(false);
+            tableLayoutPanel4.PerformLayout();
             ResumeLayout(false);
 
         }
@@ -468,25 +604,34 @@ namespace InventorDxfExportAddin
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tbOuterProfileLayer;
-        private Custom_Controls.ColorComboBox cbOuterProfileLineColor;
+        private Custom_Controls.ColorComboBox cbOuterProfileLayerColor;
         private Custom_Controls.LineTypeComboBox cbOuterProfileLineType;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private Custom_Controls.LineTypeComboBox lineTypeComboBox2;
+        private Custom_Controls.LineTypeComboBox cbInnerProfilesLineType;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
-        private Custom_Controls.ColorComboBox colorComboBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private Custom_Controls.ColorComboBox cbInnerProfilesLayerColor;
+        private System.Windows.Forms.TextBox tbInnerProfilesLayer;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
-        private Custom_Controls.LineTypeComboBox lineTypeComboBox3;
+        private Custom_Controls.LineTypeComboBox cbBendLineType;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
-        private Custom_Controls.ColorComboBox colorComboBox2;
-        private System.Windows.Forms.TextBox textBox3;
+        private Custom_Controls.ColorComboBox cbBendLinesLayerColor;
+        private System.Windows.Forms.TextBox tbBendLineLayer;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
+        private GroupBox groupBox4;
+        private TableLayoutPanel tableLayoutPanel4;
+        private Custom_Controls.LineTypeComboBox cbBendDownLineType;
+        private Label label10;
+        private Label label11;
+        private Label label12;
+        private Custom_Controls.ColorComboBox cbBendLinesDownLayerColor;
+        private TextBox tbBendLinesDownLayer;
+        private CheckBox cbEnableBendLinesDown;
     }
 }

@@ -67,17 +67,23 @@ namespace InventorDxfExportAddin.Custom_Controls
         {
             if (e.Index >= 0)
             {
+                bool disabled = !Enabled;
+
                 // Get this line style
                 LineStyle lineStyle = (LineStyle)Items[e.Index];
 
                 // Fill background
-                e.DrawBackground();
+                if (disabled)
+                    e.Graphics.FillRectangle(SystemBrushes.Control, e.Bounds);
+                else
+                    e.DrawBackground();
 
                 // Draw line style
                 Point p1 = new Point(e.Bounds.Left + 5, e.Bounds.Y + e.Bounds.Height / 2);
                 Point p2 = new Point(e.Bounds.Left + 70, e.Bounds.Y + e.Bounds.Height / 2);
 
-                using (Pen linePen = new Pen(e.ForeColor, 1))
+                System.Drawing.Color lineColor = disabled ? SystemColors.GrayText : e.ForeColor;
+                using (Pen linePen = new Pen(lineColor, 1))
                 {
                     linePen.DashPattern = lineStyle.DashPattern;
                     e.Graphics.DrawLine(linePen, p1, p2);
@@ -85,7 +91,9 @@ namespace InventorDxfExportAddin.Custom_Controls
 
                 // Write line style name
                 Brush brush;
-                if ((e.State & DrawItemState.Selected) != DrawItemState.None)
+                if (disabled)
+                    brush = SystemBrushes.GrayText;
+                else if ((e.State & DrawItemState.Selected) != DrawItemState.None)
                     brush = SystemBrushes.HighlightText;
                 else
                     brush = SystemBrushes.WindowText;
@@ -95,7 +103,7 @@ namespace InventorDxfExportAddin.Custom_Controls
                     e.Bounds.Y + ((e.Bounds.Height - Font.Height) / 2));
 
                 // Draw the focus rectangle if appropriate
-                if ((e.State & DrawItemState.NoFocusRect) == DrawItemState.None)
+                if (!disabled && (e.State & DrawItemState.NoFocusRect) == DrawItemState.None)
                     e.DrawFocusRectangle();
             }
         }
@@ -152,6 +160,12 @@ namespace InventorDxfExportAddin.Custom_Controls
                     }
                 }
             }
+        }
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            base.OnEnabledChanged(e);
+            Invalidate();
         }
 
         private void OnSelectionChangeCommitted(object sender, EventArgs e)

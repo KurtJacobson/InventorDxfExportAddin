@@ -64,11 +64,16 @@ namespace InventorDxfExportAddin.Custom_Controls
         {
             if (e.Index >= 0)
             {
+                bool disabled = !Enabled;
+
                 // Get this color
                 ColorInfo color = (ColorInfo)Items[e.Index];
 
                 // Fill background
-                e.DrawBackground();
+                if (disabled)
+                    e.Graphics.FillRectangle(SystemBrushes.Control, e.Bounds);
+                else
+                    e.DrawBackground();
 
                 // Draw color box
                 Rectangle rect = new Rectangle();
@@ -76,21 +81,33 @@ namespace InventorDxfExportAddin.Custom_Controls
                 rect.Y = e.Bounds.Y + 2;
                 rect.Width = 18;
                 rect.Height = e.Bounds.Height - 5;
-                e.Graphics.FillRectangle(new SolidBrush(color.Color), rect);
-                e.Graphics.DrawRectangle(SystemPens.WindowText, rect);
+
+                if (disabled)
+                {
+                    e.Graphics.FillRectangle(SystemBrushes.Control, rect);
+                    e.Graphics.DrawRectangle(SystemPens.GrayText, rect);
+                }
+                else
+                {
+                    e.Graphics.FillRectangle(new SolidBrush(color.Color), rect);
+                    e.Graphics.DrawRectangle(SystemPens.WindowText, rect);
+                }
 
                 // Write color name
                 Brush brush;
-                if ((e.State & DrawItemState.Selected) != DrawItemState.None)
+                if (disabled)
+                    brush = SystemBrushes.GrayText;
+                else if ((e.State & DrawItemState.Selected) != DrawItemState.None)
                     brush = SystemBrushes.HighlightText;
                 else
                     brush = SystemBrushes.WindowText;
+
                 e.Graphics.DrawString(color.Text, Font, brush,
                     e.Bounds.X + rect.X + rect.Width + 2,
                     e.Bounds.Y + ((e.Bounds.Height - Font.Height) / 2));
 
                 // Draw the focus rectangle if appropriate
-                if ((e.State & DrawItemState.NoFocusRect) == DrawItemState.None)
+                if (!disabled && (e.State & DrawItemState.NoFocusRect) == DrawItemState.None)
                     e.DrawFocusRectangle();
             }
         }
@@ -172,6 +189,12 @@ namespace InventorDxfExportAddin.Custom_Controls
                     }
                 }
             }
+        }
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            base.OnEnabledChanged(e);
+            Invalidate();
         }
 
         private void OnSelectionChangeCommitted(object sender, EventArgs e)

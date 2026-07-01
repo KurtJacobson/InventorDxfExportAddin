@@ -1,5 +1,6 @@
 using Inventor;
 using InventorDxfExportAddin;
+using Color = System.Drawing.Color;
 using IxMilia;
 using IxMilia.Dxf;
 using IxMilia.Dxf.Entities;
@@ -281,8 +282,23 @@ namespace InventorDxfExportAddin.DxfExport
                 }
 
                 var bUpLineColor = Properties.DxfSettings.Default.BendUpLayerColor.ToArgb();
-                var bDownLineColor = Properties.DxfSettings.Default.BendDownLayerColor.ToArgb();
-                var bLineType = "Dashed";
+                bool bendDownEnabled = Properties.DxfSettings.Default.BendDownEnabled;
+                var bDownLineColor = bendDownEnabled
+                    ? Properties.DxfSettings.Default.BendDownLayerColor.ToArgb()
+                    : bUpLineColor;
+                var bUpLayer = Properties.DxfSettings.Default.BendUpLayer;
+                var bDownLayer = bendDownEnabled
+                    ? Properties.DxfSettings.Default.BendDownLayer
+                    : bUpLayer;
+
+                string lineTypeToName(LineTypeEnum lt) =>
+                    Custom_Controls.LineTypeComboBox.Styles
+                        .FirstOrDefault(s => s.LineType == lt)?.TypeName ?? "Continuous";
+
+                var bUpLineType = lineTypeToName(Properties.DxfSettings.Default.BendUpLineType);
+                var bDownLineType = bendDownEnabled
+                    ? lineTypeToName(Properties.DxfSettings.Default.BendDownLineType)
+                    : bUpLineType;
 
                 // Add dashed line type to DXF
                 var dashedLineType = new DxfLineType("test");
@@ -300,23 +316,21 @@ namespace InventorDxfExportAddin.DxfExport
                     var bRadius = toDocUnits(oBend.InnerRadius);
 
                     var bLineColor = bUpLineColor;
+                    var bLayer = bUpLayer;
+                    var bLineType = bUpLineType;
 
-                    // down bends have a negative bend angle, and different color
+                    // down bends have a negative bend angle, different color, and optionally a separate layer
                     if (oBend.IsDirectionUp)
                     {
                         bAngle *= -1.0;
                         bLineColor = bDownLineColor;
+                        bLayer = bDownLayer;
+                        bLineType = bDownLineType;
                     }
 
-                    // different line type for regular bends and hems
+                    // hems override line type regardless of direction
                     if (Math.Abs(bAngle) > 179)
-                    {
                         bLineType = "Divide";
-                    }
-                    else
-                    {
-                        bLineType = "Dashed";
-                    }
 
                     Inventor.Point startPoint = oBend.Edge.StartVertex.Point;
                     Inventor.Point stopPoint = oBend.Edge.StopVertex.Point;
@@ -344,7 +358,7 @@ namespace InventorDxfExportAddin.DxfExport
                     var bLine = new DxfLine(new DxfPoint(x1, y1, 0.0), new DxfPoint(x2, y2, 0.0));
                     bLine.LineTypeName = bLineType;
                     bLine.Color24Bit = bLineColor;
-                    bLine.Layer = Properties.DxfSettings.Default.BendUpLayer;
+                    bLine.Layer = bLayer;
 
                     // add XData with bend info
                     bLine.XData["POS3000_V3_BENDINGLINE"] = new DxfXDataApplicationItemCollection(

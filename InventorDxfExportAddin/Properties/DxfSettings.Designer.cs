@@ -166,5 +166,17 @@ namespace InventorDxfExportAddin.Properties {
                 this["BendDownLineType"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool BendDownEnabled {
+            get {
+                return ((bool)(this["BendDownEnabled"]));
+            }
+            set {
+                this["BendDownEnabled"] = value;
+            }
+        }
     }
 }
