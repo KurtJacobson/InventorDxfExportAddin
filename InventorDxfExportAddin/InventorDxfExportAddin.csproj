@@ -25,6 +25,12 @@
 
     <PropertyGroup>
         <LocalizeTemplates>false</LocalizeTemplates>
+        <!-- Required for plugin projects so NuGet runtime assemblies copy to output -->
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+
+    <!-- Debug builds deploy directly to Inventor's plugin folder for rapid iteration -->
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
         <BaseOutputPath>C:\Users\kjacobson\AppData\Roaming\Autodesk\ApplicationPlugins\InventorDxfExport</BaseOutputPath>
     </PropertyGroup>
 
@@ -44,6 +50,12 @@
       <PackageReference Include="Serilog" Version="4.3.0" />
       <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
       <PackageReference Include="System.Resources.Extensions" Version="9.0.9" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="config\export.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>

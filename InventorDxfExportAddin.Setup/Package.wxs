@@ -16,17 +16,23 @@
         <Directory Id="ApplicationPluginsDir" Name="ApplicationPlugins">
           <Directory Id="INSTALLDIR" Name="InventorDxfExport">
 
-            <Component Id="AddinFiles" Guid="*">
+            <Component Id="AddinFiles" Guid="{1896A099-22B5-4600-93AA-C985C559A454}">
               <File Source="$(var.AddinOutputDir)\InventorDxfExportAddin.addin" KeyPath="yes" />
               <File Source="$(var.AddinOutputDir)\InventorDxfExportAddin.dll" />
               <File Source="$(var.AddinOutputDir)\InventorDxfExportAddin.deps.json" />
               <File Source="$(var.AddinOutputDir)\InventorDxfExportAddin.dll.config" />
               <File Source="$(var.AddinOutputDir)\IxMilia.Dxf.dll" />
-              <File Source="$(var.AddinOutputDir)\IxMilia.Dxf.xml" />
+              <File Source="$(var.AddinOutputDir)\Inventor.InternalNames.dll" />
+              <File Source="$(var.AddinOutputDir)\Serilog.dll" />
+              <File Source="$(var.AddinOutputDir)\Serilog.Sinks.File.dll" />
+              <File Source="$(var.AddinOutputDir)\System.Collections.Immutable.dll" />
+              <File Source="$(var.AddinOutputDir)\System.Formats.Nrbf.dll" />
+              <File Source="$(var.AddinOutputDir)\System.Reflection.Metadata.dll" />
+              <File Source="$(var.AddinOutputDir)\System.Resources.Extensions.dll" />
             </Component>
 
             <Directory Id="ConfigDir" Name="config">
-              <Component Id="ConfigFiles" Guid="*">
+              <Component Id="ConfigFiles" Guid="{D3616738-1C6E-4A86-9209-4E477447FA6F}">
                 <File Source="$(var.AddinOutputDir)\config\export.txt" KeyPath="yes" />
               </Component>
             </Directory>

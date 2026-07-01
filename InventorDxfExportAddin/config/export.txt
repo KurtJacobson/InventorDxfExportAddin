@@ -1,0 +1,29 @@
+FLAT PATTERN DXF?AcadVersion=2011
+#Outer Profile Layer
+OuterProfileLayer={{OuterProfileLayer}}
+OuterProfileLayerColor={{OuterProfileLayerColor}}
+OuterProfileLineType={{LineTypeEnum.kDashedLineType}}
+
+#Interior Profile Layer
+InteriorProfilesLayer={{InteriorProfilesLayer}}
+InteriorProfilesLayerColor={{InteriorProfilesLayerColor}}
+InteriorProfilesLineType={{InteriorProfilesLineType}}
+
+#Bend Up Layer
+BendUpLayer=not_used
+BendUpLayerColor=0;0;255
+BendUpLineType={{LineTypeEnum.kDashedLineType}}
+
+#Bend Down Layer
+BendDownLayer=not_used
+BendDownLayerColor=255;0;191
+BendDownLineType={{LineTypeEnum.kDashedLineType}}
+
+#Layers to hide
+InvisibleLayers=IV_TANGENT;IV_ARC_CENTERS;IV_BEND;IV_BEND_DOWN;IV_UNCONSUMED_SKETCHES;not_used
+
+#Other Export Settings
+MergeProfilesIntoPolyline=True
+SimplifySplines=True
+AdvancedLegacyExport=True
+SplineTolerance=0.01

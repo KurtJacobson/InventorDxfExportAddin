@@ -103,7 +103,7 @@ namespace InventorDxfExportAddin.DxfExport
                 LogManager.Log.Warning($"Could not read document properties for STP path: {ex.Message}");
             }
 
-            return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            return System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments);
         }
 
         public string ExportFullPath
