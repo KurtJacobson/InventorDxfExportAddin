@@ -213,12 +213,12 @@ namespace InventorDxfExportAddin.DxfExport
                             // Outer Profile Layer
                             + "&OuterProfileLayer=" + Properties.DxfSettings.Default.OuterProfileLayer
                             + "&OuterProfileLayerColor=" + colorToRgb(Properties.DxfSettings.Default.OuterProfileLayerColor)
-                            + "&OuterProfileLineType=" + ((decimal)LineTypeEnum.kDefaultLineType)
+                            + "&OuterProfileLineType=" + ((decimal)Properties.DxfSettings.Default.OuterProfileLineType)
 
                             // Interior Profile Layer
-                            + "&InteriorProfilesLayer=InnerOutlines"
+                            + "&InteriorProfilesLayer=" + Properties.DxfSettings.Default.InteriorProfilesLayer
                             + "&InteriorProfilesLayerColor=" + colorToRgb(Properties.DxfSettings.Default.InteriorProfilesLayerColor)
-                            + "&InteriorProfilesLineType=" + ((decimal)LineTypeEnum.kDefaultLineType)
+                            + "&InteriorProfilesLineType=" + ((decimal)Properties.DxfSettings.Default.InteriorProfilesLineType)
 
                             // Bend Up Layer
                             //+ "&BendUpLayer=not_used"
@@ -269,7 +269,7 @@ namespace InventorDxfExportAddin.DxfExport
                 foreach (DxfLayer layer in file.Layers)
                 {
 
-                    if (layer.Name == "Outline")
+                    if (layer.Name == Properties.DxfSettings.Default.OuterProfileLayer)
                     {
                         // add XData with product info
                         layer.XData["POS3000_V3_PRODUCT"] = new DxfXDataApplicationItemCollection
@@ -344,7 +344,7 @@ namespace InventorDxfExportAddin.DxfExport
                     var bLine = new DxfLine(new DxfPoint(x1, y1, 0.0), new DxfPoint(x2, y2, 0.0));
                     bLine.LineTypeName = bLineType;
                     bLine.Color24Bit = bLineColor;
-                    bLine.Layer = "BendingLines";
+                    bLine.Layer = Properties.DxfSettings.Default.BendUpLayer;
 
                     // add XData with bend info
                     bLine.XData["POS3000_V3_BENDINGLINE"] = new DxfXDataApplicationItemCollection(

@@ -29,6 +29,14 @@ namespace InventorDxfExportAddin
             this.cbOuterProfileLineColor.SelectedColor = settings.OuterProfileLayerColor;
             this.cbOuterProfileLineType.SelectedLineType = settings.OuterProfileLineType;
 
+            this.textBox2.Text = settings.InteriorProfilesLayer;
+            this.colorComboBox1.SelectedColor = settings.InteriorProfilesLayerColor;
+            this.lineTypeComboBox2.SelectedLineType = settings.InteriorProfilesLineType;
+
+            this.textBox3.Text = settings.BendUpLayer;
+            this.colorComboBox2.SelectedColor = settings.BendUpLayerColor;
+            this.lineTypeComboBox3.SelectedLineType = settings.BendUpLineType;
+
         }
 
         public object GetDxfSetting(string name)
@@ -52,6 +60,14 @@ namespace InventorDxfExportAddin
             settings.OuterProfileLayer = this.tbOuterProfileLayer.Text;
             settings.OuterProfileLayerColor = this.cbOuterProfileLineColor.SelectedColor;
             settings.OuterProfileLineType = this.cbOuterProfileLineType.SelectedLineType;
+
+            settings.InteriorProfilesLayer = this.textBox2.Text;
+            settings.InteriorProfilesLayerColor = this.colorComboBox1.SelectedColor;
+            settings.InteriorProfilesLineType = this.lineTypeComboBox2.SelectedLineType;
+
+            settings.BendUpLayer = this.textBox3.Text;
+            settings.BendUpLayerColor = this.colorComboBox2.SelectedColor;
+            settings.BendUpLineType = this.lineTypeComboBox3.SelectedLineType;
 
 
             // Save settings
