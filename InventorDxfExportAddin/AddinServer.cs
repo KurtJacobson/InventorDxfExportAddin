@@ -1,23 +1,10 @@
 ﻿using Inventor;
 using InventorDxfExportAddin.Buttons;
 using Serilog;
-using Serilog.Sinks.File;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Reflection;
 using System.Windows.Forms;
-
-
-internal class CaptureFilePathHook : FileLifecycleHooks
-{
-    public string? Path { get; private set; }
-    public override Stream OnFileOpened(string path, Stream underlyingStream, Encoding encoding)
-    {
-        Path = path;
-        return base.OnFileOpened(path, underlyingStream, encoding);
-    }
-}
 
 namespace InventorDxfExportAddin
 {
@@ -33,26 +20,20 @@ namespace InventorDxfExportAddin
                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                    ?.InformationalVersion;
 
-        // Keep a reference to the hook so we can read it later
-        private static CaptureFilePathHook _filePathHook;
-
-        // Public accessor so other classes can read the current file path
-        public static string CurrentLogFilePath => _filePathHook?.Path;
+        public static string CurrentLogFilePath =>
+            System.IO.Path.Combine(logFilePath, $"event_log_{System.DateTime.Now:yyyyMMdd}.txt");
 
         static LogManager()
         {
-            _filePathHook = new CaptureFilePathHook();
-
             Log = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.File(
                     System.IO.Path.Combine(logFilePath, "event_log_.txt"),
-                    rollingInterval: RollingInterval.Day,
-                    hooks: _filePathHook)
+                    rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
             Log.Information("=========================== RELOAD ===========================");
-            Log.Information($"Logging to: {_filePathHook.Path}");
+            Log.Information($"Logging to: {CurrentLogFilePath}");
             Log.Information($"AddIn Version: {addinVersion}");
         }
     }
@@ -82,6 +63,8 @@ namespace InventorDxfExportAddin
         /// </summary>
         public void Activate(Inventor.ApplicationAddInSite addInSiteObject, bool firstTime)
         {
+            try
+            {
             InventorApp = addInSiteObject.Application;
             InventorApp.ApplicationEvents.OnApplicationOptionChange += UpdateButtons;
 
@@ -107,6 +90,32 @@ namespace InventorDxfExportAddin
                 while ((ex = ex.InnerException) != null);
 
                 MessageBox.Show($"Could not load InventorDxfExportAddin.\nSee log file for more info.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            }
+            catch (Exception fatal)
+            {
+                // This outer catch has NO external dependencies — plain System.IO only.
+                // It fires if the failure happens before Serilog is initialized.
+                try
+                {
+                    string addinDir = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                    string diagPath = System.IO.Path.Combine(addinDir, "logs", "startup_error.txt");
+                    System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(diagPath));
+                    System.Exception e = fatal;
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendLine($"[{System.DateTime.Now:yyyy-MM-dd HH:mm:ss}] FATAL startup error");
+                    while (e != null)
+                    {
+                        sb.AppendLine($"  {e.GetType().FullName}: {e.Message}");
+                        sb.AppendLine(e.StackTrace);
+                        e = e.InnerException;
+                    }
+                    System.IO.File.AppendAllText(diagPath, sb.ToString());
+                }
+                catch { }
+
+                MessageBox.Show($"InventorDxfExportAddin failed to start.\nSee startup_error.txt in the addin logs folder.",
+                    "Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

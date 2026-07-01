@@ -1,5 +1,4 @@
-﻿using Serilog.Sinks.File;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -36,8 +35,6 @@ namespace InventorDxfExportAddin.Forms
 
         private void btnShowLog_Click(object sender, EventArgs e)
         {
-            var filePathHook = new CaptureFilePathHook();
-
             LogManager.Log.Debug("About Dialog :: Open log file pressed");
 
             using Process fileopener = new Process();
@@ -48,8 +45,6 @@ namespace InventorDxfExportAddin.Forms
 
         private void lblLogFilePath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var filePathHook = new CaptureFilePathHook();
-
             LogManager.Log.Debug("About Dialog :: Open log file link clicked");
             Process.Start(@"notepad.exe", LogManager.CurrentLogFilePath);
         }

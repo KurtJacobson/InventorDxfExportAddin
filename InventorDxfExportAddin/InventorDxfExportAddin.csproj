@@ -20,8 +20,6 @@
         <LocalizeTemplates>false</LocalizeTemplates>
         <!-- Required for plugin projects so NuGet runtime assemblies copy to output -->
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-        <!-- Required for embedded binary resources (PNGs) with net48 SDK-style projects -->
-        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
 
     <!-- Debug builds deploy directly to Inventor's plugin folder for rapid iteration -->
@@ -33,6 +31,7 @@
     <ItemGroup>
       <Reference Include="Autodesk.Inventor.Interop">
         <HintPath>lib\Autodesk.Inventor.Interop.dll</HintPath>
+        <EmbedInteropTypes>true</EmbedInteropTypes>
       </Reference>
     </ItemGroup>
 
@@ -45,7 +44,6 @@
       </PackageReference>
       <PackageReference Include="Serilog" Version="4.3.0" />
       <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-      <PackageReference Include="System.Resources.Extensions" Version="9.0.9" />
     </ItemGroup>
 
     <ItemGroup>

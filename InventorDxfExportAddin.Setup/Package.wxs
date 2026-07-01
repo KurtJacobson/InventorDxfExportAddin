@@ -24,6 +24,7 @@
             <Component Id="AddinFiles" Guid="{1896A099-22B5-4600-93AA-C985C559A454}">
               <File Source="$(var.AddinOutputDir)\InventorDxfExportAddin.addin" KeyPath="yes" />
               <File Source="$(var.AddinOutputDir)\InventorDxfExportAddin.dll" />
+              <File Source="$(var.AddinOutputDir)\InventorDxfExportAddin.dll.config" />
               <File Source="$(var.AddinOutputDir)\IxMilia.Dxf.dll" />
               <File Source="$(var.AddinOutputDir)\Inventor.InternalNames.dll" />
               <File Source="$(var.AddinOutputDir)\Serilog.dll" />
@@ -36,8 +37,7 @@
               <File Source="$(var.AddinOutputDir)\System.Memory.dll" />
               <File Source="$(var.AddinOutputDir)\System.Numerics.Vectors.dll" />
               <File Source="$(var.AddinOutputDir)\System.Reflection.Metadata.dll" />
-              <File Source="$(var.AddinOutputDir)\System.Resources.Extensions.dll" />
-              <File Source="$(var.AddinOutputDir)\System.Runtime.CompilerServices.Unsafe.dll" />
+<File Source="$(var.AddinOutputDir)\System.Runtime.CompilerServices.Unsafe.dll" />
               <File Source="$(var.AddinOutputDir)\System.Text.Encoding.CodePages.dll" />
               <File Source="$(var.AddinOutputDir)\System.Threading.Channels.dll" />
               <File Source="$(var.AddinOutputDir)\System.Threading.Tasks.Extensions.dll" />

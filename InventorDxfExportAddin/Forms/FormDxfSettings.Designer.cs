@@ -28,571 +28,538 @@ namespace InventorDxfExportAddin
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormDxfSettings));
-            groupBox1 = new GroupBox();
-            tableLayoutPanel1 = new TableLayoutPanel();
-            cbOuterProfileLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
-            label3 = new Label();
-            label4 = new Label();
-            label1 = new Label();
-            cbOuterProfileLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
-            tbOuterProfileLayer = new TextBox();
-            groupBox2 = new GroupBox();
-            tableLayoutPanel2 = new TableLayoutPanel();
-            cbInnerProfilesLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
-            label2 = new Label();
-            label5 = new Label();
-            label6 = new Label();
-            cbInnerProfilesLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
-            tbInnerProfilesLayer = new TextBox();
-            groupBox3 = new GroupBox();
-            tableLayoutPanel3 = new TableLayoutPanel();
-            cbBendLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
-            label7 = new Label();
-            label8 = new Label();
-            label9 = new Label();
-            cbBendLinesLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
-            tbBendLineLayer = new TextBox();
-            btnSave = new Button();
-            btnCancel = new Button();
-            groupBox4 = new GroupBox();
-            cbEnableBendLinesDown = new CheckBox();
-            tableLayoutPanel4 = new TableLayoutPanel();
-            cbBendDownLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
-            label10 = new Label();
-            label11 = new Label();
-            label12 = new Label();
-            cbBendLinesDownLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
-            tbBendLinesDownLayer = new TextBox();
-            groupBox1.SuspendLayout();
-            tableLayoutPanel1.SuspendLayout();
-            groupBox2.SuspendLayout();
-            tableLayoutPanel2.SuspendLayout();
-            groupBox3.SuspendLayout();
-            tableLayoutPanel3.SuspendLayout();
-            groupBox4.SuspendLayout();
-            tableLayoutPanel4.SuspendLayout();
-            SuspendLayout();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.cbOuterProfileLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cbOuterProfileLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
+            this.tbOuterProfileLayer = new System.Windows.Forms.TextBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.cbInnerProfilesLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cbInnerProfilesLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
+            this.tbInnerProfilesLayer = new System.Windows.Forms.TextBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.cbBendLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.cbBendLinesLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
+            this.tbBendLineLayer = new System.Windows.Forms.TextBox();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.cbEnableBendLinesDown = new System.Windows.Forms.CheckBox();
+            this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
+            this.cbBendDownLineType = new InventorDxfExportAddin.Custom_Controls.LineTypeComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.cbBendLinesDownLayerColor = new InventorDxfExportAddin.Custom_Controls.ColorComboBox();
+            this.tbBendLinesDownLayer = new System.Windows.Forms.TextBox();
+            this.groupBox1.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.tableLayoutPanel3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.tableLayoutPanel4.SuspendLayout();
+            this.SuspendLayout();
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(tableLayoutPanel1);
-            groupBox1.Location = new Point(14, 14);
-            groupBox1.Margin = new Padding(4, 3, 4, 3);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Padding = new Padding(4, 3, 4, 3);
-            groupBox1.Size = new Size(354, 123);
-            groupBox1.TabIndex = 0;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Outer Profile";
+            this.groupBox1.Controls.Add(this.tableLayoutPanel1);
+            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(303, 107);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Outer Profile";
             // 
             // tableLayoutPanel1
             // 
-            tableLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            tableLayoutPanel1.ColumnCount = 2;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel1.Controls.Add(cbOuterProfileLineType, 1, 2);
-            tableLayoutPanel1.Controls.Add(label3, 0, 0);
-            tableLayoutPanel1.Controls.Add(label4, 0, 1);
-            tableLayoutPanel1.Controls.Add(label1, 0, 2);
-            tableLayoutPanel1.Controls.Add(cbOuterProfileLayerColor, 1, 1);
-            tableLayoutPanel1.Controls.Add(tbOuterProfileLayer, 1, 0);
-            tableLayoutPanel1.Location = new Point(7, 22);
-            tableLayoutPanel1.Margin = new Padding(4, 3, 4, 3);
-            tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 3;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.Size = new Size(340, 95);
-            tableLayoutPanel1.TabIndex = 0;
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.cbOuterProfileLineType, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label4, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.cbOuterProfileLayerColor, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.tbOuterProfileLayer, 1, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 19);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(291, 82);
+            this.tableLayoutPanel1.TabIndex = 0;
             // 
             // cbOuterProfileLineType
             // 
-            cbOuterProfileLineType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            cbOuterProfileLineType.DrawMode = DrawMode.OwnerDrawFixed;
-            cbOuterProfileLineType.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbOuterProfileLineType.FormattingEnabled = true;
-            cbOuterProfileLineType.Location = new Point(82, 65);
-            cbOuterProfileLineType.Margin = new Padding(4, 3, 4, 3);
-            cbOuterProfileLineType.Name = "cbOuterProfileLineType";
-            cbOuterProfileLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
-            cbOuterProfileLineType.Size = new Size(254, 24);
-            cbOuterProfileLineType.TabIndex = 3;
+            this.cbOuterProfileLineType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbOuterProfileLineType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbOuterProfileLineType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbOuterProfileLineType.FormattingEnabled = true;
+            this.cbOuterProfileLineType.Location = new System.Drawing.Point(73, 57);
+            this.cbOuterProfileLineType.Name = "cbOuterProfileLineType";
+            this.cbOuterProfileLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
+            this.cbOuterProfileLineType.Size = new System.Drawing.Size(223, 21);
+            this.cbOuterProfileLineType.TabIndex = 3;
             // 
             // label3
             // 
-            label3.Anchor = AnchorStyles.Right;
-            label3.AutoSize = true;
-            label3.Location = new Point(4, 7);
-            label3.Margin = new Padding(4, 0, 4, 0);
-            label3.Name = "label3";
-            label3.Size = new Size(70, 15);
-            label3.TabIndex = 2;
-            label3.Text = "Layer Name";
-            label3.TextAlign = ContentAlignment.MiddleRight;
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 6);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(64, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Layer Name";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label4
             // 
-            label4.Anchor = AnchorStyles.Right;
-            label4.AutoSize = true;
-            label4.Location = new Point(7, 36);
-            label4.Margin = new Padding(4, 0, 4, 0);
-            label4.Name = "label4";
-            label4.Size = new Size(67, 15);
-            label4.TabIndex = 3;
-            label4.Text = "Layer Color";
-            label4.TextAlign = ContentAlignment.MiddleRight;
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 33);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(60, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Layer Color";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label1
             // 
-            label1.Anchor = AnchorStyles.Right;
-            label1.AutoSize = true;
-            label1.Location = new Point(18, 69);
-            label1.Margin = new Padding(4, 0, 4, 0);
-            label1.Name = "label1";
-            label1.Size = new Size(56, 15);
-            label1.TabIndex = 4;
-            label1.Text = "Line Type";
-            label1.TextAlign = ContentAlignment.MiddleRight;
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 61);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(54, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Line Type";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cbOuterProfileLayerColor
             // 
-            cbOuterProfileLayerColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            cbOuterProfileLayerColor.DrawMode = DrawMode.OwnerDrawFixed;
-            cbOuterProfileLayerColor.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbOuterProfileLayerColor.FormattingEnabled = true;
-            cbOuterProfileLayerColor.Location = new Point(82, 32);
-            cbOuterProfileLayerColor.Margin = new Padding(4, 3, 4, 3);
-            cbOuterProfileLayerColor.Name = "cbOuterProfileLayerColor";
-            cbOuterProfileLayerColor.SelectedColor = Color.FromArgb(255, 255, 255);
-            cbOuterProfileLayerColor.SelectedValue = Color.FromArgb(255, 255, 255);
-            cbOuterProfileLayerColor.Size = new Size(254, 24);
-            cbOuterProfileLayerColor.TabIndex = 10;
+            this.cbOuterProfileLayerColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbOuterProfileLayerColor.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbOuterProfileLayerColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbOuterProfileLayerColor.FormattingEnabled = true;
+            this.cbOuterProfileLayerColor.Location = new System.Drawing.Point(73, 29);
+            this.cbOuterProfileLayerColor.Name = "cbOuterProfileLayerColor";
+            this.cbOuterProfileLayerColor.SelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbOuterProfileLayerColor.SelectedValue = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbOuterProfileLayerColor.Size = new System.Drawing.Size(223, 21);
+            this.cbOuterProfileLayerColor.TabIndex = 10;
             // 
             // tbOuterProfileLayer
             // 
-            tbOuterProfileLayer.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            tbOuterProfileLayer.Location = new Point(82, 3);
-            tbOuterProfileLayer.Margin = new Padding(4, 3, 4, 3);
-            tbOuterProfileLayer.Name = "tbOuterProfileLayer";
-            tbOuterProfileLayer.Size = new Size(254, 23);
-            tbOuterProfileLayer.TabIndex = 7;
+            this.tbOuterProfileLayer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbOuterProfileLayer.Location = new System.Drawing.Point(73, 3);
+            this.tbOuterProfileLayer.Name = "tbOuterProfileLayer";
+            this.tbOuterProfileLayer.Size = new System.Drawing.Size(223, 20);
+            this.tbOuterProfileLayer.TabIndex = 7;
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(tableLayoutPanel2);
-            groupBox2.Location = new Point(14, 143);
-            groupBox2.Margin = new Padding(4, 3, 4, 3);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Padding = new Padding(4, 3, 4, 3);
-            groupBox2.Size = new Size(354, 123);
-            groupBox2.TabIndex = 1;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Inner Profiles";
+            this.groupBox2.Controls.Add(this.tableLayoutPanel2);
+            this.groupBox2.Location = new System.Drawing.Point(12, 124);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(303, 107);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Inner Profiles";
             // 
             // tableLayoutPanel2
             // 
-            tableLayoutPanel2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            tableLayoutPanel2.ColumnCount = 2;
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel2.Controls.Add(cbInnerProfilesLineType, 1, 2);
-            tableLayoutPanel2.Controls.Add(label2, 0, 0);
-            tableLayoutPanel2.Controls.Add(label5, 0, 1);
-            tableLayoutPanel2.Controls.Add(label6, 0, 2);
-            tableLayoutPanel2.Controls.Add(cbInnerProfilesLayerColor, 1, 1);
-            tableLayoutPanel2.Controls.Add(tbInnerProfilesLayer, 1, 0);
-            tableLayoutPanel2.Location = new Point(7, 22);
-            tableLayoutPanel2.Margin = new Padding(4, 3, 4, 3);
-            tableLayoutPanel2.Name = "tableLayoutPanel2";
-            tableLayoutPanel2.RowCount = 3;
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.Size = new Size(340, 95);
-            tableLayoutPanel2.TabIndex = 0;
+            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.cbInnerProfilesLineType, 1, 2);
+            this.tableLayoutPanel2.Controls.Add(this.label2, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.label5, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.label6, 0, 2);
+            this.tableLayoutPanel2.Controls.Add(this.cbInnerProfilesLayerColor, 1, 1);
+            this.tableLayoutPanel2.Controls.Add(this.tbInnerProfilesLayer, 1, 0);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(6, 19);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 3;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(291, 82);
+            this.tableLayoutPanel2.TabIndex = 0;
             // 
             // cbInnerProfilesLineType
             // 
-            cbInnerProfilesLineType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            cbInnerProfilesLineType.DrawMode = DrawMode.OwnerDrawFixed;
-            cbInnerProfilesLineType.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbInnerProfilesLineType.FormattingEnabled = true;
-            cbInnerProfilesLineType.Location = new Point(82, 65);
-            cbInnerProfilesLineType.Margin = new Padding(4, 3, 4, 3);
-            cbInnerProfilesLineType.Name = "cbInnerProfilesLineType";
-            cbInnerProfilesLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
-            cbInnerProfilesLineType.Size = new Size(254, 24);
-            cbInnerProfilesLineType.TabIndex = 3;
+            this.cbInnerProfilesLineType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbInnerProfilesLineType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbInnerProfilesLineType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbInnerProfilesLineType.FormattingEnabled = true;
+            this.cbInnerProfilesLineType.Location = new System.Drawing.Point(73, 57);
+            this.cbInnerProfilesLineType.Name = "cbInnerProfilesLineType";
+            this.cbInnerProfilesLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
+            this.cbInnerProfilesLineType.Size = new System.Drawing.Size(223, 21);
+            this.cbInnerProfilesLineType.TabIndex = 3;
             // 
             // label2
             // 
-            label2.Anchor = AnchorStyles.Right;
-            label2.AutoSize = true;
-            label2.Location = new Point(4, 7);
-            label2.Margin = new Padding(4, 0, 4, 0);
-            label2.Name = "label2";
-            label2.Size = new Size(70, 15);
-            label2.TabIndex = 2;
-            label2.Text = "Layer Name";
-            label2.TextAlign = ContentAlignment.MiddleRight;
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 6);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(64, 13);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Layer Name";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label5
             // 
-            label5.Anchor = AnchorStyles.Right;
-            label5.AutoSize = true;
-            label5.Location = new Point(7, 36);
-            label5.Margin = new Padding(4, 0, 4, 0);
-            label5.Name = "label5";
-            label5.Size = new Size(67, 15);
-            label5.TabIndex = 3;
-            label5.Text = "Layer Color";
-            label5.TextAlign = ContentAlignment.MiddleRight;
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 33);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(60, 13);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "Layer Color";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label6
             // 
-            label6.Anchor = AnchorStyles.Right;
-            label6.AutoSize = true;
-            label6.Location = new Point(18, 69);
-            label6.Margin = new Padding(4, 0, 4, 0);
-            label6.Name = "label6";
-            label6.Size = new Size(56, 15);
-            label6.TabIndex = 4;
-            label6.Text = "Line Type";
-            label6.TextAlign = ContentAlignment.MiddleRight;
+            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(13, 61);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(54, 13);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "Line Type";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cbInnerProfilesLayerColor
             // 
-            cbInnerProfilesLayerColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            cbInnerProfilesLayerColor.DrawMode = DrawMode.OwnerDrawFixed;
-            cbInnerProfilesLayerColor.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbInnerProfilesLayerColor.FormattingEnabled = true;
-            cbInnerProfilesLayerColor.Location = new Point(82, 32);
-            cbInnerProfilesLayerColor.Margin = new Padding(4, 3, 4, 3);
-            cbInnerProfilesLayerColor.Name = "cbInnerProfilesLayerColor";
-            cbInnerProfilesLayerColor.SelectedColor = Color.FromArgb(255, 255, 255);
-            cbInnerProfilesLayerColor.SelectedValue = Color.FromArgb(255, 255, 255);
-            cbInnerProfilesLayerColor.Size = new Size(254, 24);
-            cbInnerProfilesLayerColor.TabIndex = 10;
+            this.cbInnerProfilesLayerColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbInnerProfilesLayerColor.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbInnerProfilesLayerColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbInnerProfilesLayerColor.FormattingEnabled = true;
+            this.cbInnerProfilesLayerColor.Location = new System.Drawing.Point(73, 29);
+            this.cbInnerProfilesLayerColor.Name = "cbInnerProfilesLayerColor";
+            this.cbInnerProfilesLayerColor.SelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbInnerProfilesLayerColor.SelectedValue = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbInnerProfilesLayerColor.Size = new System.Drawing.Size(223, 21);
+            this.cbInnerProfilesLayerColor.TabIndex = 10;
             // 
             // tbInnerProfilesLayer
             // 
-            tbInnerProfilesLayer.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            tbInnerProfilesLayer.Location = new Point(82, 3);
-            tbInnerProfilesLayer.Margin = new Padding(4, 3, 4, 3);
-            tbInnerProfilesLayer.Name = "tbInnerProfilesLayer";
-            tbInnerProfilesLayer.Size = new Size(254, 23);
-            tbInnerProfilesLayer.TabIndex = 7;
+            this.tbInnerProfilesLayer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbInnerProfilesLayer.Location = new System.Drawing.Point(73, 3);
+            this.tbInnerProfilesLayer.Name = "tbInnerProfilesLayer";
+            this.tbInnerProfilesLayer.Size = new System.Drawing.Size(223, 20);
+            this.tbInnerProfilesLayer.TabIndex = 7;
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(tableLayoutPanel3);
-            groupBox3.Location = new Point(14, 272);
-            groupBox3.Margin = new Padding(4, 3, 4, 3);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Padding = new Padding(4, 3, 4, 3);
-            groupBox3.Size = new Size(354, 123);
-            groupBox3.TabIndex = 2;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "Bend Lines";
+            this.groupBox3.Controls.Add(this.tableLayoutPanel3);
+            this.groupBox3.Location = new System.Drawing.Point(12, 236);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(303, 107);
+            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Bend Lines";
             // 
             // tableLayoutPanel3
             // 
-            tableLayoutPanel3.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            tableLayoutPanel3.ColumnCount = 2;
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel3.Controls.Add(cbBendLineType, 1, 2);
-            tableLayoutPanel3.Controls.Add(label7, 0, 0);
-            tableLayoutPanel3.Controls.Add(label8, 0, 1);
-            tableLayoutPanel3.Controls.Add(label9, 0, 2);
-            tableLayoutPanel3.Controls.Add(cbBendLinesLayerColor, 1, 1);
-            tableLayoutPanel3.Controls.Add(tbBendLineLayer, 1, 0);
-            tableLayoutPanel3.Location = new Point(7, 22);
-            tableLayoutPanel3.Margin = new Padding(4, 3, 4, 3);
-            tableLayoutPanel3.Name = "tableLayoutPanel3";
-            tableLayoutPanel3.RowCount = 3;
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.Size = new Size(340, 95);
-            tableLayoutPanel3.TabIndex = 0;
+            this.tableLayoutPanel3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel3.ColumnCount = 2;
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel3.Controls.Add(this.cbBendLineType, 1, 2);
+            this.tableLayoutPanel3.Controls.Add(this.label7, 0, 0);
+            this.tableLayoutPanel3.Controls.Add(this.label8, 0, 1);
+            this.tableLayoutPanel3.Controls.Add(this.label9, 0, 2);
+            this.tableLayoutPanel3.Controls.Add(this.cbBendLinesLayerColor, 1, 1);
+            this.tableLayoutPanel3.Controls.Add(this.tbBendLineLayer, 1, 0);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(6, 19);
+            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
+            this.tableLayoutPanel3.RowCount = 3;
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(291, 82);
+            this.tableLayoutPanel3.TabIndex = 0;
             // 
             // cbBendLineType
             // 
-            cbBendLineType.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            cbBendLineType.DrawMode = DrawMode.OwnerDrawFixed;
-            cbBendLineType.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbBendLineType.FormattingEnabled = true;
-            cbBendLineType.Location = new Point(82, 65);
-            cbBendLineType.Margin = new Padding(4, 3, 4, 3);
-            cbBendLineType.Name = "cbBendLineType";
-            cbBendLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
-            cbBendLineType.Size = new Size(254, 24);
-            cbBendLineType.TabIndex = 3;
+            this.cbBendLineType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbBendLineType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbBendLineType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbBendLineType.FormattingEnabled = true;
+            this.cbBendLineType.Location = new System.Drawing.Point(73, 57);
+            this.cbBendLineType.Name = "cbBendLineType";
+            this.cbBendLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
+            this.cbBendLineType.Size = new System.Drawing.Size(223, 21);
+            this.cbBendLineType.TabIndex = 3;
             // 
             // label7
             // 
-            label7.Anchor = AnchorStyles.Right;
-            label7.AutoSize = true;
-            label7.Location = new Point(4, 7);
-            label7.Margin = new Padding(4, 0, 4, 0);
-            label7.Name = "label7";
-            label7.Size = new Size(70, 15);
-            label7.TabIndex = 2;
-            label7.Text = "Layer Name";
-            label7.TextAlign = ContentAlignment.MiddleRight;
+            this.label7.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 6);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(64, 13);
+            this.label7.TabIndex = 2;
+            this.label7.Text = "Layer Name";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label8
             // 
-            label8.Anchor = AnchorStyles.Right;
-            label8.AutoSize = true;
-            label8.Location = new Point(7, 36);
-            label8.Margin = new Padding(4, 0, 4, 0);
-            label8.Name = "label8";
-            label8.Size = new Size(67, 15);
-            label8.TabIndex = 3;
-            label8.Text = "Layer Color";
-            label8.TextAlign = ContentAlignment.MiddleRight;
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(7, 33);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(60, 13);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "Layer Color";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label9
             // 
-            label9.Anchor = AnchorStyles.Right;
-            label9.AutoSize = true;
-            label9.Location = new Point(18, 69);
-            label9.Margin = new Padding(4, 0, 4, 0);
-            label9.Name = "label9";
-            label9.Size = new Size(56, 15);
-            label9.TabIndex = 4;
-            label9.Text = "Line Type";
-            label9.TextAlign = ContentAlignment.MiddleRight;
+            this.label9.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(13, 61);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(54, 13);
+            this.label9.TabIndex = 4;
+            this.label9.Text = "Line Type";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cbBendLinesLayerColor
             // 
-            cbBendLinesLayerColor.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            cbBendLinesLayerColor.DrawMode = DrawMode.OwnerDrawFixed;
-            cbBendLinesLayerColor.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbBendLinesLayerColor.FormattingEnabled = true;
-            cbBendLinesLayerColor.Location = new Point(82, 32);
-            cbBendLinesLayerColor.Margin = new Padding(4, 3, 4, 3);
-            cbBendLinesLayerColor.Name = "cbBendLinesLayerColor";
-            cbBendLinesLayerColor.SelectedColor = Color.FromArgb(255, 255, 255);
-            cbBendLinesLayerColor.SelectedValue = Color.FromArgb(255, 255, 255);
-            cbBendLinesLayerColor.Size = new Size(254, 24);
-            cbBendLinesLayerColor.TabIndex = 10;
+            this.cbBendLinesLayerColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbBendLinesLayerColor.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbBendLinesLayerColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbBendLinesLayerColor.FormattingEnabled = true;
+            this.cbBendLinesLayerColor.Location = new System.Drawing.Point(73, 29);
+            this.cbBendLinesLayerColor.Name = "cbBendLinesLayerColor";
+            this.cbBendLinesLayerColor.SelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbBendLinesLayerColor.SelectedValue = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbBendLinesLayerColor.Size = new System.Drawing.Size(223, 21);
+            this.cbBendLinesLayerColor.TabIndex = 10;
             // 
             // tbBendLineLayer
             // 
-            tbBendLineLayer.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-            tbBendLineLayer.Location = new Point(82, 3);
-            tbBendLineLayer.Margin = new Padding(4, 3, 4, 3);
-            tbBendLineLayer.Name = "tbBendLineLayer";
-            tbBendLineLayer.Size = new Size(254, 23);
-            tbBendLineLayer.TabIndex = 7;
+            this.tbBendLineLayer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbBendLineLayer.Location = new System.Drawing.Point(73, 3);
+            this.tbBendLineLayer.Name = "tbBendLineLayer";
+            this.tbBendLineLayer.Size = new System.Drawing.Size(218, 20);
+            this.tbBendLineLayer.TabIndex = 7;
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(184, 530);
-            btnSave.Margin = new Padding(4, 3, 4, 3);
-            btnSave.Name = "btnSave";
-            btnSave.Size = new Size(88, 27);
-            btnSave.TabIndex = 3;
-            btnSave.Text = "Save";
-            btnSave.UseVisualStyleBackColor = true;
-            btnSave.Click += btnSave_Click;
-            // 
+            this.btnSave.Location = new System.Drawing.Point(158, 459);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 3;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            //
             // btnCancel
-            // 
-            btnCancel.Location = new Point(280, 530);
-            btnCancel.Margin = new Padding(4, 3, 4, 3);
-            btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(88, 27);
-            btnCancel.TabIndex = 4;
-            btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
-            btnCancel.Click += btnCancel_Click;
+            //
+            this.btnCancel.Location = new System.Drawing.Point(240, 459);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.TabIndex = 4;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // groupBox4
             // 
-            groupBox4.Controls.Add(cbEnableBendLinesDown);
-            groupBox4.Controls.Add(tableLayoutPanel4);
-            groupBox4.Location = new Point(14, 401);
-            groupBox4.Margin = new Padding(4, 3, 4, 3);
-            groupBox4.Name = "groupBox4";
-            groupBox4.Padding = new Padding(4, 3, 4, 3);
-            groupBox4.Size = new Size(354, 123);
-            groupBox4.TabIndex = 3;
-            groupBox4.TabStop = false;
+            this.groupBox4.Controls.Add(this.cbEnableBendLinesDown);
+            this.groupBox4.Controls.Add(this.tableLayoutPanel4);
+            this.groupBox4.Location = new System.Drawing.Point(12, 348);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(303, 107);
+            this.groupBox4.TabIndex = 3;
+            this.groupBox4.TabStop = false;
             // 
             // cbEnableBendLinesDown
             // 
-            cbEnableBendLinesDown.AutoSize = true;
-            cbEnableBendLinesDown.Location = new Point(7, 0);
-            cbEnableBendLinesDown.Name = "cbEnableBendLinesDown";
-            cbEnableBendLinesDown.Size = new Size(189, 19);
-            cbEnableBendLinesDown.TabIndex = 1;
-            cbEnableBendLinesDown.Text = "Seperate Layer for Down Bends";
-            cbEnableBendLinesDown.UseVisualStyleBackColor = true;
+            this.cbEnableBendLinesDown.AutoSize = true;
+            this.cbEnableBendLinesDown.Location = new System.Drawing.Point(6, 0);
+            this.cbEnableBendLinesDown.Name = "cbEnableBendLinesDown";
+            this.cbEnableBendLinesDown.Size = new System.Drawing.Size(177, 17);
+            this.cbEnableBendLinesDown.TabIndex = 1;
+            this.cbEnableBendLinesDown.Text = "Seperate Layer for Down Bends";
+            this.cbEnableBendLinesDown.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel4
             // 
-            tableLayoutPanel4.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            tableLayoutPanel4.ColumnCount = 2;
-            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle());
-            tableLayoutPanel4.Controls.Add(cbBendDownLineType, 1, 2);
-            tableLayoutPanel4.Controls.Add(label10, 0, 0);
-            tableLayoutPanel4.Controls.Add(label11, 0, 1);
-            tableLayoutPanel4.Controls.Add(label12, 0, 2);
-            tableLayoutPanel4.Controls.Add(cbBendLinesDownLayerColor, 1, 1);
-            tableLayoutPanel4.Controls.Add(tbBendLinesDownLayer, 1, 0);
-            tableLayoutPanel4.Location = new Point(8, 22);
-            tableLayoutPanel4.Margin = new Padding(4, 3, 4, 3);
-            tableLayoutPanel4.Name = "tableLayoutPanel4";
-            tableLayoutPanel4.RowCount = 3;
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.Size = new Size(339, 95);
-            tableLayoutPanel4.TabIndex = 0;
+            this.tableLayoutPanel4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel4.ColumnCount = 2;
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel4.Controls.Add(this.cbBendDownLineType, 1, 2);
+            this.tableLayoutPanel4.Controls.Add(this.label10, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.label11, 0, 1);
+            this.tableLayoutPanel4.Controls.Add(this.label12, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.cbBendLinesDownLayerColor, 1, 1);
+            this.tableLayoutPanel4.Controls.Add(this.tbBendLinesDownLayer, 1, 0);
+            this.tableLayoutPanel4.Location = new System.Drawing.Point(7, 19);
+            this.tableLayoutPanel4.Name = "tableLayoutPanel4";
+            this.tableLayoutPanel4.RowCount = 3;
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(291, 82);
+            this.tableLayoutPanel4.TabIndex = 0;
             // 
             // cbBendDownLineType
             // 
-            cbBendDownLineType.Anchor = AnchorStyles.Left;
-            cbBendDownLineType.DrawMode = DrawMode.OwnerDrawFixed;
-            cbBendDownLineType.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbBendDownLineType.FormattingEnabled = true;
-            cbBendDownLineType.Location = new Point(82, 65);
-            cbBendDownLineType.Margin = new Padding(4, 3, 4, 3);
-            cbBendDownLineType.Name = "cbBendDownLineType";
-            cbBendDownLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
-            cbBendDownLineType.Size = new Size(253, 24);
-            cbBendDownLineType.TabIndex = 3;
+            this.cbBendDownLineType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbBendDownLineType.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbBendDownLineType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbBendDownLineType.FormattingEnabled = true;
+            this.cbBendDownLineType.Location = new System.Drawing.Point(73, 57);
+            this.cbBendDownLineType.Name = "cbBendDownLineType";
+            this.cbBendDownLineType.SelectedLineType = Inventor.LineTypeEnum.kContinuousLineType;
+            this.cbBendDownLineType.Size = new System.Drawing.Size(217, 21);
+            this.cbBendDownLineType.TabIndex = 3;
             // 
             // label10
             // 
-            label10.Anchor = AnchorStyles.Right;
-            label10.AutoSize = true;
-            label10.Location = new Point(4, 7);
-            label10.Margin = new Padding(4, 0, 4, 0);
-            label10.Name = "label10";
-            label10.Size = new Size(70, 15);
-            label10.TabIndex = 2;
-            label10.Text = "Layer Name";
-            label10.TextAlign = ContentAlignment.MiddleRight;
+            this.label10.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(3, 6);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(64, 13);
+            this.label10.TabIndex = 2;
+            this.label10.Text = "Layer Name";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label11
             // 
-            label11.Anchor = AnchorStyles.Right;
-            label11.AutoSize = true;
-            label11.Location = new Point(7, 36);
-            label11.Margin = new Padding(4, 0, 4, 0);
-            label11.Name = "label11";
-            label11.Size = new Size(67, 15);
-            label11.TabIndex = 3;
-            label11.Text = "Layer Color";
-            label11.TextAlign = ContentAlignment.MiddleRight;
+            this.label11.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(7, 33);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(60, 13);
+            this.label11.TabIndex = 3;
+            this.label11.Text = "Layer Color";
+            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label12
             // 
-            label12.Anchor = AnchorStyles.Right;
-            label12.AutoSize = true;
-            label12.Location = new Point(18, 69);
-            label12.Margin = new Padding(4, 0, 4, 0);
-            label12.Name = "label12";
-            label12.Size = new Size(56, 15);
-            label12.TabIndex = 4;
-            label12.Text = "Line Type";
-            label12.TextAlign = ContentAlignment.MiddleRight;
+            this.label12.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(13, 61);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(54, 13);
+            this.label12.TabIndex = 4;
+            this.label12.Text = "Line Type";
+            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cbBendLinesDownLayerColor
             // 
-            cbBendLinesDownLayerColor.Anchor = AnchorStyles.Left;
-            cbBendLinesDownLayerColor.DrawMode = DrawMode.OwnerDrawFixed;
-            cbBendLinesDownLayerColor.DropDownStyle = ComboBoxStyle.DropDownList;
-            cbBendLinesDownLayerColor.FormattingEnabled = true;
-            cbBendLinesDownLayerColor.Location = new Point(82, 32);
-            cbBendLinesDownLayerColor.Margin = new Padding(4, 3, 4, 3);
-            cbBendLinesDownLayerColor.Name = "cbBendLinesDownLayerColor";
-            cbBendLinesDownLayerColor.SelectedColor = Color.FromArgb(255, 255, 255);
-            cbBendLinesDownLayerColor.SelectedValue = Color.FromArgb(255, 255, 255);
-            cbBendLinesDownLayerColor.Size = new Size(253, 24);
-            cbBendLinesDownLayerColor.TabIndex = 10;
+            this.cbBendLinesDownLayerColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbBendLinesDownLayerColor.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cbBendLinesDownLayerColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbBendLinesDownLayerColor.FormattingEnabled = true;
+            this.cbBendLinesDownLayerColor.Location = new System.Drawing.Point(73, 29);
+            this.cbBendLinesDownLayerColor.Name = "cbBendLinesDownLayerColor";
+            this.cbBendLinesDownLayerColor.SelectedColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbBendLinesDownLayerColor.SelectedValue = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.cbBendLinesDownLayerColor.Size = new System.Drawing.Size(217, 21);
+            this.cbBendLinesDownLayerColor.TabIndex = 10;
             // 
             // tbBendLinesDownLayer
             // 
-            tbBendLinesDownLayer.Anchor = AnchorStyles.Left;
-            tbBendLinesDownLayer.Location = new Point(82, 3);
-            tbBendLinesDownLayer.Margin = new Padding(4, 3, 4, 3);
-            tbBendLinesDownLayer.Name = "tbBendLinesDownLayer";
-            tbBendLinesDownLayer.Size = new Size(253, 23);
-            tbBendLinesDownLayer.TabIndex = 7;
+            this.tbBendLinesDownLayer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbBendLinesDownLayer.Location = new System.Drawing.Point(73, 3);
+            this.tbBendLinesDownLayer.Name = "tbBendLinesDownLayer";
+            this.tbBendLinesDownLayer.Size = new System.Drawing.Size(217, 20);
+            this.tbBendLinesDownLayer.TabIndex = 7;
             // 
             // FormDxfSettings
             // 
-            AcceptButton = btnSave;
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(379, 565);
-            ControlBox = false;
-            Controls.Add(groupBox4);
-            Controls.Add(btnCancel);
-            Controls.Add(btnSave);
-            Controls.Add(groupBox3);
-            Controls.Add(groupBox2);
-            Controls.Add(groupBox1);
-            Icon = (Icon)resources.GetObject("$this.Icon");
-            Margin = new Padding(4, 3, 4, 3);
-            MaximizeBox = false;
-            MinimizeBox = false;
-            Name = "FormDxfSettings";
-            SizeGripStyle = SizeGripStyle.Hide;
-            StartPosition = FormStartPosition.CenterParent;
-            Text = "DXF Layer Settings";
-            groupBox1.ResumeLayout(false);
-            tableLayoutPanel1.ResumeLayout(false);
-            tableLayoutPanel1.PerformLayout();
-            groupBox2.ResumeLayout(false);
-            tableLayoutPanel2.ResumeLayout(false);
-            tableLayoutPanel2.PerformLayout();
-            groupBox3.ResumeLayout(false);
-            tableLayoutPanel3.ResumeLayout(false);
-            tableLayoutPanel3.PerformLayout();
-            groupBox4.ResumeLayout(false);
-            groupBox4.PerformLayout();
-            tableLayoutPanel4.ResumeLayout(false);
-            tableLayoutPanel4.PerformLayout();
-            ResumeLayout(false);
+            this.AcceptButton = this.btnSave;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(325, 490);
+            this.ControlBox = false;
+            this.Controls.Add(this.groupBox4);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnSave);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "FormDxfSettings";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "DXF Layer Settings";
+            this.groupBox1.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.tableLayoutPanel3.ResumeLayout(false);
+            this.tableLayoutPanel3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.tableLayoutPanel4.ResumeLayout(false);
+            this.tableLayoutPanel4.PerformLayout();
+            this.ResumeLayout(false);
 
         }
 
