@@ -362,13 +362,7 @@ namespace InventorDxfExportAddin.DxfExport
     public class ExportConfigManager
     {
         public string Template { get; set; }
-        public Dictionary<string, string> Values { get; private set; }
-
-        //public ExportConfigManager(string template)
-        //{
-        //    Template = template;
-        //    Values = new Dictionary<string, string>();
-        //}
+        public Dictionary<string, string> Values { get; private set; } = new();
 
         public ExportConfigManager AddValue(string key, string value)
         {
