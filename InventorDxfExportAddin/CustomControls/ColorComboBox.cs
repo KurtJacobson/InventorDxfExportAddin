@@ -11,17 +11,43 @@ namespace InventorDxfExportAddin.Custom_Controls
         private ColorDialog colorChooser = null;
 
 
-        // Data for each color in the list
+        // Data for each color in the list.
+        // AciIndex is set for standard DXF AutoCAD Color Index colors; null means custom.
         public class ColorInfo
         {
             public string Text { get; set; }
             public Color Color { get; set; }
+            public byte? AciIndex { get; set; }
 
-            public ColorInfo(string text, Color color)
+            public ColorInfo(string text, Color color, byte? aciIndex = null)
             {
                 Text = text;
                 Color = color;
+                AciIndex = aciIndex;
             }
+        }
+
+        // Standard ACI colors with their exact AutoCAD RGB values
+        public static readonly ColorInfo[] StandardColors =
+        {
+            new ColorInfo("1 - Red",        Color.FromArgb(255,   0,   0), 1),
+            new ColorInfo("2 - Yellow",      Color.FromArgb(255, 255,   0), 2),
+            new ColorInfo("3 - Green",       Color.FromArgb(  0, 255,   0), 3),
+            new ColorInfo("4 - Cyan",        Color.FromArgb(  0, 255, 255), 4),
+            new ColorInfo("5 - Blue",        Color.FromArgb(  0,   0, 255), 5),
+            new ColorInfo("6 - Magenta",     Color.FromArgb(255,   0, 255), 6),
+            new ColorInfo("7 - White/Black", Color.FromArgb(255, 255, 255), 7),
+            new ColorInfo("8 - Dark Gray",   Color.FromArgb(128, 128, 128), 8),
+            new ColorInfo("9 - Light Gray",  Color.FromArgb(192, 192, 192), 9),
+        };
+
+        // Returns the ACI index for a color if it matches a standard DXF color, otherwise null.
+        public static byte? GetAciIndex(Color c)
+        {
+            int argb = c.ToArgb();
+            foreach (var ci in StandardColors)
+                if (ci.Color.ToArgb() == argb) return ci.AciIndex;
+            return null;
         }
 
         public ColorComboBox()
@@ -33,29 +59,14 @@ namespace InventorDxfExportAddin.Custom_Controls
             DrawItem += OnDrawItem;
             SelectionChangeCommitted += OnSelectionChangeCommitted;
 
-            // Initialize colors
-            this.AddStandardColors();
+            PopulateColors();
         }
 
-        // Populate control with standard colors
-        public void AddStandardColors()
+        public void PopulateColors()
         {
             Items.Clear();
-            Items.Add(new ColorInfo("Black", Color.Black));
-            Items.Add(new ColorInfo("Blue", Color.Blue));
-            Items.Add(new ColorInfo("Lime", Color.Lime));
-            Items.Add(new ColorInfo("Cyan", Color.Cyan));
-            Items.Add(new ColorInfo("Red", Color.Red));
-            Items.Add(new ColorInfo("Fuchsia", Color.Fuchsia));
-            Items.Add(new ColorInfo("Yellow", Color.Yellow));
-            Items.Add(new ColorInfo("White", Color.White));
-            Items.Add(new ColorInfo("Navy", Color.Navy));
-            Items.Add(new ColorInfo("Green", Color.Green));
-            Items.Add(new ColorInfo("Teal", Color.Teal));
-            Items.Add(new ColorInfo("Maroon", Color.Maroon));
-            Items.Add(new ColorInfo("Purple", Color.Purple));
-            Items.Add(new ColorInfo("Olive", Color.Olive));
-            Items.Add(new ColorInfo("Gray", Color.Gray));
+            foreach (var ci in StandardColors)
+                Items.Add(ci);
             Items.Add(new ColorInfo("Custom Color...", SystemColors.Window));
         }
 
@@ -154,17 +165,18 @@ namespace InventorDxfExportAddin.Custom_Controls
             }
             set
             {
+                int argb = value.ToArgb();
                 for (int i = 0; i < Items.Count; i++)
                 {
-                    if (((ColorInfo)Items[i]).Color == value)
+                    if (((ColorInfo)Items[i]).Color.ToArgb() == argb)
                     {
                         SelectedIndex = i;
                         return;
                     }
                 }
 
-                // The color was not in the list, must be custom
-                var colorName = String.Format("Custom ({0}, {1}, {2})", value.R, value.G, value.B);
+                // Not a standard color — insert as custom before the "Custom Color..." entry
+                var colorName = $"Custom ({value.R}, {value.G}, {value.B})";
                 Items.Insert(Items.Count - 1, new ColorInfo(colorName, value));
                 SelectedIndex = Items.Count - 2;
             }
@@ -172,23 +184,8 @@ namespace InventorDxfExportAddin.Custom_Controls
 
         public new Color SelectedValue
         {
-            get
-            {
-                if (SelectedIndex >= 0)
-                    return SelectedItem.Color;
-                return Color.White;
-            }
-            set
-            {
-                for (int i = 0; i < Items.Count; i++)
-                {
-                    if (((ColorInfo)Items[i]).Color == value)
-                    {
-                        SelectedIndex = i;
-                        break;
-                    }
-                }
-            }
+            get => SelectedColor;
+            set => SelectedColor = value;
         }
 
         protected override void OnEnabledChanged(EventArgs e)

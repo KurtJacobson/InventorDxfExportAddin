@@ -131,7 +131,6 @@ namespace InventorDxfExportAddin.DxfExport
             return String.Format("{0};{1};{2}", color.R, color.G, color.B);
         }
 
-
         public bool ExportFlatDXF(PartDocument oDoc)
         {
             LogManager.Log.Information("------ Begin DXF export ------");
@@ -281,56 +280,79 @@ namespace InventorDxfExportAddin.DxfExport
                     }
                 }
 
-                var bUpLineColor = Properties.DxfSettings.Default.BendUpLayerColor.ToArgb();
                 bool bendDownEnabled = Properties.DxfSettings.Default.BendDownEnabled;
-                var bDownLineColor = bendDownEnabled
-                    ? Properties.DxfSettings.Default.BendDownLayerColor.ToArgb()
-                    : bUpLineColor;
                 var bUpLayer = Properties.DxfSettings.Default.BendUpLayer;
                 var bDownLayer = bendDownEnabled
                     ? Properties.DxfSettings.Default.BendDownLayer
                     : bUpLayer;
 
-                string lineTypeToName(LineTypeEnum lt) =>
+                string lineTypeToDxfName(LineTypeEnum lt) =>
                     Custom_Controls.LineTypeComboBox.Styles
-                        .FirstOrDefault(s => s.LineType == lt)?.TypeName ?? "Continuous";
+                        .FirstOrDefault(s => s.LineType == lt)?.DxfName ?? "CONTINUOUS";
 
-                var bUpLineType = lineTypeToName(Properties.DxfSettings.Default.BendUpLineType);
+                var bUpLineType = lineTypeToDxfName(Properties.DxfSettings.Default.BendUpLineType);
                 var bDownLineType = bendDownEnabled
-                    ? lineTypeToName(Properties.DxfSettings.Default.BendDownLineType)
+                    ? lineTypeToDxfName(Properties.DxfSettings.Default.BendDownLineType)
                     : bUpLineType;
 
-                // Add dashed line type to DXF
-                var dashedLineType = new DxfLineType("test");
-                dashedLineType.Elements.Add(new DxfLineTypeElement() { DashDotSpaceLength = .5 });
-                dashedLineType.Elements.Add(new DxfLineTypeElement() { DashDotSpaceLength = .25 });
-                file.LineTypes.Add(dashedLineType);
+                // Ensure a line type is defined in the DXF file, adding it if missing
+                void ensureLineType(string dxfName)
+                {
+                    if (file.LineTypes.Any(lt => lt.Name == dxfName)) return;
+                    var style = Custom_Controls.LineTypeComboBox.Styles.FirstOrDefault(s => s.DxfName == dxfName);
+                    if (style == null) return;
+                    var lt2 = new DxfLineType(dxfName);
+                    foreach (var len in style.DxfElements)
+                        lt2.Elements.Add(new DxfLineTypeElement { DashDotSpaceLength = len });
+                    file.LineTypes.Add(lt2);
+                }
+
+                // layerCustomColors tracks layers that use a custom (non-ACI) color,
+                // so entities on those layers get Color24Bit set explicitly.
+                var layerCustomColors = new Dictionary<string, System.Drawing.Color>();
+
+                void ensureLayer(string layerName, string lineTypeName, System.Drawing.Color color)
+                {
+                    ensureLineType(lineTypeName);
+                    var layer = file.Layers.FirstOrDefault(l => l.Name == layerName);
+                    if (layer == null)
+                    {
+                        layer = new DxfLayer(layerName);
+                        file.Layers.Add(layer);
+                    }
+                    layer.LineTypeName = lineTypeName;
+                    var aci = Custom_Controls.ColorComboBox.GetAciIndex(color);
+                    if (aci.HasValue)
+                        layer.Color = DxfColor.FromIndex(aci.Value);
+                    else
+                        layerCustomColors[layerName] = color; // entity-level 24-bit color applied per entity
+                }
+
+                var upColor = Properties.DxfSettings.Default.BendUpLayerColor;
+                var downColor = bendDownEnabled
+                    ? Properties.DxfSettings.Default.BendDownLayerColor
+                    : upColor;
+
+                ensureLayer(bUpLayer, bUpLineType, upColor);
+                ensureLayer(bDownLayer, bDownLineType, downColor);
+                ensureLineType("DIVIDE"); // always available for hems
 
                 foreach (FlatBendResult oBend in fPatt.FlatBendResults)
                 {
-
                     // we only want bends on the top face, so continue if on bottom face
                     if (oBend.IsOnBottomFace) continue;
 
                     var bAngle = oBend.Angle * 180 / Math.PI;
                     var bRadius = toDocUnits(oBend.InnerRadius);
 
-                    var bLineColor = bUpLineColor;
                     var bLayer = bUpLayer;
-                    var bLineType = bUpLineType;
 
-                    // down bends have a negative bend angle, different color, and optionally a separate layer
+                    // down bends have a negative bend angle and optionally a separate layer
                     if (oBend.IsDirectionUp)
                     {
                         bAngle *= -1.0;
-                        bLineColor = bDownLineColor;
                         bLayer = bDownLayer;
-                        bLineType = bDownLineType;
                     }
-
-                    // hems override line type regardless of direction
-                    if (Math.Abs(bAngle) > 179)
-                        bLineType = "Divide";
 
                     Inventor.Point startPoint = oBend.Edge.StartVertex.Point;
                     Inventor.Point stopPoint = oBend.Edge.StopVertex.Point;
@@ -354,11 +376,14 @@ namespace InventorDxfExportAddin.DxfExport
                     x2 = (1 - t) * x1 + t * x2;
                     y2 = (1 - t) * y1 + t * y2;
 
-                    // create new line on BENDLINES layer
                     var bLine = new DxfLine(new DxfPoint(x1, y1, 0.0), new DxfPoint(x2, y2, 0.0));
-                    bLine.LineTypeName = bLineType;
-                    bLine.Color24Bit = bLineColor;
                     bLine.Layer = bLayer;
+                    // custom colors can't be set on the layer (DxfLayer only supports ACI), so set per-entity
+                    if (layerCustomColors.TryGetValue(bLayer, out var customColor))
+                        bLine.Color24Bit = customColor.ToArgb() & 0xFFFFFF;
+                    // hems override the layer line type with DIVIDE
+                    if (Math.Abs(bAngle) > 179)
+                        bLine.LineTypeName = "DIVIDE";
 
                     // add XData with bend info
                     bLine.XData["POS3000_V3_BENDINGLINE"] = new DxfXDataApplicationItemCollection(
@@ -372,7 +397,6 @@ namespace InventorDxfExportAddin.DxfExport
                     file.Entities.Add(bLine);
                 }
 
-                // save DXF file
                 file.Save(ExportFullPath);
 
                 // restore original units of measure

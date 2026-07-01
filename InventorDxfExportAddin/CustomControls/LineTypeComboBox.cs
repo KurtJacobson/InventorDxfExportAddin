@@ -14,29 +14,31 @@ namespace InventorDxfExportAddin.Custom_Controls
         public class LineStyle
         {
             public string TypeName { get; set; }
-
             public LineTypeEnum LineType { get; set; } = LineTypeEnum.kContinuousLineType;
-
+            public string DxfName { get; set; }
             public float[] DashPattern { get; set; }
+            public double[] DxfElements { get; set; }  // positive=dash, negative=gap, 0=dot
 
-            public LineStyle(string typeName, LineTypeEnum lineType, float[] dashPattern)
+            public LineStyle(string typeName, LineTypeEnum lineType, string dxfName, float[] dashPattern, double[] dxfElements)
             {
                 TypeName = typeName;
                 LineType = lineType;
+                DxfName = dxfName;
                 DashPattern = dashPattern;
+                DxfElements = dxfElements;
             }
         }
 
         public static readonly List<LineStyle> Styles = new List<LineStyle>
         {
-            new LineStyle("Continuous", LineTypeEnum.kContinuousLineType, new float[] { 100.0f, 0.01f }),
-            new LineStyle("Dashed", LineTypeEnum.kDashedLineType, new float[] { 4.0f, 1.0f}),
-            new LineStyle("Dotted", LineTypeEnum.kDottedLineType, new float[] { 1.0f, 1.0f}),
-            new LineStyle("Hidden", LineTypeEnum.kDashedHiddenLineType, new float[] { 4.0f, 4.0f }),
-            new LineStyle("Dash Dot", LineTypeEnum.kDashDottedLineType, new float[] { 4.0f, 1.0f, 1.0f, 1.0f }),
-            new LineStyle("Dash Double Dot", LineTypeEnum.kDoubleDashedDottedLineType, new float[] { 4.0f, 1.0f, 1.0f, 1.0f , 1.0f, 1.0f }),
-            new LineStyle("Dash Triple Dot", LineTypeEnum.kDashedTripleDottedLineType, new float[] { 4.0f, 1.0f, 1.0f, 1.0f , 1.0f, 1.0f, 1.0f, 1.0f }),
-         };
+            new LineStyle("Continuous",      LineTypeEnum.kContinuousLineType,         "CONTINUOUS", new float[] { 100.0f, 0.01f },                                    new double[] { }),
+            new LineStyle("Dashed",          LineTypeEnum.kDashedLineType,             "DASHED",     new float[] { 4.0f, 1.0f },                                        new double[] { 0.5, -0.25 }),
+            new LineStyle("Dotted",          LineTypeEnum.kDottedLineType,             "DOTTED",     new float[] { 1.0f, 1.0f },                                        new double[] { 0.0, -0.25 }),
+            new LineStyle("Hidden",          LineTypeEnum.kDashedHiddenLineType,       "HIDDEN",     new float[] { 4.0f, 4.0f },                                        new double[] { 0.25, -0.125 }),
+            new LineStyle("Dash Dot",        LineTypeEnum.kDashDottedLineType,         "DASHDOT",    new float[] { 4.0f, 1.0f, 1.0f, 1.0f },                           new double[] { 0.5, -0.25, 0.0, -0.25 }),
+            new LineStyle("Dash Double Dot", LineTypeEnum.kDoubleDashedDottedLineType, "DASHDOT2",   new float[] { 4.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f },              new double[] { 0.5, -0.25, 0.0, -0.25, 0.0, -0.25 }),
+            new LineStyle("Dash Triple Dot", LineTypeEnum.kDashedTripleDottedLineType, "DIVIDE",     new float[] { 4.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f }, new double[] { 0.5, -0.25, 0.0, -0.25, 0.0, -0.25, 0.0, -0.25 }),
+        };
 
 
         public LineTypeComboBox()
