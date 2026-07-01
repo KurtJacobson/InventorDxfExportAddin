@@ -7,7 +7,7 @@
     <UpgradeCode>{3F7A9B2E-4C6D-4E8F-A1B3-D5C7E9F20134}</UpgradeCode>
 
     <!-- Resolve addin project's Release output dir for file harvesting -->
-    <AddinOutputDir>$(MSBuildThisFileDirectory)..\InventorDxfExportAddin\bin\Release\net8.0-windows</AddinOutputDir>
+    <AddinOutputDir>$(MSBuildThisFileDirectory)..\InventorDxfExportAddin\bin\Release\net48</AddinOutputDir>
 
     <!-- Pass AddinOutputDir as a WiX preprocessor variable so Package.wxs can reference it -->
     <DefineConstants>$(DefineConstants);AddinOutputDir=$(AddinOutputDir);Version=$(Version)</DefineConstants>

@@ -1,6 +1,5 @@
 ﻿using Inventor;
 using InventorDxfExportAddin.Buttons;
-using Microsoft.VisualBasic.Logging;
 using Serilog;
 using Serilog.Sinks.File;
 using System.Reflection;

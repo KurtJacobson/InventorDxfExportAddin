@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0-windows</TargetFramework>
+        <TargetFramework>net48</TargetFramework>
         <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWindowsForms>true</UseWindowsForms>
@@ -20,11 +20,14 @@
         <LocalizeTemplates>false</LocalizeTemplates>
         <!-- Required for plugin projects so NuGet runtime assemblies copy to output -->
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <!-- Required for embedded binary resources (PNGs) with net48 SDK-style projects -->
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
 
     <!-- Debug builds deploy directly to Inventor's plugin folder for rapid iteration -->
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-        <BaseOutputPath>C:\Users\kjacobson\AppData\Roaming\Autodesk\ApplicationPlugins\InventorDxfExport</BaseOutputPath>
+        <BaseOutputPath>C:\Users\kjacobson\AppData\Roaming\Autodesk\ApplicationPlugins\InventorDxfExport\</BaseOutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
 
     <ItemGroup>

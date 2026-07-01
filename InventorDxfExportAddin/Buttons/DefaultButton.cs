@@ -6,7 +6,6 @@ using InventorDxfExportAddin.Properties;
 using IxMilia.Dxf;
 using IxMilia.Dxf.Entities;
 using System.Diagnostics;
-using System.Text.Json.Serialization;
 using System.Windows.Forms;
 using static InventorDxfExportAddin.Custom_Controls.LineTypeComboBox;
 using static System.Windows.Forms.DataFormats;
