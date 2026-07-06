@@ -41,5 +41,14 @@
     <Setting Name="BendDownEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ExportMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NextToSourceFile</Value>
+    </Setting>
+    <Setting Name="ExportDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)"></Value>
+    </Setting>
+    <Setting Name="PromptBeforeOverwrite" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -178,5 +178,41 @@ namespace InventorDxfExportAddin.Properties {
                 this["BendDownEnabled"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("NextToSourceFile")]
+        public string ExportMode {
+            get {
+                return ((string)(this["ExportMode"]));
+            }
+            set {
+                this["ExportMode"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ExportDirectory {
+            get {
+                return ((string)(this["ExportDirectory"]));
+            }
+            set {
+                this["ExportDirectory"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PromptBeforeOverwrite {
+            get {
+                return ((bool)(this["PromptBeforeOverwrite"]));
+            }
+            set {
+                this["PromptBeforeOverwrite"] = value;
+            }
+        }
     }
 }

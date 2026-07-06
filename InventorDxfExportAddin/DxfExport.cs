@@ -44,39 +44,47 @@ namespace InventorDxfExportAddin.DxfExport
         {
             get
             {
-                if (this.exportDirectory == null)
-                {
-                    var fullFileName = partDoc.FullFileName;
-                    if (!string.IsNullOrEmpty(fullFileName))
-                    {
-                        var dir = System.IO.Path.GetDirectoryName(fullFileName);
-                        System.IO.Directory.CreateDirectory(dir);
-                        return dir;
-                    }
-
-                    // Document hasn't been saved as an IPT — prompt user for output location,
-                    // defaulting to the source STP file's directory if we can find it.
-                    using var dialog = new SaveFileDialog
-                    {
-                        Title = "Save DXF As",
-                        Filter = "DXF Files (*.dxf)|*.dxf",
-                        FileName = ExportFilename,
-                        DefaultExt = "dxf",
-                        InitialDirectory = GetSourceStpDirectory()
-                    };
-
-                    if (dialog.ShowDialog() != DialogResult.OK)
-                        return null;
-
-                    this.exportFileName = System.IO.Path.GetFileName(dialog.FileName);
-                    this.exportDirectory = System.IO.Path.GetDirectoryName(dialog.FileName);
+                if (this.exportDirectory != null)
                     return this.exportDirectory;
+
+                var settings = Properties.DxfSettings.Default;
+
+                // Use the configured fixed export directory if set
+                if (settings.ExportMode == "CustomDirectory" && !string.IsNullOrWhiteSpace(settings.ExportDirectory))
+                {
+                    System.IO.Directory.CreateDirectory(settings.ExportDirectory);
+                    return settings.ExportDirectory;
                 }
+
+                // Default: save next to the source file (IPT or STP)
+                var fullFileName = partDoc.FullFileName;
+                if (!string.IsNullOrEmpty(fullFileName))
+                {
+                    var dir = System.IO.Path.GetDirectoryName(fullFileName);
+                    System.IO.Directory.CreateDirectory(dir);
+                    return dir;
+                }
+
+                // Document hasn't been saved as an IPT — prompt user for output location,
+                // defaulting to the source STP file's directory if we can find it.
+                using var dialog = new SaveFileDialog
+                {
+                    Title = "Save DXF As",
+                    Filter = "DXF Files (*.dxf)|*.dxf",
+                    FileName = ExportFilename,
+                    DefaultExt = "dxf",
+                    InitialDirectory = GetSourceStpDirectory()
+                };
+
+                if (dialog.ShowDialog() != DialogResult.OK)
+                    return null;
+
+                this.exportFileName  = System.IO.Path.GetFileName(dialog.FileName);
+                this.exportDirectory = System.IO.Path.GetDirectoryName(dialog.FileName);
                 return this.exportDirectory;
             }
 
-            set
-            { this.exportDirectory = value; }
+            set { this.exportDirectory = value; }
         }
 
         /// <summary>
@@ -137,6 +145,36 @@ namespace InventorDxfExportAddin.DxfExport
 
             // ExportDirectory may prompt user; if they cancel, abort silently
             if (ExportDirectory == null) return false;
+
+            // Overwrite check
+            if (Properties.DxfSettings.Default.PromptBeforeOverwrite && System.IO.File.Exists(ExportFullPath))
+            {
+                var answer = MessageBox.Show(
+                    $"A DXF file already exists at:\n{ExportFullPath}\n\nOverwrite it?",
+                    "File Already Exists",
+                    MessageBoxButtons.YesNoCancel,
+                    MessageBoxIcon.Warning);
+
+                if (answer == DialogResult.Cancel)
+                    return false;
+
+                if (answer == DialogResult.No)
+                {
+                    using var saveAs = new SaveFileDialog
+                    {
+                        Title = "Save DXF As",
+                        Filter = "DXF Files (*.dxf)|*.dxf",
+                        FileName = ExportFilename,
+                        DefaultExt = "dxf",
+                        InitialDirectory = ExportDirectory
+                    };
+                    if (saveAs.ShowDialog() != DialogResult.OK)
+                        return false;
+
+                    this.exportFileName  = System.IO.Path.GetFileName(saveAs.FileName);
+                    this.exportDirectory = System.IO.Path.GetDirectoryName(saveAs.FileName);
+                }
+            }
 
             LogManager.Log.Information($"Export full path: {ExportFullPath}");
 

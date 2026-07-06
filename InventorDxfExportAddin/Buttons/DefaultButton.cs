@@ -78,8 +78,7 @@ namespace InventorDxfExportAddin.Buttons
 
             try
             {
-                Form DxfSettings = new FormDxfSettings();
-                DxfSettings.ShowDialog();
+                new FormDxfSettings().ShowDialog(InventorWindow.Instance);
             }
             catch (Exception ex)
             {
@@ -123,7 +122,17 @@ namespace InventorDxfExportAddin.Buttons
     {
         protected override void Execute(NameValueMap context, Inventor.Application inventor)
         {
-            MessageBox.Show($"Current document name: {inventor.ActiveDocument.DisplayName}");
+            try
+            {
+                new FormExportOptions().ShowDialog(InventorWindow.Instance);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log.Error("Exception opening Export Options");
+                do { LogManager.Log.Error("{0}\n{1}", ex.Message, ex.StackTrace); }
+                while ((ex = ex.InnerException) != null);
+                MessageBox.Show(ex.Message, "Export Options Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         protected override string RibbonName => InventorRibbons.Part;
@@ -156,8 +165,7 @@ namespace InventorDxfExportAddin.Buttons
         {
             try
             {
-                Form AboutDialog = new FormAbout();
-                AboutDialog.ShowDialog();
+                new FormAbout().ShowDialog(InventorWindow.Instance);
             }
             catch (Exception ex)
             {

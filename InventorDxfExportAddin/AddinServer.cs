@@ -39,6 +39,13 @@ namespace InventorDxfExportAddin
     }
 
 
+    /// <summary>Wraps Inventor's main frame HWND as IWin32Window so dialogs center on it.</summary>
+    internal sealed class InventorWindow : System.Windows.Forms.IWin32Window
+    {
+        public static InventorWindow Instance => new InventorWindow();
+        public System.IntPtr Handle => (System.IntPtr)AddinServer.InventorApp.MainFrameHWND;
+    }
+
     /// <summary>
     /// This is the primary AddIn Server class that implements the ApplicationAddInServer interface
     /// that all Inventor AddIns are required to implement. The communication between Inventor and
