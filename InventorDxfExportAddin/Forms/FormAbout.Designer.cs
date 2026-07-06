@@ -30,16 +30,17 @@
         {
             btnClose = new Button();
             btnShowLog = new Button();
+            toolTip1 = new ToolTip();
             tableLayoutPanel1 = new TableLayoutPanel();
-            lblAddinPath = new Label();
+            lblAddinPath = new TextBox();
             label5 = new Label();
             label2 = new Label();
-            lblInventorVersion = new Label();
+            lblInventorVersion = new TextBox();
             label1 = new Label();
             label3 = new Label();
-            lblLogFilePath = new LinkLabel();
+            lblLogFilePath = new TextBox();
             label4 = new Label();
-            lblAddinVersion = new Label();
+            lblAddinVersion = new TextBox();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -93,18 +94,18 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.Size = new Size(617, 267);
             tableLayoutPanel1.TabIndex = 2;
-            // 
+            //
             // lblAddinPath
-            // 
+            //
             lblAddinPath.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblAddinPath.AutoEllipsis = true;
-            lblAddinPath.AutoSize = true;
-            lblAddinPath.Location = new Point(128, 70);
+            lblAddinPath.BackColor = System.Drawing.SystemColors.Control;
+            lblAddinPath.BorderStyle = BorderStyle.None;
+            lblAddinPath.Location = new Point(128, 74);
             lblAddinPath.Name = "lblAddinPath";
-            lblAddinPath.Size = new Size(486, 20);
+            lblAddinPath.ReadOnly = true;
+            lblAddinPath.Size = new Size(486, 15);
             lblAddinPath.TabIndex = 5;
             lblAddinPath.Text = "--";
-            lblAddinPath.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label5
             // 
@@ -131,13 +132,14 @@
             // lblInventorVersion
             // 
             lblInventorVersion.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblInventorVersion.AutoSize = true;
-            lblInventorVersion.Location = new Point(128, 30);
+            lblInventorVersion.BackColor = System.Drawing.SystemColors.Control;
+            lblInventorVersion.BorderStyle = BorderStyle.None;
+            lblInventorVersion.Location = new Point(128, 34);
             lblInventorVersion.Name = "lblInventorVersion";
-            lblInventorVersion.Size = new Size(486, 20);
+            lblInventorVersion.ReadOnly = true;
+            lblInventorVersion.Size = new Size(486, 15);
             lblInventorVersion.TabIndex = 1;
             lblInventorVersion.Text = "--";
-            lblInventorVersion.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label1
             // 
@@ -160,22 +162,20 @@
             label3.Name = "label3";
             label3.Size = new Size(344, 19);
             label3.TabIndex = 3;
-            label3.Text = "Schroder DXF Export Addin for AutoDesk Inventor\r\n";
+            label3.Text = "Schröder DXF Export Addin for Autodesk Inventor";
             label3.TextAlign = ContentAlignment.MiddleCenter;
-            // 
+            //
             // lblLogFilePath
-            // 
+            //
             lblLogFilePath.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblLogFilePath.AutoEllipsis = true;
-            lblLogFilePath.AutoSize = true;
-            lblLogFilePath.Location = new Point(128, 90);
+            lblLogFilePath.BackColor = System.Drawing.SystemColors.Control;
+            lblLogFilePath.BorderStyle = BorderStyle.None;
+            lblLogFilePath.Location = new Point(128, 94);
             lblLogFilePath.Name = "lblLogFilePath";
-            lblLogFilePath.Size = new Size(486, 20);
+            lblLogFilePath.ReadOnly = true;
+            lblLogFilePath.Size = new Size(486, 15);
             lblLogFilePath.TabIndex = 6;
-            lblLogFilePath.TabStop = true;
-            lblLogFilePath.Text = "c:\\log\\file\\path";
-            lblLogFilePath.TextAlign = ContentAlignment.MiddleLeft;
-            lblLogFilePath.LinkClicked += lblLogFilePath_LinkClicked;
+            lblLogFilePath.Text = "--";
             // 
             // label4
             // 
@@ -185,19 +185,20 @@
             label4.Name = "label4";
             label4.Size = new Size(80, 20);
             label4.TabIndex = 7;
-            label4.Text = "AddIn Version";
+            label4.Text = "Addin Version:";
             label4.TextAlign = ContentAlignment.MiddleRight;
             // 
             // lblAddinVersion
             // 
-            lblAddinVersion.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            lblAddinVersion.AutoSize = true;
-            lblAddinVersion.Location = new Point(128, 50);
+            lblAddinVersion.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblAddinVersion.BackColor = System.Drawing.SystemColors.Control;
+            lblAddinVersion.BorderStyle = BorderStyle.None;
+            lblAddinVersion.Location = new Point(128, 54);
             lblAddinVersion.Name = "lblAddinVersion";
-            lblAddinVersion.Size = new Size(17, 20);
+            lblAddinVersion.ReadOnly = true;
+            lblAddinVersion.Size = new Size(486, 15);
             lblAddinVersion.TabIndex = 8;
             lblAddinVersion.Text = "--";
-            lblAddinVersion.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // FormAbout
             // 
@@ -205,8 +206,11 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(641, 291);
             Controls.Add(tableLayoutPanel1);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "FormAbout";
-            Text = "FormAbout";
+            Text = "About";
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
             ResumeLayout(false);
@@ -216,15 +220,16 @@
 
         private Button btnClose;
         private Button btnShowLog;
+        private ToolTip toolTip1;
         private TableLayoutPanel tableLayoutPanel1;
-        private Label lblInventorVersion;
+        private TextBox lblInventorVersion;
         private Label label1;
         private Label label2;
         private Label label3;
         private Label label5;
-        private Label lblAddinPath;
-        private LinkLabel lblLogFilePath;
+        private TextBox lblAddinPath;
+        private TextBox lblLogFilePath;
         private Label label4;
-        private Label lblAddinVersion;
+        private TextBox lblAddinVersion;
     }
 }

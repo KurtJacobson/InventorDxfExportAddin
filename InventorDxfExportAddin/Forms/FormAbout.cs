@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace InventorDxfExportAddin.Forms
@@ -18,13 +9,11 @@ namespace InventorDxfExportAddin.Forms
         {
             InitializeComponent();
 
-            // Make form window fixed size
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-
             this.lblInventorVersion.Text = $"{AddinServer.InventorApp.SoftwareVersion.DisplayName}";
             this.lblAddinPath.Text = LogManager.addinPath;
             this.lblAddinVersion.Text = LogManager.addinVersion;
             this.lblLogFilePath.Text = LogManager.CurrentLogFilePath;
+
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -43,10 +32,5 @@ namespace InventorDxfExportAddin.Forms
             fileopener.Start();
         }
 
-        private void lblLogFilePath_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            LogManager.Log.Debug("About Dialog :: Open log file link clicked");
-            Process.Start(@"notepad.exe", LogManager.CurrentLogFilePath);
-        }
     }
 }
