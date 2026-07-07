@@ -1,7 +1,7 @@
 ---
 title: "Inventor DXF Export AddIn"
 subtitle: "User Manual"
-date: "Version 0.1.3"
+date: "Development Build"
 lang: en-US
 toc: true
 toc-depth: 3

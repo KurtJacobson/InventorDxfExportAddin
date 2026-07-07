@@ -64,7 +64,13 @@
 
     <Message Text="Building documentation: manual.md to manual.pdf" Importance="high"/>
 
-    <Exec Command="pandoc &quot;$(DocsMd)&quot; -o &quot;$(DocsPdf)&quot; --pdf-engine=tectonic"
+    <Exec Command="git describe --tags --always"
+          ConsoleToMSBuild="true"
+          IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_GitVersion"/>
+    </Exec>
+
+    <Exec Command="pandoc &quot;$(DocsMd)&quot; -o &quot;$(DocsPdf)&quot; --pdf-engine=tectonic --metadata &quot;date=Version $(_GitVersion)&quot;"
           WorkingDirectory="$(DocsDir)"/>
 
     <Message Text="Documentation built: $(DocsPdf)" Importance="high"/>
