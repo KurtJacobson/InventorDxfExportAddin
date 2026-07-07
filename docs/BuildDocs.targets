@@ -64,7 +64,7 @@
 
     <Message Text="Building documentation: manual.md to manual.pdf" Importance="high"/>
 
-    <Exec Command="git describe --tags --always"
+    <Exec Command="powershell -Command &quot;(git describe --tags --always) -replace '-\d+-g', '-'&quot;"
           ConsoleToMSBuild="true"
           IgnoreExitCode="true">
       <Output TaskParameter="ConsoleOutput" PropertyName="_GitVersion"/>

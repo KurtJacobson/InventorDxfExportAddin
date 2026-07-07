@@ -43,7 +43,7 @@ jobs:
       - name: Build documentation
         working-directory: docs
         run: |
-          $version = git describe --tags --always
+          $version = (git describe --tags --always) -replace '-\d+-g', '-'
           pandoc manual.md -o manual.pdf --pdf-engine=tectonic --metadata "date=Version $version"
 
       - name: Restore NuGet packages
