@@ -49,11 +49,24 @@ namespace InventorDxfExportAddin.DxfExport
 
                 var settings = Properties.DxfSettings.Default;
 
-                // Use the configured fixed export directory if set
                 if (settings.ExportMode == "CustomDirectory" && !string.IsNullOrWhiteSpace(settings.ExportDirectory))
                 {
                     System.IO.Directory.CreateDirectory(settings.ExportDirectory);
                     return settings.ExportDirectory;
+                }
+
+                if (settings.ExportMode == "TemplatePath" && !string.IsNullOrWhiteSpace(settings.TemplateBaseDirectory))
+                {
+                    string subfolders = ExpandTemplate(settings.SubfolderTemplate ?? "", partDoc);
+                    string dir = string.IsNullOrWhiteSpace(subfolders)
+                        ? settings.TemplateBaseDirectory
+                        : System.IO.Path.Combine(settings.TemplateBaseDirectory, subfolders);
+                    System.IO.Directory.CreateDirectory(dir);
+
+                    if (!string.IsNullOrWhiteSpace(settings.FilenameTemplate))
+                        this.exportFileName = ExpandTemplate(settings.FilenameTemplate, partDoc) + ".dxf";
+
+                    return dir;
                 }
 
                 // Default: save next to the source file (IPT or STP)
@@ -130,6 +143,105 @@ namespace InventorDxfExportAddin.DxfExport
         {
             get {
                 return System.IO.Path.Combine(ExportDirectory, ExportFilename); }
+        }
+
+        /// <summary>
+        /// Expands {Token} placeholders using the part document's iProperties and sheet metal data.
+        /// Each token value is sanitized so it is safe to use as a path segment.
+        /// Tokens: {Material}, {Thickness}, {PartNumber}, {Description}, {RevisionNumber}, {FileName}
+        /// </summary>
+        private string ExpandTemplate(string template, PartDocument doc)
+        {
+            if (string.IsNullOrWhiteSpace(template)) return "";
+
+            var tokens = new System.Collections.Generic.Dictionary<string, string>(
+                System.StringComparer.OrdinalIgnoreCase)
+            {
+                ["FileName"] = System.IO.Path.GetFileNameWithoutExtension(doc.FullFileName)
+            };
+
+            try
+            {
+                var dt = doc.PropertySets["Design Tracking Properties"];
+                TryAddProperty(dt, "Part Number",      tokens, "PartNumber");
+                TryAddProperty(dt, "Description",      tokens, "Description");
+                TryAddProperty(dt, "Material",         tokens, "Material");
+                TryAddProperty(dt, "Revision Number",  tokens, "RevisionNumber");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log.Warning($"ExpandTemplate: could not read Design Tracking Properties: {ex.Message}");
+            }
+
+            try
+            {
+                var smDef = (SheetMetalComponentDefinition)doc.ComponentDefinition;
+                double thicknessCm = smDef.Thickness.ModelValue;
+                tokens["Thickness"] = FormatThickness(thicknessCm, doc.UnitsOfMeasure);
+            }
+            catch
+            {
+                tokens["Thickness"] = "";
+            }
+
+            string result = template;
+            foreach (var kvp in tokens)
+                result = Regex.Replace(result,
+                    Regex.Escape("{" + kvp.Key + "}"),
+                    SanitizeSegment(kvp.Value).Replace("$", "$$"), // escape $ in replacement
+                    RegexOptions.IgnoreCase);
+
+            // Strip any remaining unresolved {tokens} so we don't get literal braces in paths
+            result = Regex.Replace(result, @"\{[^}]+\}", "");
+
+            // Clean up any doubled separators left by empty tokens (e.g. "\\")
+            result = Regex.Replace(result, @"[\\/]{2,}", System.IO.Path.DirectorySeparatorChar.ToString());
+
+            return result.Trim(System.IO.Path.DirectorySeparatorChar, ' ');
+        }
+
+        private static void TryAddProperty(PropertySet propSet, string propName,
+            System.Collections.Generic.Dictionary<string, string> tokens, string tokenKey)
+        {
+            try
+            {
+                var prop = propSet[propName];
+                tokens[tokenKey] = prop.Value?.ToString() ?? "";
+            }
+            catch { tokens[tokenKey] = ""; }
+        }
+
+        private static string FormatThickness(double thicknessCm, UnitsOfMeasure uom)
+        {
+            try
+            {
+                // Inventor internal unit is cm; convert to the document's length unit for display
+                double converted = uom.ConvertUnits(thicknessCm,
+                    UnitsTypeEnum.kCentimeterLengthUnits, uom.LengthUnits);
+                string unitSuffix = uom.LengthUnits switch
+                {
+                    UnitsTypeEnum.kMillimeterLengthUnits => "mm",
+                    UnitsTypeEnum.kCentimeterLengthUnits => "cm",
+                    UnitsTypeEnum.kMeterLengthUnits      => "m",
+                    UnitsTypeEnum.kInchLengthUnits       => "in",
+                    UnitsTypeEnum.kFootLengthUnits       => "ft",
+                    _ => ""
+                };
+                // Format: trim trailing zeros (e.g. 3.000mm → 3mm, 0.125in stays 0.125in)
+                string num = converted.ToString("G6").TrimEnd('0').TrimEnd('.');
+                return SanitizeSegment(num + unitSuffix);
+            }
+            catch
+            {
+                return SanitizeSegment(thicknessCm.ToString("G4") + "cm");
+            }
+        }
+
+        private static string SanitizeSegment(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return "";
+            var invalid = System.IO.Path.GetInvalidFileNameChars();
+            return new string(value.Select(c => invalid.Contains(c) ? '_' : c).ToArray()).Trim();
         }
 
 

@@ -214,5 +214,41 @@ namespace InventorDxfExportAddin.Properties {
                 this["PromptBeforeOverwrite"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TemplateBaseDirectory {
+            get {
+                return ((string)(this["TemplateBaseDirectory"]));
+            }
+            set {
+                this["TemplateBaseDirectory"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{Material}\\{Thickness}")]
+        public string SubfolderTemplate {
+            get {
+                return ((string)(this["SubfolderTemplate"]));
+            }
+            set {
+                this["SubfolderTemplate"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FilenameTemplate {
+            get {
+                return ((string)(this["FilenameTemplate"]));
+            }
+            set {
+                this["FilenameTemplate"] = value;
+            }
+        }
     }
 }
