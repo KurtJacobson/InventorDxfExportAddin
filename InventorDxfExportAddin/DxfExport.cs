@@ -148,12 +148,21 @@ namespace InventorDxfExportAddin.DxfExport
         /// <summary>
         /// Expands {Token} placeholders using the part document's iProperties and sheet metal data.
         /// Each token value is sanitized so it is safe to use as a path segment.
-        /// Tokens: {Material}, {Thickness}, {PartNumber}, {Description}, {RevisionNumber}, {FileName}
+        ///
+        /// Simple tokens: {Material}  {PartNumber}  {Description}  {RevisionNumber}  {FileName}
+        ///
+        /// Thickness token supports optional unit and precision:
+        ///   {Thickness}           — document units, auto precision (trailing zeros trimmed)
+        ///   {Thickness:mm}        — force millimetres, auto precision
+        ///   {Thickness:in:3}      — force inches, 3 decimal places
+        ///   {Thickness::2}        — document units, 2 decimal places
+        /// Supported units: mm, cm, m, in, ft
         /// </summary>
         private string ExpandTemplate(string template, PartDocument doc)
         {
             if (string.IsNullOrWhiteSpace(template)) return "";
 
+            // --- simple iProperty tokens ---
             var tokens = new System.Collections.Generic.Dictionary<string, string>(
                 System.StringComparer.OrdinalIgnoreCase)
             {
@@ -163,38 +172,49 @@ namespace InventorDxfExportAddin.DxfExport
             try
             {
                 var dt = doc.PropertySets["Design Tracking Properties"];
-                TryAddProperty(dt, "Part Number",      tokens, "PartNumber");
-                TryAddProperty(dt, "Description",      tokens, "Description");
-                TryAddProperty(dt, "Material",         tokens, "Material");
-                TryAddProperty(dt, "Revision Number",  tokens, "RevisionNumber");
+                TryAddProperty(dt, "Part Number",     tokens, "PartNumber");
+                TryAddProperty(dt, "Description",     tokens, "Description");
+                TryAddProperty(dt, "Material",        tokens, "Material");
+                TryAddProperty(dt, "Revision Number", tokens, "RevisionNumber");
             }
             catch (Exception ex)
             {
                 LogManager.Log.Warning($"ExpandTemplate: could not read Design Tracking Properties: {ex.Message}");
             }
 
+            string result = template;
+
+            // --- {Thickness[:unit][:precision]} — handled via regex before simple tokens ---
+            double thicknessCm = double.NaN;
             try
             {
                 var smDef = (SheetMetalComponentDefinition)doc.ComponentDefinition;
-                double thicknessCm = smDef.Thickness.ModelValue;
-                tokens["Thickness"] = FormatThickness(thicknessCm, doc.UnitsOfMeasure);
+                thicknessCm = smDef.Thickness.ModelValue;
             }
-            catch
-            {
-                tokens["Thickness"] = "";
-            }
+            catch { }
 
-            string result = template;
+            result = Regex.Replace(result,
+                @"\{Thickness(?::([a-zA-Z]*))?(?::(\d+))?\}",
+                m =>
+                {
+                    if (double.IsNaN(thicknessCm)) return "";
+                    string unitArg      = m.Groups[1].Success ? m.Groups[1].Value : null;
+                    int?   precisionArg = m.Groups[2].Success ? (int?)int.Parse(m.Groups[2].Value) : null;
+                    return SanitizeSegment(FormatThickness(thicknessCm, doc.UnitsOfMeasure, unitArg, precisionArg));
+                },
+                RegexOptions.IgnoreCase);
+
+            // --- simple token substitution ---
             foreach (var kvp in tokens)
                 result = Regex.Replace(result,
                     Regex.Escape("{" + kvp.Key + "}"),
-                    SanitizeSegment(kvp.Value).Replace("$", "$$"), // escape $ in replacement
+                    SanitizeSegment(kvp.Value).Replace("$", "$$"),
                     RegexOptions.IgnoreCase);
 
-            // Strip any remaining unresolved {tokens} so we don't get literal braces in paths
+            // Strip unresolved tokens
             result = Regex.Replace(result, @"\{[^}]+\}", "");
 
-            // Clean up any doubled separators left by empty tokens (e.g. "\\")
+            // Clean up doubled separators left by empty-valued tokens
             result = Regex.Replace(result, @"[\\/]{2,}", System.IO.Path.DirectorySeparatorChar.ToString());
 
             return result.Trim(System.IO.Path.DirectorySeparatorChar, ' ');
@@ -203,39 +223,60 @@ namespace InventorDxfExportAddin.DxfExport
         private static void TryAddProperty(PropertySet propSet, string propName,
             System.Collections.Generic.Dictionary<string, string> tokens, string tokenKey)
         {
-            try
-            {
-                var prop = propSet[propName];
-                tokens[tokenKey] = prop.Value?.ToString() ?? "";
-            }
+            try   { tokens[tokenKey] = propSet[propName].Value?.ToString() ?? ""; }
             catch { tokens[tokenKey] = ""; }
         }
 
-        private static string FormatThickness(double thicknessCm, UnitsOfMeasure uom)
+        private static string FormatThickness(double thicknessCm, UnitsOfMeasure uom,
+            string unit = null, int? precision = null)
         {
             try
             {
-                // Inventor internal unit is cm; convert to the document's length unit for display
-                double converted = uom.ConvertUnits(thicknessCm,
-                    UnitsTypeEnum.kCentimeterLengthUnits, uom.LengthUnits);
-                string unitSuffix = uom.LengthUnits switch
+                UnitsTypeEnum targetUnit;
+                string suffix;
+
+                if (!string.IsNullOrEmpty(unit))
                 {
-                    UnitsTypeEnum.kMillimeterLengthUnits => "mm",
-                    UnitsTypeEnum.kCentimeterLengthUnits => "cm",
-                    UnitsTypeEnum.kMeterLengthUnits      => "m",
-                    UnitsTypeEnum.kInchLengthUnits       => "in",
-                    UnitsTypeEnum.kFootLengthUnits       => "ft",
-                    _ => ""
-                };
-                // Format: trim trailing zeros (e.g. 3.000mm → 3mm, 0.125in stays 0.125in)
-                string num = converted.ToString("G6").TrimEnd('0').TrimEnd('.');
-                return SanitizeSegment(num + unitSuffix);
+                    (targetUnit, suffix) = unit.ToLowerInvariant() switch
+                    {
+                        "mm" => (UnitsTypeEnum.kMillimeterLengthUnits, "mm"),
+                        "cm" => (UnitsTypeEnum.kCentimeterLengthUnits, "cm"),
+                        "m"  => (UnitsTypeEnum.kMeterLengthUnits,      "m"),
+                        "in" => (UnitsTypeEnum.kInchLengthUnits,       "in"),
+                        "ft" => (UnitsTypeEnum.kFootLengthUnits,       "ft"),
+                        _    => (uom.LengthUnits, UnitSuffix(uom.LengthUnits))
+                    };
+                }
+                else
+                {
+                    targetUnit = uom.LengthUnits;
+                    suffix     = UnitSuffix(uom.LengthUnits);
+                }
+
+                double converted = uom.ConvertUnits(thicknessCm,
+                    UnitsTypeEnum.kCentimeterLengthUnits, targetUnit);
+
+                string num = precision.HasValue
+                    ? converted.ToString("F" + precision.Value)
+                    : converted.ToString("G6").TrimEnd('0').TrimEnd('.');
+
+                return num + suffix;
             }
             catch
             {
-                return SanitizeSegment(thicknessCm.ToString("G4") + "cm");
+                return thicknessCm.ToString("G4") + "cm";
             }
         }
+
+        private static string UnitSuffix(UnitsTypeEnum unit) => unit switch
+        {
+            UnitsTypeEnum.kMillimeterLengthUnits => "mm",
+            UnitsTypeEnum.kCentimeterLengthUnits => "cm",
+            UnitsTypeEnum.kMeterLengthUnits      => "m",
+            UnitsTypeEnum.kInchLengthUnits       => "in",
+            UnitsTypeEnum.kFootLengthUnits       => "ft",
+            _                                    => ""
+        };
 
         private static string SanitizeSegment(string value)
         {

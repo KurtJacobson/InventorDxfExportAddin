@@ -52,7 +52,7 @@ namespace InventorDxfExportAddin.Forms
             this.grpLocation.Controls.Add(this.lblTokens);
             this.grpLocation.Location = new System.Drawing.Point(12, 12);
             this.grpLocation.Name = "grpLocation";
-            this.grpLocation.Size = new System.Drawing.Size(460, 278);
+            this.grpLocation.Size = new System.Drawing.Size(460, 291);
             this.grpLocation.TabIndex = 0;
             this.grpLocation.TabStop = false;
             this.grpLocation.Text = "Output Location";
@@ -171,15 +171,15 @@ namespace InventorDxfExportAddin.Forms
             this.lblTokens.ForeColor = System.Drawing.SystemColors.GrayText;
             this.lblTokens.Location = new System.Drawing.Point(28, 262);
             this.lblTokens.Name = "lblTokens";
-            this.lblTokens.Size = new System.Drawing.Size(420, 13);
+            this.lblTokens.Size = new System.Drawing.Size(420, 26);
             this.lblTokens.TabIndex = 12;
-            this.lblTokens.Text = "Tokens: {Material}  {Thickness}  {PartNumber}  {Description}  {RevisionNumber}  {FileName}";
+            this.lblTokens.Text = "Tokens: {Material}  {Thickness}  {Thickness:mm:2}  {Thickness:in:3}  {PartNumber}  {Description}  {RevisionNumber}  {FileName}";
             //
             // grpOverwrite
             //
             this.grpOverwrite.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.grpOverwrite.Controls.Add(this.cbPromptOverwrite);
-            this.grpOverwrite.Location = new System.Drawing.Point(12, 300);
+            this.grpOverwrite.Location = new System.Drawing.Point(12, 313);
             this.grpOverwrite.Name = "grpOverwrite";
             this.grpOverwrite.Size = new System.Drawing.Size(460, 48);
             this.grpOverwrite.TabIndex = 1;
@@ -198,7 +198,7 @@ namespace InventorDxfExportAddin.Forms
             // btnSave
             //
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(316, 362);
+            this.btnSave.Location = new System.Drawing.Point(316, 375);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 2;
@@ -209,7 +209,7 @@ namespace InventorDxfExportAddin.Forms
             // btnCancel
             //
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(397, 362);
+            this.btnCancel.Location = new System.Drawing.Point(397, 375);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 3;
@@ -222,7 +222,7 @@ namespace InventorDxfExportAddin.Forms
             this.AcceptButton = this.btnSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 397);
+            this.ClientSize = new System.Drawing.Size(484, 410);
             this.Controls.Add(this.grpLocation);
             this.Controls.Add(this.grpOverwrite);
             this.Controls.Add(this.btnSave);
