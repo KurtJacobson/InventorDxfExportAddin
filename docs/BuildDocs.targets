@@ -70,7 +70,7 @@
       <Output TaskParameter="ConsoleOutput" PropertyName="_GitVersion"/>
     </Exec>
 
-    <Exec Command="pandoc &quot;$(DocsMd)&quot; -o &quot;$(DocsPdf)&quot; --pdf-engine=tectonic --metadata &quot;date=Version $(_GitVersion)&quot;"
+    <Exec Command="pandoc &quot;$(DocsMd)&quot; -o &quot;$(DocsPdf)&quot; --pdf-engine=tectonic --lua-filter=strip-image-alt.lua --metadata &quot;date=Version $(_GitVersion)&quot;"
           WorkingDirectory="$(DocsDir)"/>
 
     <Message Text="Documentation built: $(DocsPdf)" Importance="high"/>
