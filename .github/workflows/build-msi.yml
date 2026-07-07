@@ -41,9 +41,10 @@ jobs:
           echo "PATH=$machinePath;$userPath" >> $env:GITHUB_ENV
 
       - name: Build documentation
+        working-directory: docs
         run: |
           $version = git describe --tags --always
-          pandoc docs/manual.md -o docs/manual.pdf --pdf-engine=tectonic --metadata "date=Version $version"
+          pandoc manual.md -o manual.pdf --pdf-engine=tectonic --metadata "date=Version $version"
 
       - name: Restore NuGet packages
         run: nuget restore InventorDxfExportAddin/InventorDxfExportAddin.csproj
