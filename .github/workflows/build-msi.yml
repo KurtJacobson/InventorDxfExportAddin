@@ -33,6 +33,9 @@ jobs:
       - name: Add WiX UI extension
         run: wix extension add WixToolset.UI.wixext/4.0.5
 
+      - name: Install Pandoc and Tectonic
+        run: choco install pandoc tectonic --no-progress -y
+
       - name: Restore NuGet packages
         run: nuget restore InventorDxfExportAddin/InventorDxfExportAddin.csproj
 
@@ -49,12 +52,22 @@ jobs:
           path: InventorDxfExportAddin.Setup/bin/Release/**/*.msi
           if-no-files-found: error
 
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: InventorDxfExportAddin-Manual
+          path: docs/manual.pdf
+          if-no-files-found: warn
+
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/v')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $msi = Get-ChildItem -Recurse -Filter *.msi "InventorDxfExportAddin.Setup/bin/Release" | Select-Object -First 1
-          gh release create "${{ github.ref_name }}" $msi.FullName `
+          $pdf = "docs/manual.pdf"
+          $assets = @($msi.FullName)
+          if (Test-Path $pdf) { $assets += $pdf }
+          gh release create "${{ github.ref_name }}" @assets `
             --title "Release ${{ github.ref_name }}" `
             --generate-notes

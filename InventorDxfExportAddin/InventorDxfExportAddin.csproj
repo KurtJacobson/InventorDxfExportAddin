@@ -84,5 +84,8 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>Settings.settings</DependentUpon>
       </Compile>
-    </ItemGroup>    
+    </ItemGroup>
+
+    <Import Project="..\docs\BuildDocs.targets"/>
+
 </Project>

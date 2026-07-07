@@ -1,0 +1,73 @@
+<!--
+  BuildDocs.targets
+  Imported by the main .csproj. Rebuilds docs/manual.pdf via Pandoc when pandoc
+  and tectonic are on PATH and manual.md is newer than manual.pdf (or absent).
+
+  To build manually from the docs folder, run:
+    pandoc manual.md -o manual.pdf
+
+  Silently skips when Pandoc or tectonic cannot be found so the build still
+  succeeds on machines without them installed.
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <DocsDir>$(MSBuildThisFileDirectory)</DocsDir>
+    <DocsMd>$(DocsDir)manual.md</DocsMd>
+    <DocsPdf>$(DocsDir)manual.pdf</DocsPdf>
+  </PropertyGroup>
+
+  <!-- Locate pandoc -->
+  <Target Name="FindPandoc">
+    <Exec Command="where pandoc"
+          StandardOutputImportance="low"
+          IgnoreExitCode="true"
+          ConsoleToMSBuild="true">
+      <Output TaskParameter="ExitCode" PropertyName="_PandocExitCode"/>
+    </Exec>
+    <PropertyGroup>
+      <_PandocAvailable Condition="'$(_PandocExitCode)' == '0'">true</_PandocAvailable>
+      <_PandocAvailable Condition="'$(_PandocExitCode)' != '0'">false</_PandocAvailable>
+    </PropertyGroup>
+    <Message Text="pandoc not found - skipping documentation build."
+             Condition="'$(_PandocAvailable)' == 'false'"
+             Importance="normal"/>
+  </Target>
+
+  <!-- Locate tectonic (PDF engine used by Pandoc) -->
+  <Target Name="FindTectonic" DependsOnTargets="FindPandoc" Condition="'$(_PandocAvailable)' == 'true'">
+    <Exec Command="where tectonic"
+          StandardOutputImportance="low"
+          IgnoreExitCode="true"
+          ConsoleToMSBuild="true">
+      <Output TaskParameter="ExitCode" PropertyName="_TectonicExitCode"/>
+    </Exec>
+    <PropertyGroup>
+      <_TectonicAvailable Condition="'$(_TectonicExitCode)' == '0'">true</_TectonicAvailable>
+      <_TectonicAvailable Condition="'$(_TectonicExitCode)' != '0'">false</_TectonicAvailable>
+    </PropertyGroup>
+    <Message Text="tectonic not found - skipping documentation build."
+             Condition="'$(_TectonicAvailable)' == 'false'"
+             Importance="normal"/>
+  </Target>
+
+  <!--
+    Rebuild the PDF only when manual.md is newer than manual.pdf.
+    Inputs/Outputs gives MSBuild incremental-build semantics.
+  -->
+  <Target Name="BuildDocumentation"
+          AfterTargets="Build"
+          DependsOnTargets="FindPandoc;FindTectonic"
+          Inputs="$(DocsMd)"
+          Outputs="$(DocsPdf)"
+          Condition="'$(_PandocAvailable)' == 'true' AND '$(_TectonicAvailable)' == 'true'">
+
+    <Message Text="Building documentation: manual.md to manual.pdf" Importance="high"/>
+
+    <Exec Command="pandoc &quot;$(DocsMd)&quot; -o &quot;$(DocsPdf)&quot; --pdf-engine=tectonic"
+          WorkingDirectory="$(DocsDir)"/>
+
+    <Message Text="Documentation built: $(DocsPdf)" Importance="high"/>
+  </Target>
+
+</Project>
