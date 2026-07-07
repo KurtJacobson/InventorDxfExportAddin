@@ -2,6 +2,8 @@
 
 An Autodesk Inventor addin that exports sheet metal flat patterns to DXFs with bendlines, formatted for use with Schröder Folders.
 
+[![User Manual](https://img.shields.io/badge/docs-User%20Manual-blue)](https://github.com/KurtJacobson/InventorDxfExportAddin/releases/latest/download/manual.pdf)
+
 ## Features
 
 - Exports flat pattern DXF from sheet metal parts directly from the Flat Pattern ribbon tab

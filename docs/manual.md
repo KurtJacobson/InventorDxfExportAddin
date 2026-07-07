@@ -1,8 +1,8 @@
 ---
-title: "Schröder DXF Export AddIn"
+title: "Inventor DXF Export AddIn"
 subtitle: "User Manual"
 date: "Version 0.1.3"
-lang: en-GB
+lang: en-US
 toc: true
 toc-depth: 3
 colorlinks: true
@@ -20,19 +20,22 @@ header-includes:
   - \titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
   - \titlespacing{\section}{0pt}{1.6em}{0.5em}
   - \titlespacing{\subsection}{0pt}{1.1em}{0.3em}
+  - \usepackage{float}
+  - \makeatletter\def\fps@figure{H}\makeatother
 ---
 
 # Overview
 
-The Schröder DXF Export AddIn automates the export of flat-pattern DXF files from
-Autodesk Inventor sheet-metal parts. It is designed for sheet-metal fabrication
-workflows where laser-cutting or punch programs consume DXF geometry with specific
-layer and line-type conventions.
+The Inventor DXF Export AddIn automates the export of flat-pattern DXF files from
+Autodesk Inventor sheet-metal parts, and is specifically designed to produce DXFs for
+use with **Schröder's POS3000** control system.
 
 Key capabilities:
 
+- Embeds xData with all model geometry into DXF for Schröder POS3000 to import,
+  eliminating the need for manual data entry.
 - One-click flat-pattern DXF export from the Flat Pattern ribbon tab.
-- Configurable layer names, colours, and line types for outer profiles, interior
+- Configurable layer names, colors, and line types for outer profiles, interior
   profiles, and bend lines (up and down separately).
 - Three output location modes: next to source file, fixed directory, or a template
   path built from iProperties.
@@ -75,6 +78,8 @@ Use *Settings → Apps* (Windows 11) or *Control Panel → Programs* to remove
 All buttons appear in the **Schröder DXF Export** panel on the *Flat Pattern* tab.
 The tab is only visible when a Part document with a flat pattern is active.
 
+![Flat Pattern Tab - Schröder DXF Export Panel](images/tool-bar.png)
+
 | Button         | Description |
 |----------------|-------------|
 | Export DXF     | Exports the active part's flat pattern to a DXF file using the current settings. |
@@ -101,6 +106,8 @@ The AddIn automatically unfolds the flat pattern if one does not already exist.
 
 The DXF Settings dialog configures how geometry is written to DXF layers. Settings
 are persisted per user in the .NET user-scoped settings store.
+
+![DXF Export Settings](images/dxf-settings.png)
 
 ## Outer Profile
 
@@ -131,6 +138,8 @@ Bend line geometry can be separated by direction for downstream CAM compatibilit
 ---
 
 # Export Options
+
+![Export Options](images/export-options.png)
 
 ## Output Location Modes
 
@@ -209,6 +218,43 @@ exists at the target path, a dialog asks:
 - **Cancel** — abort the export; nothing is written.
 
 Disabling the option causes existing files to be overwritten silently.
+
+---
+
+# POS3000 Integration
+
+The AddIn writes DXF extended data (xData) directly into every exported file so
+that Schröder POS3000 control software can import the part and reconstruct a fully
+defined 3D model without any manual data entry.
+
+Two application IDs are registered in each DXF:
+
+| Application ID        | Attached to     | Purpose |
+|-----------------------|-----------------|---------|
+| `POS3000_V3_PRODUCT`  | Outline layer   | Material and thickness for part. |
+| `POS3000_V3_BENDINGLINE` | Each bend line entity | Per-bend geometry. |
+
+## Product xData
+
+Written once to the outer-profile layer (default: `Outline`).
+
+| Field        | Format              | Source |
+|--------------|---------------------|--------|
+| `Thickness`  | `Thickness=N.NNNN`  | Sheet-metal thickness in display units. |
+| `MaterialId` | `MaterialId=(name)` | Inventor material name from part. |
+
+## Bend Line xData
+
+Written to each bend line entity on the bend-up or bend-down layer.
+
+| Field          | Format                | Source |
+|----------------|-----------------------|--------|
+| `BendAngleDeg` | `BendAngleDeg=N.NNN`  | Bend angle. Up positive; down negative. |
+| `InnerRadius`  | `InnerRadius=N.NNNN`  | Inner bend radius in display unit. |
+| `K_Factor`     | `K_Factor=N.NNN`      | K-factor from Inventor sheet-metal rule for bend. |
+
+Bend lines are shortened by 0.1 units at each end so they do not touch the part
+outline — this matches POS3000's expected geometry convention.
 
 ---
 
