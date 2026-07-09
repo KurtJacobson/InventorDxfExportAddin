@@ -286,6 +286,231 @@ namespace InventorDxfExportAddin.DxfExport
         }
 
 
+        /// <summary>
+        /// Checks that all entities on the outline layer form a single closed loop.
+        /// DxfSpline entities are included in the connectivity check using their
+        /// evaluated start/end points, but their endpoints cannot be snapped
+        /// (spline geometry repair would require moving control points).
+        /// Endpoints of DxfLine entities that fall within snapTolerance of an unmatched
+        /// endpoint from another entity are snapped together. Arc endpoints are checked
+        /// but not modified (arc geometry repair would require re-parameterisation).
+        /// </summary>
+        private static bool ValidateAndRepairOutline(DxfFile file, string layerName,
+            double connectedTol = 1e-6, double snapTol = 1e-3)
+        {
+            var lines   = file.Entities.OfType<DxfLine>  ().Where(e => e.Layer == layerName).ToList();
+            var arcs    = file.Entities.OfType<DxfArc>   ().Where(e => e.Layer == layerName).ToList();
+            var splines = file.Entities.OfType<DxfSpline>().Where(e => e.Layer == layerName).ToList();
+
+            int total = lines.Count + arcs.Count + splines.Count;
+            if (total == 0)
+            {
+                LogManager.Log.Warning($"Outline layer '{layerName}' has no line, arc, or spline entities.");
+                MessageBox.Show($"The exported DXF has no geometry on the outline layer '{layerName}'.\n\nThe export has been aborted.",
+                    "Open Contour", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            if (splines.Count > 0)
+                LogManager.Log.Information($"Outline '{layerName}': {splines.Count} spline(s) will be tessellated.");
+
+            // Build a flat list of endpoints: point value, optional setter, owning entity index.
+            // Lines are mutable; arc and spline endpoints are read-only.
+            var pts = new List<(DxfPoint pt, Action<DxfPoint> set, int entityIdx)>();
+            int idx = 0;
+            foreach (var l in lines)
+            {
+                var line = l;
+                pts.Add((l.P1, p => line.P1 = p, idx));
+                pts.Add((l.P2, p => line.P2 = p, idx));
+                idx++;
+            }
+            foreach (var a in arcs)
+            {
+                pts.Add((OutlineHelper.ArcStart(a), null, idx));
+                pts.Add((OutlineHelper.ArcEnd(a),   null, idx));
+                idx++;
+            }
+            foreach (var s in splines)
+            {
+                pts.Add((OutlineHelper.EvaluateBSpline(s, 0.0), null, idx));
+                pts.Add((OutlineHelper.EvaluateBSpline(s, 1.0), null, idx));
+                idx++;
+            }
+
+            // Mark endpoints that already share a point with another entity.
+            bool[] connected = new bool[pts.Count];
+            for (int i = 0; i < pts.Count; i++)
+                for (int j = 0; j < pts.Count; j++)
+                    if (pts[i].entityIdx != pts[j].entityIdx &&
+                        OutlineHelper.Dist(pts[i].pt, pts[j].pt) <= connectedTol)
+                        connected[i] = connected[j] = true;
+
+            var openIdx = Enumerable.Range(0, pts.Count).Where(i => !connected[i]).ToList();
+
+            if (openIdx.Count == 0)
+            {
+                LogManager.Log.Information(
+                    $"Outline '{layerName}': closed loop confirmed ({total} segments).");
+                return true;
+            }
+
+            LogManager.Log.Warning(
+                $"Outline '{layerName}': {openIdx.Count} open endpoint(s) across {total} segments — attempting repair.");
+
+            // Snap open endpoints that are within snapTol of each other.
+            var processed = new HashSet<int>();
+            int repaired = 0;
+            foreach (int i in openIdx)
+            {
+                if (processed.Contains(i)) continue;
+                foreach (int j in openIdx)
+                {
+                    if (j == i || pts[j].entityIdx == pts[i].entityIdx || processed.Contains(j)) continue;
+                    double d = OutlineHelper.Dist(pts[i].pt, pts[j].pt);
+                    if (d > snapTol) continue;
+
+                    var mid = OutlineHelper.Midpt(pts[i].pt, pts[j].pt);
+                    pts[i].set?.Invoke(mid);
+                    pts[j].set?.Invoke(mid);
+                    processed.Add(i);
+                    processed.Add(j);
+                    repaired++;
+                    LogManager.Log.Information($"  Snapped gap of {d:G4} units between entity {pts[i].entityIdx} and {pts[j].entityIdx}.");
+                    break;
+                }
+            }
+
+            int remaining = openIdx.Count - processed.Count;
+            if (remaining == 0)
+            {
+                LogManager.Log.Information($"Outline repair complete: {repaired} gap(s) closed.");
+                return true;
+            }
+
+            LogManager.Log.Warning(
+                $"Outline repair: {repaired} gap(s) closed, {remaining} open endpoint(s) remain.");
+            MessageBox.Show(
+                $"The flat pattern outline on layer '{layerName}' is not a closed contour.\n\n" +
+                $"{remaining} open endpoint(s) could not be automatically joined " +
+                $"(largest gap may exceed the snap tolerance of {snapTol} units).\n\n" +
+                "Please check the model geometry and try again.",
+                "Open Contour", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return false;
+        }
+
+        /// <summary>
+        /// Chains all DxfLine and DxfArc entities on the outline layer into a single closed
+        /// DxfLwPolyline, removing the original entities. Arc segments are encoded as bulge
+        /// values (bulge = tan(included_angle / 4), positive = CCW, negative = CW traversal).
+        /// Called after ValidateAndRepairOutline so endpoints are already coincident.
+        /// </summary>
+        private static bool MergeOutlineToPolyline(DxfFile file, string layerName,
+            double chainTol = 1e-4, int splineSamples = 64)
+        {
+            var lines   = file.Entities.OfType<DxfLine>  ().Where(e => e.Layer == layerName).ToList();
+            var arcs    = file.Entities.OfType<DxfArc>   ().Where(e => e.Layer == layerName).ToList();
+            var splines = file.Entities.OfType<DxfSpline>().Where(e => e.Layer == layerName).ToList();
+
+            if (lines.Count == 0 && arcs.Count == 0 && splines.Count == 0) return true;
+
+            // Build a flat list of segments: start point, end point, forward bulge, source entity.
+            // Arc bulge = tan(included_angle / 4), positive because DXF arcs are CCW.
+            // Splines are represented as a chain of straight micro-segments (bulge = 0).
+            var segments = new List<OutlineHelper.Seg>();
+            foreach (var l in lines)
+                segments.Add(new OutlineHelper.Seg(l.P1, l.P2, 0.0, l));
+            foreach (var a in arcs)
+            {
+                double included = ((a.EndAngle - a.StartAngle) % 360 + 360) % 360;
+                double bulge = Math.Tan(included * Math.PI / 180.0 / 4.0);
+                segments.Add(new OutlineHelper.Seg(OutlineHelper.ArcStart(a), OutlineHelper.ArcEnd(a), bulge, a));
+            }
+            foreach (var s in splines)
+            {
+                // Tessellate: emit splineSamples straight segments from t=0 to t=1.
+                var pts = Enumerable.Range(0, splineSamples + 1)
+                    .Select(i => OutlineHelper.EvaluateBSpline(s, (double)i / splineSamples))
+                    .ToList();
+                // All micro-segments share the same source entity so the whole spline is removed together.
+                for (int i = 0; i < pts.Count - 1; i++)
+                    segments.Add(new OutlineHelper.Seg(pts[i], pts[i + 1], 0.0, s));
+            }
+
+            // Walk segments into an ordered chain starting from the first segment.
+            var chain   = new List<(DxfPoint pt, double bulge)>();
+            var remaining = new List<OutlineHelper.Seg>(segments);
+
+            var first = remaining[0];
+            remaining.RemoveAt(0);
+            chain.Add((first.Start, first.Bulge));
+            var tip = first.End;
+            var chainStart = first.Start;
+
+            while (remaining.Count > 0)
+            {
+                bool found = false;
+                for (int i = 0; i < remaining.Count; i++)
+                {
+                    var s = remaining[i];
+                    if (OutlineHelper.Dist(tip, s.Start) <= chainTol)
+                    {
+                        chain.Add((s.Start, s.Bulge));
+                        tip = s.End;
+                        remaining.RemoveAt(i);
+                        found = true;
+                        break;
+                    }
+                    if (OutlineHelper.Dist(tip, s.End) <= chainTol)
+                    {
+                        // Traversed end→start: negate bulge (CW instead of CCW).
+                        chain.Add((s.End, -s.Bulge));
+                        tip = s.Start;
+                        remaining.RemoveAt(i);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    LogManager.Log.Warning($"Outline '{layerName}': could not build a continuous chain.");
+                    MessageBox.Show(
+                        $"The outline on layer '{layerName}' could not be converted to a polyline.\n\n" +
+                        "The segments do not form a single continuous chain. " +
+                        "Please check the model geometry and try again.",
+                        "Polyline Conversion Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+
+            if (OutlineHelper.Dist(tip, chainStart) > chainTol)
+            {
+                double gap = OutlineHelper.Dist(tip, chainStart);
+                LogManager.Log.Warning($"Outline '{layerName}': chain does not close (gap = {gap:G4}).");
+                MessageBox.Show(
+                    $"The outline on layer '{layerName}' could not be converted to a polyline.\n\n" +
+                    $"The chain does not close (gap = {gap:G4} units). " +
+                    "Please check the model geometry and try again.",
+                    "Polyline Conversion Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // Build the closed LwPolyline.
+            var vertices = chain.Select(c => new DxfLwPolylineVertex { X = c.pt.X, Y = c.pt.Y, Bulge = c.bulge });
+            var poly = new DxfLwPolyline(vertices) { Layer = layerName, IsClosed = true };
+
+            // Replace original entities with the polyline (insert first so it precedes bend lines).
+            // Deduplicate sources: a tessellated spline produces many segments sharing one entity.
+            foreach (var source in segments.Select(s => s.Source).Distinct())
+                file.Entities.Remove(source);
+            file.Entities.Insert(0, poly);
+
+            LogManager.Log.Information(
+                $"Outline '{layerName}' merged into a closed LwPolyline ({chain.Count} vertices, " +
+                $"{lines.Count} lines + {arcs.Count} arcs).");
+            return true;
+        }
+
         private static string colorToRgb(System.Drawing.Color color)
         {
             return String.Format("{0};{1};{2}", color.R, color.G, color.B);
@@ -442,6 +667,8 @@ namespace InventorDxfExportAddin.DxfExport
                 // read DXF and add bend lines
                 var file = DxfFile.Load(ExportFullPath);
                 file.Header.Version = DxfAcadVersion.R2007;
+                if (!ValidateAndRepairOutline(file, Properties.DxfSettings.Default.OuterProfileLayer)) return false;
+                if (!MergeOutlineToPolyline(file, Properties.DxfSettings.Default.OuterProfileLayer)) return false;
                 file.ApplicationIds.Add(new DxfAppId("POS3000_V3_PRODUCT"));
                 file.ApplicationIds.Add(new DxfAppId("POS3000_V3_BENDINGLINE"));
 
@@ -598,6 +825,88 @@ namespace InventorDxfExportAddin.DxfExport
             }
 
             return false;
+        }
+    }
+
+    internal static class OutlineHelper
+    {
+        internal struct Seg
+        {
+            internal DxfPoint Start, End;
+            internal double   Bulge;
+            internal DxfEntity Source;
+            internal Seg(DxfPoint start, DxfPoint end, double bulge, DxfEntity source)
+            { Start = start; End = end; Bulge = bulge; Source = source; }
+        }
+
+        internal static double Dist(DxfPoint a, DxfPoint b)
+        {
+            double dx = a.X - b.X, dy = a.Y - b.Y, dz = a.Z - b.Z;
+            return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        internal static DxfPoint Midpt(DxfPoint a, DxfPoint b)
+            => new DxfPoint((a.X + b.X) / 2, (a.Y + b.Y) / 2, (a.Z + b.Z) / 2);
+
+        internal static DxfPoint ArcStart(DxfArc arc)
+        {
+            double rad = arc.StartAngle * Math.PI / 180;
+            return new DxfPoint(
+                arc.Center.X + arc.Radius * Math.Cos(rad),
+                arc.Center.Y + arc.Radius * Math.Sin(rad),
+                arc.Center.Z);
+        }
+
+        internal static DxfPoint ArcEnd(DxfArc arc)
+        {
+            double rad = arc.EndAngle * Math.PI / 180;
+            return new DxfPoint(
+                arc.Center.X + arc.Radius * Math.Cos(rad),
+                arc.Center.Y + arc.Radius * Math.Sin(rad),
+                arc.Center.Z);
+        }
+
+        /// <summary>
+        /// Evaluates a B-spline at normalised parameter t ∈ [0, 1] using the de Boor algorithm.
+        /// Supports any degree and both clamped and unclamped knot vectors.
+        /// </summary>
+        internal static DxfPoint EvaluateBSpline(DxfSpline spline, double t)
+        {
+            var knots = spline.KnotValues.ToList();
+            var ctrl  = spline.ControlPoints.Select(cp => cp.Point).ToList();
+            int p = spline.DegreeOfCurve;
+            int n = ctrl.Count - 1;
+
+            // Map t ∈ [0,1] onto the active knot range [u_min, u_max].
+            double uMin = knots[p];
+            double uMax = knots[n + 1];
+            double u = uMin + t * (uMax - uMin);
+            u = Math.Max(uMin, Math.Min(uMax - 1e-10, u));
+
+            // Find the knot span index k such that knots[k] ≤ u < knots[k+1].
+            int k = p;
+            for (int i = p; i <= n; i++)
+                if (u >= knots[i] && u < knots[i + 1]) { k = i; break; }
+
+            // Initialise de Boor points d[0..p] = P[k-p .. k].
+            var d = Enumerable.Range(0, p + 1)
+                .Select(j => ctrl[k - p + j])
+                .ToList();
+
+            // De Boor recursion.
+            for (int r = 1; r <= p; r++)
+                for (int j = p; j >= r; j--)
+                {
+                    int   ki    = k - p + j;
+                    double denom = knots[ki + p - r + 1] - knots[ki];
+                    double alpha = denom < 1e-14 ? 0.0 : (u - knots[ki]) / denom;
+                    d[j] = new DxfPoint(
+                        (1 - alpha) * d[j - 1].X + alpha * d[j].X,
+                        (1 - alpha) * d[j - 1].Y + alpha * d[j].Y,
+                        (1 - alpha) * d[j - 1].Z + alpha * d[j].Z);
+                }
+
+            return d[p];
         }
     }
 
