@@ -16,13 +16,12 @@ namespace InventorDxfExportAddin.Forms
 
         private void LoadSettings()
         {
-            var s = Properties.DxfSettings.Default;
+            var s = SettingsManager.Effective;
 
             rbNextToSource.Checked  = s.ExportMode == "NextToSourceFile";
             rbCustomDir.Checked     = s.ExportMode == "CustomDirectory";
             rbTemplatePath.Checked  = s.ExportMode == "TemplatePath";
 
-            // If none matched (e.g. fresh install), default to NextToSource
             if (!rbNextToSource.Checked && !rbCustomDir.Checked && !rbTemplatePath.Checked)
                 rbNextToSource.Checked = true;
 
@@ -30,11 +29,13 @@ namespace InventorDxfExportAddin.Forms
             tbTemplateBaseDir.Text    = s.TemplateBaseDirectory ?? "";
             tbSubfolderTemplate.Text  = s.SubfolderTemplate ?? "";
             tbFilenameTemplate.Text   = s.FilenameTemplate ?? "";
-            cbPromptOverwrite.Checked = s.PromptBeforeOverwrite;
+            cbPromptOverwrite.Checked = s.PromptBeforeOverwrite ?? true;
 
             tbTemplateBaseDir.TextChanged   += (_, __) => UpdatePreview();
             tbSubfolderTemplate.TextChanged += (_, __) => UpdatePreview();
             tbFilenameTemplate.TextChanged  += (_, __) => UpdatePreview();
+
+            btnResetToGlobal.Visible = SettingsManager.HasGlobalConfig;
 
             UpdateControls();
         }
@@ -69,7 +70,7 @@ namespace InventorDxfExportAddin.Forms
         {
             using var dlg = new FolderBrowserDialog
             {
-                Description = "Select DXF export directory",
+                Description  = "Select DXF export directory",
                 SelectedPath = tbExportDir.Text
             };
             if (dlg.ShowDialog(this) == DialogResult.OK)
@@ -80,7 +81,7 @@ namespace InventorDxfExportAddin.Forms
         {
             using var dlg = new FolderBrowserDialog
             {
-                Description = "Select base directory for template output",
+                Description  = "Select base directory for template output",
                 SelectedPath = tbTemplateBaseDir.Text
             };
             if (dlg.ShowDialog(this) == DialogResult.OK)
@@ -96,38 +97,53 @@ namespace InventorDxfExportAddin.Forms
                 return;
             }
 
-            var s = Properties.DxfSettings.Default;
+            string mode = rbTemplatePath.Checked ? "TemplatePath"
+                        : rbCustomDir.Checked    ? "CustomDirectory"
+                                                 : "NextToSourceFile";
 
-            if (rbTemplatePath.Checked)
-                s.ExportMode = "TemplatePath";
-            else if (rbCustomDir.Checked)
-                s.ExportMode = "CustomDirectory";
-            else
-                s.ExportMode = "NextToSourceFile";
+            var form = new OrgSettings
+            {
+                ExportMode            = mode,
+                ExportDirectory       = tbExportDir.Text.Trim(),
+                TemplateBaseDirectory = tbTemplateBaseDir.Text.Trim(),
+                SubfolderTemplate     = tbSubfolderTemplate.Text.Trim(),
+                FilenameTemplate      = tbFilenameTemplate.Text.Trim(),
+                PromptBeforeOverwrite = cbPromptOverwrite.Checked,
+            };
 
-            s.ExportDirectory       = tbExportDir.Text.Trim();
-            s.TemplateBaseDirectory = tbTemplateBaseDir.Text.Trim();
-            s.SubfolderTemplate     = tbSubfolderTemplate.Text.Trim();
-            s.FilenameTemplate      = tbFilenameTemplate.Text.Trim();
-            s.PromptBeforeOverwrite = cbPromptOverwrite.Checked;
-            s.Save();
+            SettingsManager.SaveExportOptions(form);
 
             LogManager.Log.Information(
-                $"Export options saved: mode={s.ExportMode}, templateBase={s.TemplateBaseDirectory}, " +
-                $"subfolderTemplate={s.SubfolderTemplate}, filenameTemplate={s.FilenameTemplate}");
+                $"Export options saved: mode={mode}, templateBase={form.TemplateBaseDirectory}, " +
+                $"subfolderTemplate={form.SubfolderTemplate}, filenameTemplate={form.FilenameTemplate}");
 
             this.Close();
         }
 
         private void btnCancel_Click(object sender, System.EventArgs e) => this.Close();
 
+        private void btnResetToGlobal_Click(object sender, System.EventArgs e)
+        {
+            var g = SettingsManager.Global;
+            if (g == null) return;
+
+            var mode = g.ExportMode ?? SettingsManager.Effective.ExportMode;
+            rbNextToSource.Checked = mode == "NextToSourceFile";
+            rbCustomDir.Checked    = mode == "CustomDirectory";
+            rbTemplatePath.Checked = mode == "TemplatePath";
+            if (!rbNextToSource.Checked && !rbCustomDir.Checked && !rbTemplatePath.Checked)
+                rbNextToSource.Checked = true;
+
+            tbExportDir.Text          = g.ExportDirectory          ?? "";
+            tbTemplateBaseDir.Text    = g.TemplateBaseDirectory    ?? "";
+            tbSubfolderTemplate.Text  = g.SubfolderTemplate        ?? "";
+            tbFilenameTemplate.Text   = g.FilenameTemplate         ?? "";
+            cbPromptOverwrite.Checked = g.PromptBeforeOverwrite    ?? true;
+        }
+
         private void UpdatePreview()
         {
-            if (_doc == null || !rbTemplatePath.Checked)
-            {
-                tbPreview.Text = "";
-                return;
-            }
+            if (_doc == null || !rbTemplatePath.Checked) { tbPreview.Text = ""; return; }
 
             try
             {
@@ -141,16 +157,11 @@ namespace InventorDxfExportAddin.Forms
                 if (string.IsNullOrEmpty(filename))
                     filename = System.IO.Path.GetFileNameWithoutExtension(_doc.FullFileName);
 
-                string preview = string.IsNullOrEmpty(subfolder)
+                tbPreview.Text = string.IsNullOrEmpty(subfolder)
                     ? System.IO.Path.Combine(baseDir, filename + ".dxf")
                     : System.IO.Path.Combine(baseDir, subfolder, filename + ".dxf");
-
-                tbPreview.Text = preview;
             }
-            catch
-            {
-                tbPreview.Text = "";
-            }
+            catch { tbPreview.Text = ""; }
         }
 
         private void btnPickSubfolder_Click(object sender, System.EventArgs e)

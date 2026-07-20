@@ -1,0 +1,91 @@
+// ============================================================
+// Inventor DXF Export Add-in — Organization Settings
+//
+// Place this file on a network share accessible to all users,
+// then set the registry key on each machine:
+//
+//   HKEY_LOCAL_MACHINE\SOFTWARE\InventorDxfExport
+//     GlobalConfigPath = \\your-server\share\global_settings.jsonc
+//
+// Users can still override individual settings from the add-in UI.
+// A ↺ button appears next to any value that differs from this file,
+// letting them reset back to the org default at any time.
+//
+// JSON with comments (JSONC) is supported — use // or /* */ freely.
+// ============================================================
+{
+  // ----------------------------------------------------------
+  // Outer Profile (cut contour)
+  // ----------------------------------------------------------
+
+  // DXF layer name for the outer profile.
+  "OuterProfileLayer": "Outline",
+
+  // Layer color. Use an ACI name or "R, G, B":
+  //   Red · Yellow · Green · Cyan · Blue · Magenta · White · DarkGray · LightGray
+  //   or any custom RGB e.g. "192, 0, 0"
+  "OuterProfileLayerColor": "Red",
+
+  // Line type. Recognized values:
+  //   kContinuousLineType, kDashedLineType, kDottedLineType,
+  //   kDashDotLineType, kDefaultLineType
+  "OuterProfileLineType": "kContinuousLineType",
+
+  // ----------------------------------------------------------
+  // Inner Profiles (holes, cutouts, etc.)
+  // ----------------------------------------------------------
+
+  "InteriorProfilesLayer": "InnerOutlines",
+  "InteriorProfilesLayerColor": "Green",
+  "InteriorProfilesLineType": "kContinuousLineType",
+
+  // ----------------------------------------------------------
+  // Bend Lines (up bends)
+  // ----------------------------------------------------------
+
+  "BendUpLayer": "BendingLines",
+  "BendUpLayerColor": "Blue",
+  "BendUpLineType": "kDashedLineType",
+
+  // ----------------------------------------------------------
+  // Bend Lines (down bends — optional separate layer)
+  // ----------------------------------------------------------
+
+  // Set to false to merge down-bends onto the BendUpLayer.
+  "BendDownEnabled": true,
+  "BendDownLayer": "BendingLines",
+  "BendDownLayerColor": "Magenta",
+  "BendDownLineType": "kDashedLineType",
+
+  // ----------------------------------------------------------
+  // Export output location
+  // ----------------------------------------------------------
+
+  // How to determine the output folder.
+  //   NextToSourceFile  — same folder as the .ipt file (default)
+  //   CustomDirectory   — always use ExportDirectory
+  //   TemplatePath      — build path from iProperty tokens
+  "ExportMode": "TemplatePath",
+
+  // Used when ExportMode = "CustomDirectory".
+  "ExportDirectory": "",
+
+  // Ask before overwriting an existing DXF file.
+  "PromptBeforeOverwrite": true,
+
+  // ----------------------------------------------------------
+  // Template path options (ExportMode = "TemplatePath")
+  // ----------------------------------------------------------
+
+  // Root folder for template-based exports.
+  // Leave blank to use the same folder as the source part file.
+  "TemplateBaseDirectory": "",
+
+  // Subfolder pattern. Supports iProperty tokens like {Material}, {PartNumber},
+  // {Thickness}, {Thickness:mm:2}, {Description}, {RevisionNumber}, etc.
+  "SubfolderTemplate": "{Material}\\{Thickness}",
+
+  // Filename pattern (without .dxf extension).
+  // Leave blank to use the Inventor document name.
+  "FilenameTemplate": "{PartNumber}_REV{RevisionNumber}"
+}

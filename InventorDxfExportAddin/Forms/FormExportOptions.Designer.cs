@@ -34,6 +34,7 @@ namespace InventorDxfExportAddin.Forms
             this.cbPromptOverwrite = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnResetToGlobal = new System.Windows.Forms.Button();
             this.grpLocation.SuspendLayout();
             this.grpOverwrite.SuspendLayout();
             this.SuspendLayout();
@@ -247,6 +248,18 @@ namespace InventorDxfExportAddin.Forms
             this.cbPromptOverwrite.Text = "Prompt before overwriting an existing DXF (offers Save As)";
             this.cbPromptOverwrite.UseVisualStyleBackColor = true;
             //
+            // btnResetToGlobal
+            //
+            this.btnResetToGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnResetToGlobal.Location = new System.Drawing.Point(12, 422);
+            this.btnResetToGlobal.Name = "btnResetToGlobal";
+            this.btnResetToGlobal.Size = new System.Drawing.Size(150, 23);
+            this.btnResetToGlobal.TabIndex = 4;
+            this.btnResetToGlobal.Text = "↺ Reset to org defaults";
+            this.btnResetToGlobal.UseVisualStyleBackColor = true;
+            this.btnResetToGlobal.Visible = false;
+            this.btnResetToGlobal.Click += new System.EventHandler(this.btnResetToGlobal_Click);
+            //
             // btnSave
             //
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -277,6 +290,7 @@ namespace InventorDxfExportAddin.Forms
             this.ClientSize = new System.Drawing.Size(484, 457);
             this.Controls.Add(this.grpLocation);
             this.Controls.Add(this.grpOverwrite);
+            this.Controls.Add(this.btnResetToGlobal);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -314,5 +328,6 @@ namespace InventorDxfExportAddin.Forms
         private System.Windows.Forms.CheckBox cbPromptOverwrite;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnResetToGlobal;
     }
 }

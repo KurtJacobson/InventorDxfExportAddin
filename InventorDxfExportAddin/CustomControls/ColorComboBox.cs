@@ -27,18 +27,18 @@ namespace InventorDxfExportAddin.Custom_Controls
             }
         }
 
-        // Standard ACI colors with their exact AutoCAD RGB values
+        // Standard ACI colors — values sourced from DxfColors constants
         public static readonly ColorInfo[] StandardColors =
         {
-            new ColorInfo("1 - Red",        Color.FromArgb(255,   0,   0), 1),
-            new ColorInfo("2 - Yellow",      Color.FromArgb(255, 255,   0), 2),
-            new ColorInfo("3 - Green",       Color.FromArgb(  0, 255,   0), 3),
-            new ColorInfo("4 - Cyan",        Color.FromArgb(  0, 255, 255), 4),
-            new ColorInfo("5 - Blue",        Color.FromArgb(  0,   0, 255), 5),
-            new ColorInfo("6 - Magenta",     Color.FromArgb(255,   0, 255), 6),
-            new ColorInfo("7 - White/Black", Color.FromArgb(255, 255, 255), 7),
-            new ColorInfo("8 - Dark Gray",   Color.FromArgb(128, 128, 128), 8),
-            new ColorInfo("9 - Light Gray",  Color.FromArgb(192, 192, 192), 9),
+            new ColorInfo("1 - Red",        DxfColors.Red,       1),
+            new ColorInfo("2 - Yellow",      DxfColors.Yellow,    2),
+            new ColorInfo("3 - Green",       DxfColors.Green,     3),
+            new ColorInfo("4 - Cyan",        DxfColors.Cyan,      4),
+            new ColorInfo("5 - Blue",        DxfColors.Blue,      5),
+            new ColorInfo("6 - Magenta",     DxfColors.Magenta,   6),
+            new ColorInfo("7 - White/Black", DxfColors.White,     7),
+            new ColorInfo("8 - Dark Gray",   DxfColors.DarkGray,  8),
+            new ColorInfo("9 - Light Gray",  DxfColors.LightGray, 9),
         };
 
         // Returns the ACI index for a color if it matches a standard DXF color, otherwise null.

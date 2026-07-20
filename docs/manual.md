@@ -105,7 +105,10 @@ The AddIn automatically unfolds the flat pattern if one does not already exist.
 # DXF Settings
 
 The DXF Settings dialog configures how geometry is written to DXF layers. Settings
-are persisted per user in the .NET user-scoped settings store.
+are persisted per user. When an organization-wide configuration is active (see
+[Organization Settings](#organization-settings)), a **↺** button appears next to
+any value that differs from the shared baseline, and clicking it restores that
+setting to the org default.
 
 ![DXF Export Settings](images/dxf-settings.png)
 
@@ -208,6 +211,13 @@ C:\DXF Output\Aluminium 5052\3.00mm\PartName.dxf
 If a token's iProperty is empty, the token expands to an empty string and any
 resulting doubled path separators are cleaned up automatically.
 
+## Reset to Org Defaults
+
+When an organization-wide configuration is active, a **↺ Reset to org defaults**
+button appears at the bottom left of the Export Options dialog. Clicking it
+restores all export fields to the values from the shared configuration. The
+change is not saved until you click **Save**.
+
 ## Overwrite Behavior
 
 When **Prompt before overwriting** is enabled (the default) and a DXF already
@@ -218,6 +228,84 @@ exists at the target path, a dialog asks:
 - **Cancel** — abort the export; nothing is written.
 
 Disabling the option causes existing files to be overwritten silently.
+
+---
+
+# Organization Settings
+
+Administrators can deploy a shared baseline configuration that all installations
+load at startup. Users can override any setting locally; the UI indicates which
+settings differ from the org baseline and offers a one-click reset.
+
+## Deploying the Global Config
+
+1. Copy `global_settings.jsonc` (included in the AddIn installation directory
+   under `docs\`) to a network share that all users can read, for example:
+   ```
+   \\server\dxf-config\global_settings.jsonc
+   ```
+
+2. On each workstation — or via Group Policy / MDM — create the following
+   registry value:
+   ```
+   HKEY_LOCAL_MACHINE\SOFTWARE\InventorDxfExport
+     GlobalConfigPath  REG_SZ  \\server\dxf-config\global_settings.jsonc
+   ```
+
+   PowerShell (run as Administrator):
+   ```powershell
+   New-Item -Path "HKLM:\SOFTWARE\InventorDxfExport" -Force | Out-Null
+   Set-ItemProperty -Path "HKLM:\SOFTWARE\InventorDxfExport" `
+       -Name GlobalConfigPath `
+       -Value "\\server\dxf-config\global_settings.jsonc"
+   ```
+
+3. Restart Inventor. The shared config is loaded at addin startup; no further
+   action is required.
+
+If the registry key is absent, or the file cannot be read, the feature is
+completely inactive and the addin behaves as if it were not configured.
+
+## Editing the Global Config
+
+`global_settings.jsonc` is a JSON file that supports `//` and `/* */` comments.
+Every key is optional — omit a key to let the addin use its built-in default.
+
+Layer colors may be specified as an ACI color name or as an `"R, G, B"` triple:
+
+| Name        | RGB            | DXF ACI index |
+|-------------|----------------|---------------|
+| `Red`       | `255, 0, 0`    | 1 |
+| `Yellow`    | `255, 255, 0`  | 2 |
+| `Green`     | `0, 255, 0`    | 3 |
+| `Cyan`      | `0, 255, 255`  | 4 |
+| `Blue`      | `0, 0, 255`    | 5 |
+| `Magenta`   | `255, 0, 255`  | 6 |
+| `White`     | `255, 255, 255`| 7 |
+| `DarkGray`  | `128, 128, 128`| 8 |
+| `LightGray` | `192, 192, 192`| 9 |
+
+Custom colors outside this palette (e.g. `"192, 0, 0"`) are supported and will
+appear as *Custom* entries in the color picker.
+
+Line types accepted in the config:
+
+```
+kContinuousLineType   kDashedLineType   kDottedLineType
+kDashDotLineType      kDefaultLineType
+```
+
+## Per-User Overrides
+
+Each user's deviations from the global config are stored privately in:
+
+```
+%APPDATA%\InventorDxfExport\user_settings.json
+```
+
+Only keys that differ from the global config are written to this file.
+Resetting a setting via the **↺** button removes its entry, so the file stays
+minimal. Deleting `user_settings.json` fully restores the org defaults.
 
 ---
 
@@ -302,6 +390,7 @@ failure).
 
 | Version | Changes |
 |---------|---------|
+| 0.1.5 | Organization-wide settings sync via a shared JSONC file on a network share. Per-setting ↺ reset buttons in DXF Settings; single reset button in Export Options. iProperty token picker (… buttons) with live current-value preview. Live output-path preview in Export Options. Base directory now optional (falls back to source-file directory). |
 | 0.1.3 | Export Options dialog: fixed directory, iProperty template with unit/precision control, overwrite prompt with Save As fallback. About dialog: copyable path and version fields. Dialogs centered on the Inventor window. MSI same-version reinstall support. |
 | 0.1.2 | DXF Settings dialog: configurable layers, colors, and line types for outer profile, interior profiles, and bend lines (up/down independently). |
 | 0.1.1 | Initial release. One-click flat-pattern DXF export. |

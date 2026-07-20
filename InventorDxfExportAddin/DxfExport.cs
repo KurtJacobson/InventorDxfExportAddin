@@ -47,28 +47,26 @@ namespace InventorDxfExportAddin.DxfExport
                 if (this.exportDirectory != null)
                     return this.exportDirectory;
 
-                var settings = Properties.DxfSettings.Default;
-
-                if (settings.ExportMode == "CustomDirectory" && !string.IsNullOrWhiteSpace(settings.ExportDirectory))
+                if (SettingsManager.ExportMode == "CustomDirectory" && !string.IsNullOrWhiteSpace(SettingsManager.ExportDirectory))
                 {
-                    System.IO.Directory.CreateDirectory(settings.ExportDirectory);
-                    return settings.ExportDirectory;
+                    System.IO.Directory.CreateDirectory(SettingsManager.ExportDirectory);
+                    return SettingsManager.ExportDirectory;
                 }
 
-                if (settings.ExportMode == "TemplatePath")
+                if (SettingsManager.ExportMode == "TemplatePath")
                 {
-                    string baseDir = string.IsNullOrWhiteSpace(settings.TemplateBaseDirectory)
+                    string baseDir = string.IsNullOrWhiteSpace(SettingsManager.TemplateBaseDirectory)
                         ? System.IO.Path.GetDirectoryName(partDoc.FullFileName) ?? ""
-                        : settings.TemplateBaseDirectory;
+                        : SettingsManager.TemplateBaseDirectory;
 
-                    string subfolders = ExpandTemplate(settings.SubfolderTemplate ?? "", partDoc);
+                    string subfolders = ExpandTemplate(SettingsManager.SubfolderTemplate ?? "", partDoc);
                     string dir = string.IsNullOrWhiteSpace(subfolders)
                         ? baseDir
                         : System.IO.Path.Combine(baseDir, subfolders);
                     System.IO.Directory.CreateDirectory(dir);
 
-                    if (!string.IsNullOrWhiteSpace(settings.FilenameTemplate))
-                        this.exportFileName = ExpandTemplate(settings.FilenameTemplate, partDoc) + ".dxf";
+                    if (!string.IsNullOrWhiteSpace(SettingsManager.FilenameTemplate))
+                        this.exportFileName = ExpandTemplate(SettingsManager.FilenameTemplate, partDoc) + ".dxf";
 
                     return dir;
                 }
@@ -405,7 +403,7 @@ namespace InventorDxfExportAddin.DxfExport
             if (ExportDirectory == null) return false;
 
             // Overwrite check
-            if (Properties.DxfSettings.Default.PromptBeforeOverwrite && System.IO.File.Exists(ExportFullPath))
+            if (SettingsManager.PromptBeforeOverwrite && System.IO.File.Exists(ExportFullPath))
             {
                 var answer = MessageBox.Show(
                     $"A DXF file already exists at:\n{ExportFullPath}\n\nOverwrite it?",
@@ -506,14 +504,14 @@ namespace InventorDxfExportAddin.DxfExport
 
                 string sOut = "FLAT PATTERN DXF?AcadVersion=2007"
                             // Outer Profile Layer
-                            + "&OuterProfileLayer=" + Properties.DxfSettings.Default.OuterProfileLayer
-                            + "&OuterProfileLayerColor=" + colorToRgb(Properties.DxfSettings.Default.OuterProfileLayerColor)
-                            + "&OuterProfileLineType=" + ((decimal)Properties.DxfSettings.Default.OuterProfileLineType)
+                            + "&OuterProfileLayer=" + SettingsManager.OuterProfileLayer
+                            + "&OuterProfileLayerColor=" + colorToRgb(SettingsManager.OuterProfileLayerColor)
+                            + "&OuterProfileLineType=" + ((decimal)SettingsManager.OuterProfileLineType)
 
                             // Interior Profile Layer
-                            + "&InteriorProfilesLayer=" + Properties.DxfSettings.Default.InteriorProfilesLayer
-                            + "&InteriorProfilesLayerColor=" + colorToRgb(Properties.DxfSettings.Default.InteriorProfilesLayerColor)
-                            + "&InteriorProfilesLineType=" + ((decimal)Properties.DxfSettings.Default.InteriorProfilesLineType)
+                            + "&InteriorProfilesLayer=" + SettingsManager.InteriorProfilesLayer
+                            + "&InteriorProfilesLayerColor=" + colorToRgb(SettingsManager.InteriorProfilesLayerColor)
+                            + "&InteriorProfilesLineType=" + ((decimal)SettingsManager.InteriorProfilesLineType)
 
                             // Bend Up Layer
                             //+ "&BendUpLayer=not_used"
@@ -547,8 +545,8 @@ namespace InventorDxfExportAddin.DxfExport
                 // read DXF and add bend lines
                 var file = DxfFile.Load(ExportFullPath);
                 file.Header.Version = DxfAcadVersion.R2007;
-                if (!ValidateAndRepairOutline(file, Properties.DxfSettings.Default.OuterProfileLayer)) return false;
-                if (!MergeOutlineToPolyline(file, Properties.DxfSettings.Default.OuterProfileLayer)) return false;
+                if (!ValidateAndRepairOutline(file, SettingsManager.OuterProfileLayer)) return false;
+                if (!MergeOutlineToPolyline(file, SettingsManager.OuterProfileLayer)) return false;
                 file.ApplicationIds.Add(new DxfAppId("POS3000_V3_PRODUCT"));
                 file.ApplicationIds.Add(new DxfAppId("POS3000_V3_BENDINGLINE"));
 
@@ -566,7 +564,7 @@ namespace InventorDxfExportAddin.DxfExport
                 foreach (DxfLayer layer in file.Layers)
                 {
 
-                    if (layer.Name == Properties.DxfSettings.Default.OuterProfileLayer)
+                    if (layer.Name == SettingsManager.OuterProfileLayer)
                     {
                         // add XData with product info
                         layer.XData["POS3000_V3_PRODUCT"] = new DxfXDataApplicationItemCollection
@@ -577,19 +575,19 @@ namespace InventorDxfExportAddin.DxfExport
                     }
                 }
 
-                bool bendDownEnabled = Properties.DxfSettings.Default.BendDownEnabled;
-                var bUpLayer = Properties.DxfSettings.Default.BendUpLayer;
+                bool bendDownEnabled = SettingsManager.BendDownEnabled;
+                var bUpLayer = SettingsManager.BendUpLayer;
                 var bDownLayer = bendDownEnabled
-                    ? Properties.DxfSettings.Default.BendDownLayer
+                    ? SettingsManager.BendDownLayer
                     : bUpLayer;
 
                 string lineTypeToDxfName(LineTypeEnum lt) =>
                     Custom_Controls.LineTypeComboBox.Styles
                         .FirstOrDefault(s => s.LineType == lt)?.DxfName ?? "CONTINUOUS";
 
-                var bUpLineType = lineTypeToDxfName(Properties.DxfSettings.Default.BendUpLineType);
+                var bUpLineType = lineTypeToDxfName(SettingsManager.BendUpLineType);
                 var bDownLineType = bendDownEnabled
-                    ? lineTypeToDxfName(Properties.DxfSettings.Default.BendDownLineType)
+                    ? lineTypeToDxfName(SettingsManager.BendDownLineType)
                     : bUpLineType;
 
                 // Ensure a line type is defined in the DXF file, adding it if missing
@@ -625,9 +623,9 @@ namespace InventorDxfExportAddin.DxfExport
                         layerCustomColors[layerName] = color; // entity-level 24-bit color applied per entity
                 }
 
-                var upColor = Properties.DxfSettings.Default.BendUpLayerColor;
+                var upColor = SettingsManager.BendUpLayerColor;
                 var downColor = bendDownEnabled
-                    ? Properties.DxfSettings.Default.BendDownLayerColor
+                    ? SettingsManager.BendDownLayerColor
                     : upColor;
 
                 ensureLayer(bUpLayer, bUpLineType, upColor);
