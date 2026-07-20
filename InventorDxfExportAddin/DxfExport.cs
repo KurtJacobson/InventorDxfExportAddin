@@ -16,13 +16,43 @@ using System.Windows.Forms;
 
 namespace InventorDxfExportAddin.DxfExport
 {
+    public enum OverwritePolicy { Ask, OverwriteAll, SkipExisting }
+
+    public class ExportResult
+    {
+        public bool    Success     { get; private set; }
+        public bool    Skipped     { get; private set; }
+        public string  OutputPath  { get; private set; }
+        public string  ErrorMessage{ get; private set; }
+
+        private ExportResult() { }
+
+        public static ExportResult Ok(string path)    => new ExportResult { Success = true, OutputPath = path };
+        public static ExportResult Skip(string path)  => new ExportResult { Skipped = true, OutputPath = path };
+        public static ExportResult Fail(string error) => new ExportResult { ErrorMessage = error };
+    }
+
     public class DxfExportEngine
     {
         private PartDocument partDoc = null;
         private string exportFileName = null;
         private string exportDirectory = null;
 
-        public DxfExportEngine(PartDocument doc) 
+        /// <summary>
+        /// When true, dialogs (SaveFileDialog) are suppressed. Use in batch mode.
+        /// Errors that would have been shown via dialog are returned in ExportResult instead.
+        /// </summary>
+        public bool SuppressDialogs { get; set; } = false;
+
+        /// <summary>
+        /// Controls behaviour when the target DXF already exists.
+        /// Ask: honour SettingsManager.PromptBeforeOverwrite (default, single-part behaviour).
+        /// OverwriteAll: always overwrite without prompting.
+        /// SkipExisting: return ExportResult.Skip without writing anything.
+        /// </summary>
+        public OverwritePolicy OverwritePolicy { get; set; } = OverwritePolicy.Ask;
+
+        public DxfExportEngine(PartDocument doc)
         {
             this.partDoc = doc;
         }
@@ -82,6 +112,9 @@ namespace InventorDxfExportAddin.DxfExport
 
                 // Document hasn't been saved as an IPT — prompt user for output location,
                 // defaulting to the source STP file's directory if we can find it.
+                if (SuppressDialogs)
+                    return null;
+
                 using var dialog = new SaveFileDialog
                 {
                     Title = "Save DXF As",
@@ -173,9 +206,10 @@ namespace InventorDxfExportAddin.DxfExport
         /// endpoint from another entity are snapped together. Arc endpoints are checked
         /// but not modified (arc geometry repair would require re-parameterisation).
         /// </summary>
-        private static bool ValidateAndRepairOutline(DxfFile file, string layerName,
+        private static bool ValidateAndRepairOutline(DxfFile file, string layerName, out string error,
             double connectedTol = 1e-6, double snapTol = 1e-3)
         {
+            error = null;
             var lines   = file.Entities.OfType<DxfLine>  ().Where(e => e.Layer == layerName).ToList();
             var arcs    = file.Entities.OfType<DxfArc>   ().Where(e => e.Layer == layerName).ToList();
             var splines = file.Entities.OfType<DxfSpline>().Where(e => e.Layer == layerName).ToList();
@@ -183,9 +217,8 @@ namespace InventorDxfExportAddin.DxfExport
             int total = lines.Count + arcs.Count + splines.Count;
             if (total == 0)
             {
+                error = $"The exported DXF has no geometry on the outline layer '{layerName}'.";
                 LogManager.Log.Warning($"Outline layer '{layerName}' has no line, arc, or spline entities.");
-                MessageBox.Show($"The exported DXF has no geometry on the outline layer '{layerName}'.\n\nThe export has been aborted.",
-                    "Open Contour", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
@@ -266,14 +299,12 @@ namespace InventorDxfExportAddin.DxfExport
                 return true;
             }
 
+            error = $"The flat pattern outline on layer '{layerName}' is not a closed contour.\n\n" +
+                    $"{remaining} open endpoint(s) could not be automatically joined " +
+                    $"(largest gap may exceed the snap tolerance of {snapTol} units).\n\n" +
+                    "Please check the model geometry and try again.";
             LogManager.Log.Warning(
                 $"Outline repair: {repaired} gap(s) closed, {remaining} open endpoint(s) remain.");
-            MessageBox.Show(
-                $"The flat pattern outline on layer '{layerName}' is not a closed contour.\n\n" +
-                $"{remaining} open endpoint(s) could not be automatically joined " +
-                $"(largest gap may exceed the snap tolerance of {snapTol} units).\n\n" +
-                "Please check the model geometry and try again.",
-                "Open Contour", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return false;
         }
 
@@ -283,9 +314,10 @@ namespace InventorDxfExportAddin.DxfExport
         /// values (bulge = tan(included_angle / 4), positive = CCW, negative = CW traversal).
         /// Called after ValidateAndRepairOutline so endpoints are already coincident.
         /// </summary>
-        private static bool MergeOutlineToPolyline(DxfFile file, string layerName,
+        private static bool MergeOutlineToPolyline(DxfFile file, string layerName, out string error,
             double chainTol = 1e-4, int splineSamples = 64)
         {
+            error = null;
             var lines   = file.Entities.OfType<DxfLine>  ().Where(e => e.Layer == layerName).ToList();
             var arcs    = file.Entities.OfType<DxfArc>   ().Where(e => e.Layer == layerName).ToList();
             var splines = file.Entities.OfType<DxfSpline>().Where(e => e.Layer == layerName).ToList();
@@ -351,12 +383,10 @@ namespace InventorDxfExportAddin.DxfExport
                 }
                 if (!found)
                 {
+                    error = $"The outline on layer '{layerName}' could not be converted to a polyline — " +
+                            "the segments do not form a single continuous chain. " +
+                            "Please check the model geometry and try again.";
                     LogManager.Log.Warning($"Outline '{layerName}': could not build a continuous chain.");
-                    MessageBox.Show(
-                        $"The outline on layer '{layerName}' could not be converted to a polyline.\n\n" +
-                        "The segments do not form a single continuous chain. " +
-                        "Please check the model geometry and try again.",
-                        "Polyline Conversion Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
             }
@@ -364,12 +394,9 @@ namespace InventorDxfExportAddin.DxfExport
             if (OutlineHelper.Dist(tip, chainStart) > chainTol)
             {
                 double gap = OutlineHelper.Dist(tip, chainStart);
+                error = $"The outline on layer '{layerName}' does not close (gap = {gap:G4} units). " +
+                        "Please check the model geometry and try again.";
                 LogManager.Log.Warning($"Outline '{layerName}': chain does not close (gap = {gap:G4}).");
-                MessageBox.Show(
-                    $"The outline on layer '{layerName}' could not be converted to a polyline.\n\n" +
-                    $"The chain does not close (gap = {gap:G4} units). " +
-                    "Please check the model geometry and try again.",
-                    "Polyline Conversion Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
@@ -394,42 +421,53 @@ namespace InventorDxfExportAddin.DxfExport
             return String.Format("{0};{1};{2}", color.R, color.G, color.B);
         }
 
-        public bool ExportFlatDXF(PartDocument oDoc)
+        public ExportResult ExportFlatDXF(PartDocument oDoc)
         {
             LogManager.Log.Information("------ Begin DXF export ------");
             LogManager.Log.Information($"CAD Model Name: {oDoc.DisplayName}");
 
-            // ExportDirectory may prompt user; if they cancel, abort silently
-            if (ExportDirectory == null) return false;
+            // ExportDirectory may prompt user (or return null in batch/suppressed mode).
+            if (ExportDirectory == null)
+                return ExportResult.Fail("Could not determine export directory — the document may not be saved.");
 
             // Overwrite check
-            if (SettingsManager.PromptBeforeOverwrite && System.IO.File.Exists(ExportFullPath))
+            if (System.IO.File.Exists(ExportFullPath))
             {
-                var answer = MessageBox.Show(
-                    $"A DXF file already exists at:\n{ExportFullPath}\n\nOverwrite it?",
-                    "File Already Exists",
-                    MessageBoxButtons.YesNoCancel,
-                    MessageBoxIcon.Warning);
-
-                if (answer == DialogResult.Cancel)
-                    return false;
-
-                if (answer == DialogResult.No)
+                if (OverwritePolicy == OverwritePolicy.SkipExisting)
                 {
-                    using var saveAs = new SaveFileDialog
-                    {
-                        Title = "Save DXF As",
-                        Filter = "DXF Files (*.dxf)|*.dxf",
-                        FileName = ExportFilename,
-                        DefaultExt = "dxf",
-                        InitialDirectory = ExportDirectory
-                    };
-                    if (saveAs.ShowDialog() != DialogResult.OK)
-                        return false;
-
-                    this.exportFileName  = System.IO.Path.GetFileName(saveAs.FileName);
-                    this.exportDirectory = System.IO.Path.GetDirectoryName(saveAs.FileName);
+                    LogManager.Log.Information($"Skipping existing file: {ExportFullPath}");
+                    return ExportResult.Skip(ExportFullPath);
                 }
+
+                if (OverwritePolicy == OverwritePolicy.Ask && SettingsManager.PromptBeforeOverwrite)
+                {
+                    var answer = MessageBox.Show(
+                        $"A DXF file already exists at:\n{ExportFullPath}\n\nOverwrite it?",
+                        "File Already Exists",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Warning);
+
+                    if (answer == DialogResult.Cancel)
+                        return ExportResult.Fail("Export cancelled by user.");
+
+                    if (answer == DialogResult.No)
+                    {
+                        using var saveAs = new SaveFileDialog
+                        {
+                            Title = "Save DXF As",
+                            Filter = "DXF Files (*.dxf)|*.dxf",
+                            FileName = ExportFilename,
+                            DefaultExt = "dxf",
+                            InitialDirectory = ExportDirectory
+                        };
+                        if (saveAs.ShowDialog() != DialogResult.OK)
+                            return ExportResult.Fail("Export cancelled by user.");
+
+                        this.exportFileName  = System.IO.Path.GetFileName(saveAs.FileName);
+                        this.exportDirectory = System.IO.Path.GetDirectoryName(saveAs.FileName);
+                    }
+                }
+                // OverwriteAll or Ask+!PromptBeforeOverwrite: fall through and overwrite silently.
             }
 
             LogManager.Log.Information($"Export full path: {ExportFullPath}");
@@ -437,10 +475,7 @@ namespace InventorDxfExportAddin.DxfExport
             SheetMetalComponentDefinition smCompDef;
 
             if (oDoc == null)
-            {
-                MessageBox.Show("Part document is null.", "Export error!");
-                return false;
-            }
+                return ExportResult.Fail("Part document is null.");
 
             if (oDoc.DocumentType == DocumentTypeEnum.kPartDocumentObject)
             {
@@ -455,8 +490,7 @@ namespace InventorDxfExportAddin.DxfExport
                 }
                 else
                 {
-                    MessageBox.Show("The selected item is not a valid Sheetmetal component.", "Export Error!");
-                    return false;
+                    return ExportResult.Fail("The selected item is not a valid sheet metal component.");
                 }
 
                 // Unfold if we don't already have a flat pattern
@@ -468,9 +502,8 @@ namespace InventorDxfExportAddin.DxfExport
                     }
                     catch
                     {
-                        MessageBox.Show("Inventor encountered an error while unfolding the part.\n"
-                                      + "Please correct the issue with the model and try again.", "Unfold error!");
-                        return false;
+                        return ExportResult.Fail("Inventor encountered an error while unfolding the part.\n"
+                                               + "Please correct the issue with the model and try again.");
                     }
                 }
 
@@ -545,8 +578,10 @@ namespace InventorDxfExportAddin.DxfExport
                 // read DXF and add bend lines
                 var file = DxfFile.Load(ExportFullPath);
                 file.Header.Version = DxfAcadVersion.R2007;
-                if (!ValidateAndRepairOutline(file, SettingsManager.OuterProfileLayer)) return false;
-                if (!MergeOutlineToPolyline(file, SettingsManager.OuterProfileLayer)) return false;
+                if (!ValidateAndRepairOutline(file, SettingsManager.OuterProfileLayer, out string validateError))
+                    return ExportResult.Fail(validateError);
+                if (!MergeOutlineToPolyline(file, SettingsManager.OuterProfileLayer, out string mergeError))
+                    return ExportResult.Fail(mergeError);
                 file.ApplicationIds.Add(new DxfAppId("POS3000_V3_PRODUCT"));
                 file.ApplicationIds.Add(new DxfAppId("POS3000_V3_BENDINGLINE"));
 
@@ -699,10 +734,10 @@ namespace InventorDxfExportAddin.DxfExport
 
                 LogManager.Log.Information($"Bend lines added, export complete.");
 
-                return true;
+                return ExportResult.Ok(ExportFullPath);
             }
 
-            return false;
+            return ExportResult.Fail("Active document is not a Part document.");
         }
     }
 

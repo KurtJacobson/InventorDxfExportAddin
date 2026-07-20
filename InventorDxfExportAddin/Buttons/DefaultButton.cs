@@ -30,10 +30,13 @@ namespace InventorDxfExportAddin.Buttons
 
                 try
                 {
-                    bool success = export.ExportFlatDXF(partDoc);
-                    if (success)
-                        MessageBox.Show($"DXF successfully exported to:\n{export.ExportFullPath}",
+                    ExportResult result = export.ExportFlatDXF(partDoc);
+                    if (result.Success)
+                        MessageBox.Show($"DXF successfully exported to:\n{result.OutputPath}",
                             "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    else if (!result.Skipped && result.ErrorMessage != null)
+                        MessageBox.Show(result.ErrorMessage,
+                            "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 catch (Exception ex)
                 {
