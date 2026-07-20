@@ -124,7 +124,7 @@ namespace InventorDxfExportAddin.Buttons
         {
             try
             {
-                new FormExportOptions().ShowDialog(InventorWindow.Instance);
+                new FormExportOptions(inventor.ActiveDocument).ShowDialog(InventorWindow.Instance);
             }
             catch (Exception ex)
             {

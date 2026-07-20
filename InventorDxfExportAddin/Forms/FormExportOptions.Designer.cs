@@ -23,9 +23,13 @@ namespace InventorDxfExportAddin.Forms
             this.btnBrowseTemplate = new System.Windows.Forms.Button();
             this.lblSubfolder = new System.Windows.Forms.Label();
             this.tbSubfolderTemplate = new System.Windows.Forms.TextBox();
+            this.btnPickSubfolder = new System.Windows.Forms.Button();
             this.lblFilename = new System.Windows.Forms.Label();
             this.tbFilenameTemplate = new System.Windows.Forms.TextBox();
+            this.btnPickFilename = new System.Windows.Forms.Button();
             this.lblTokens = new System.Windows.Forms.Label();
+            this.lblPreview = new System.Windows.Forms.Label();
+            this.tbPreview = new System.Windows.Forms.TextBox();
             this.grpOverwrite = new System.Windows.Forms.GroupBox();
             this.cbPromptOverwrite = new System.Windows.Forms.CheckBox();
             this.btnSave = new System.Windows.Forms.Button();
@@ -47,12 +51,16 @@ namespace InventorDxfExportAddin.Forms
             this.grpLocation.Controls.Add(this.btnBrowseTemplate);
             this.grpLocation.Controls.Add(this.lblSubfolder);
             this.grpLocation.Controls.Add(this.tbSubfolderTemplate);
+            this.grpLocation.Controls.Add(this.btnPickSubfolder);
             this.grpLocation.Controls.Add(this.lblFilename);
             this.grpLocation.Controls.Add(this.tbFilenameTemplate);
+            this.grpLocation.Controls.Add(this.btnPickFilename);
             this.grpLocation.Controls.Add(this.lblTokens);
+            this.grpLocation.Controls.Add(this.lblPreview);
+            this.grpLocation.Controls.Add(this.tbPreview);
             this.grpLocation.Location = new System.Drawing.Point(12, 12);
             this.grpLocation.Name = "grpLocation";
-            this.grpLocation.Size = new System.Drawing.Size(460, 291);
+            this.grpLocation.Size = new System.Drawing.Size(460, 338);
             this.grpLocation.TabIndex = 0;
             this.grpLocation.TabStop = false;
             this.grpLocation.Text = "Output Location";
@@ -146,8 +154,19 @@ namespace InventorDxfExportAddin.Forms
             this.tbSubfolderTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSubfolderTemplate.Location = new System.Drawing.Point(28, 193);
             this.tbSubfolderTemplate.Name = "tbSubfolderTemplate";
-            this.tbSubfolderTemplate.Size = new System.Drawing.Size(420, 20);
+            this.tbSubfolderTemplate.Size = new System.Drawing.Size(392, 20);
             this.tbSubfolderTemplate.TabIndex = 9;
+            //
+            // btnPickSubfolder
+            //
+            this.btnPickSubfolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPickSubfolder.Location = new System.Drawing.Point(424, 191);
+            this.btnPickSubfolder.Name = "btnPickSubfolder";
+            this.btnPickSubfolder.Size = new System.Drawing.Size(24, 23);
+            this.btnPickSubfolder.TabIndex = 13;
+            this.btnPickSubfolder.Text = "…";
+            this.btnPickSubfolder.UseVisualStyleBackColor = true;
+            this.btnPickSubfolder.Click += new System.EventHandler(this.btnPickSubfolder_Click);
             //
             // lblFilename
             //
@@ -162,8 +181,19 @@ namespace InventorDxfExportAddin.Forms
             this.tbFilenameTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.tbFilenameTemplate.Location = new System.Drawing.Point(28, 238);
             this.tbFilenameTemplate.Name = "tbFilenameTemplate";
-            this.tbFilenameTemplate.Size = new System.Drawing.Size(420, 20);
+            this.tbFilenameTemplate.Size = new System.Drawing.Size(392, 20);
             this.tbFilenameTemplate.TabIndex = 11;
+            //
+            // btnPickFilename
+            //
+            this.btnPickFilename.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPickFilename.Location = new System.Drawing.Point(424, 236);
+            this.btnPickFilename.Name = "btnPickFilename";
+            this.btnPickFilename.Size = new System.Drawing.Size(24, 23);
+            this.btnPickFilename.TabIndex = 14;
+            this.btnPickFilename.Text = "…";
+            this.btnPickFilename.UseVisualStyleBackColor = true;
+            this.btnPickFilename.Click += new System.EventHandler(this.btnPickFilename_Click);
             //
             // lblTokens
             //
@@ -175,11 +205,33 @@ namespace InventorDxfExportAddin.Forms
             this.lblTokens.TabIndex = 12;
             this.lblTokens.Text = "Tokens: {Material}  {Thickness}  {Thickness:mm:2}  {Thickness:in:3}  {PartNumber}  {Description}  {RevisionNumber}  {FileName}";
             //
+            // lblPreview
+            //
+            this.lblPreview.AutoSize = true;
+            this.lblPreview.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.lblPreview.Location = new System.Drawing.Point(28, 294);
+            this.lblPreview.Name = "lblPreview";
+            this.lblPreview.TabIndex = 15;
+            this.lblPreview.Text = "Preview:";
+            //
+            // tbPreview
+            //
+            this.tbPreview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbPreview.BackColor = System.Drawing.SystemColors.Control;
+            this.tbPreview.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbPreview.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.tbPreview.Location = new System.Drawing.Point(28, 312);
+            this.tbPreview.Name = "tbPreview";
+            this.tbPreview.ReadOnly = true;
+            this.tbPreview.Size = new System.Drawing.Size(420, 13);
+            this.tbPreview.TabIndex = 16;
+            this.tbPreview.TabStop = false;
+            //
             // grpOverwrite
             //
             this.grpOverwrite.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.grpOverwrite.Controls.Add(this.cbPromptOverwrite);
-            this.grpOverwrite.Location = new System.Drawing.Point(12, 313);
+            this.grpOverwrite.Location = new System.Drawing.Point(12, 360);
             this.grpOverwrite.Name = "grpOverwrite";
             this.grpOverwrite.Size = new System.Drawing.Size(460, 48);
             this.grpOverwrite.TabIndex = 1;
@@ -198,7 +250,7 @@ namespace InventorDxfExportAddin.Forms
             // btnSave
             //
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(316, 375);
+            this.btnSave.Location = new System.Drawing.Point(316, 422);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 2;
@@ -209,7 +261,7 @@ namespace InventorDxfExportAddin.Forms
             // btnCancel
             //
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(397, 375);
+            this.btnCancel.Location = new System.Drawing.Point(397, 422);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 3;
@@ -222,7 +274,7 @@ namespace InventorDxfExportAddin.Forms
             this.AcceptButton = this.btnSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 410);
+            this.ClientSize = new System.Drawing.Size(484, 457);
             this.Controls.Add(this.grpLocation);
             this.Controls.Add(this.grpOverwrite);
             this.Controls.Add(this.btnSave);
@@ -251,9 +303,13 @@ namespace InventorDxfExportAddin.Forms
         private System.Windows.Forms.Button btnBrowseTemplate;
         private System.Windows.Forms.Label lblSubfolder;
         private System.Windows.Forms.TextBox tbSubfolderTemplate;
+        private System.Windows.Forms.Button btnPickSubfolder;
         private System.Windows.Forms.Label lblFilename;
         private System.Windows.Forms.TextBox tbFilenameTemplate;
+        private System.Windows.Forms.Button btnPickFilename;
         private System.Windows.Forms.Label lblTokens;
+        private System.Windows.Forms.Label lblPreview;
+        private System.Windows.Forms.TextBox tbPreview;
         private System.Windows.Forms.GroupBox grpOverwrite;
         private System.Windows.Forms.CheckBox cbPromptOverwrite;
         private System.Windows.Forms.Button btnSave;
