@@ -120,7 +120,7 @@ namespace InventorDxfExportAddin.Forms
             this.lblBaseDir.Location = new System.Drawing.Point(28, 130);
             this.lblBaseDir.Name = "lblBaseDir";
             this.lblBaseDir.TabIndex = 5;
-            this.lblBaseDir.Text = "Base directory:";
+            this.lblBaseDir.Text = "Base directory (blank = same folder as part):";
             //
             // tbTemplateBaseDir
             //
@@ -203,7 +203,7 @@ namespace InventorDxfExportAddin.Forms
             this.lblTokens.Name = "lblTokens";
             this.lblTokens.Size = new System.Drawing.Size(420, 26);
             this.lblTokens.TabIndex = 12;
-            this.lblTokens.Text = "Tokens: {Material}  {Thickness}  {Thickness:mm:2}  {Thickness:in:3}  {PartNumber}  {Description}  {RevisionNumber}  {FileName}";
+            this.lblTokens.Text = "Use the … buttons to insert iProperty tokens into the subfolder and filename patterns.";
             //
             // lblPreview
             //

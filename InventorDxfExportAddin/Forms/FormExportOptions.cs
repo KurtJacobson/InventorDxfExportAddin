@@ -96,13 +96,6 @@ namespace InventorDxfExportAddin.Forms
                 return;
             }
 
-            if (rbTemplatePath.Checked && string.IsNullOrWhiteSpace(tbTemplateBaseDir.Text))
-            {
-                MessageBox.Show(this, "Please choose a base directory for the template output.",
-                    "Export Options", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
             var s = Properties.DxfSettings.Default;
 
             if (rbTemplatePath.Checked)
@@ -138,7 +131,10 @@ namespace InventorDxfExportAddin.Forms
 
             try
             {
-                string baseDir   = tbTemplateBaseDir.Text.Trim();
+                string baseDir = tbTemplateBaseDir.Text.Trim();
+                if (string.IsNullOrEmpty(baseDir))
+                    baseDir = System.IO.Path.GetDirectoryName(_doc.FullFileName) ?? "";
+
                 string subfolder = TemplateHelper.Expand(tbSubfolderTemplate.Text, _doc, sanitize: true);
                 string filename  = TemplateHelper.Expand(tbFilenameTemplate.Text,  _doc, sanitize: true);
 

@@ -55,12 +55,16 @@ namespace InventorDxfExportAddin.DxfExport
                     return settings.ExportDirectory;
                 }
 
-                if (settings.ExportMode == "TemplatePath" && !string.IsNullOrWhiteSpace(settings.TemplateBaseDirectory))
+                if (settings.ExportMode == "TemplatePath")
                 {
+                    string baseDir = string.IsNullOrWhiteSpace(settings.TemplateBaseDirectory)
+                        ? System.IO.Path.GetDirectoryName(partDoc.FullFileName) ?? ""
+                        : settings.TemplateBaseDirectory;
+
                     string subfolders = ExpandTemplate(settings.SubfolderTemplate ?? "", partDoc);
                     string dir = string.IsNullOrWhiteSpace(subfolders)
-                        ? settings.TemplateBaseDirectory
-                        : System.IO.Path.Combine(settings.TemplateBaseDirectory, subfolders);
+                        ? baseDir
+                        : System.IO.Path.Combine(baseDir, subfolders);
                     System.IO.Directory.CreateDirectory(dir);
 
                     if (!string.IsNullOrWhiteSpace(settings.FilenameTemplate))
