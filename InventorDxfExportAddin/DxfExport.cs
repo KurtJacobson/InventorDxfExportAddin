@@ -172,14 +172,23 @@ namespace InventorDxfExportAddin.DxfExport
             try
             {
                 var dt = doc.PropertySets["Design Tracking Properties"];
-                TryAddProperty(dt, "Part Number",     tokens, "PartNumber");
-                TryAddProperty(dt, "Description",     tokens, "Description");
-                TryAddProperty(dt, "Material",        tokens, "Material");
-                TryAddProperty(dt, "Revision Number", tokens, "RevisionNumber");
+                TryAddProperty(dt, "Part Number",  tokens, "PartNumber");
+                TryAddProperty(dt, "Description",  tokens, "Description");
+                TryAddProperty(dt, "Material",     tokens, "Material");
             }
             catch (Exception ex)
             {
                 LogManager.Log.Warning($"ExpandTemplate: could not read Design Tracking Properties: {ex.Message}");
+            }
+
+            try
+            {
+                var si = doc.PropertySets["Inventor Summary Information"];
+                TryAddProperty(si, "Revision Number", tokens, "RevisionNumber");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log.Warning($"ExpandTemplate: could not read Inventor Summary Information: {ex.Message}");
             }
 
             string result = template;
