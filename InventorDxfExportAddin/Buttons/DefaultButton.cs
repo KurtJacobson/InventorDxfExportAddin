@@ -5,6 +5,7 @@ using InventorDxfExportAddin.Forms;
 using InventorDxfExportAddin.Properties;
 using IxMilia.Dxf;
 using IxMilia.Dxf.Entities;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using static InventorDxfExportAddin.Custom_Controls.LineTypeComboBox;
@@ -202,6 +203,72 @@ namespace InventorDxfExportAddin.Buttons
         protected override string LargeIconResourceName => "InventorDxfExportAddin.Buttons.Assets.Settings-Dark.png";
 
         protected override string DarkThemeLargeIconResourceName => "InventorDxfExportAddin.Buttons.Assets.Settings-Dark.png";
+
+        protected override string SmallIconResourceName => LargeIconResourceName;
+
+        protected override string DarkThemeSmallIconResourceName => DarkThemeLargeIconResourceName;
+    }
+
+    public class ExportAssemblyDxfButton : InventorButton
+    {
+        protected override void Execute(NameValueMap context, Inventor.Application inventor)
+        {
+            var asmDoc = inventor.ActiveDocument as AssemblyDocument;
+            if (asmDoc == null) return;
+
+            // 1. Traverse the assembly to find all sheet metal parts.
+            List<SheetMetalPart> parts;
+            try
+            {
+                parts = AssemblyTraversal.FindSheetMetalParts(asmDoc);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log.Error($"Assembly traversal failed: {ex.Message}\n{ex.StackTrace}");
+                MessageBox.Show($"Could not read the assembly structure.\n\n{ex.Message}",
+                    "Assembly Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (parts.Count == 0)
+            {
+                MessageBox.Show("No sheet metal parts were found in the assembly.",
+                    "Export Assembly DXFs", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            // 2. Ask once how to handle existing DXF files (if prompt is enabled).
+            var policy = OverwritePolicy.OverwriteAll;
+            if (SettingsManager.PromptBeforeOverwrite)
+            {
+                using (var dlg = new FormAssemblyExportOptions(parts.Count))
+                {
+                    if (dlg.ShowDialog(InventorWindow.Instance) != System.Windows.Forms.DialogResult.OK)
+                        return;
+                    policy = dlg.SelectedPolicy;
+                }
+            }
+
+            // 3. Run the batch export and show the results report.
+            AssemblyBatchExporter.Run(asmDoc, parts, policy);
+        }
+
+        protected override string RibbonName => InventorRibbons.Assembly;
+
+        // Place on the Assemble tab — change to any other AssemblyRibbonTabs value if preferred.
+        protected override string RibbonTabName => AssemblyRibbonTabs.Assemble;
+
+        protected override string RibbonPanelName => "Schröder DXF Export";
+
+        protected override string Label => "Export\nDXFs";
+
+        protected override string Description => "Export flat-pattern DXFs for all sheet metal parts in the assembly.";
+
+        protected override string Tooltip => "Export flat-pattern DXFs for all sheet metal parts in the assembly.";
+
+        protected override string LargeIconResourceName => "InventorDxfExportAddin.Buttons.Assets.Export-Light.png";
+
+        protected override string DarkThemeLargeIconResourceName => "InventorDxfExportAddin.Buttons.Assets.Export-Light.png";
 
         protected override string SmallIconResourceName => LargeIconResourceName;
 
