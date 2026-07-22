@@ -81,7 +81,7 @@ The tab is only visible when a Part document with a flat pattern is active.
 ![Flat Pattern Tab - Schröder DXF Export Panel](images/tool-bar.png)
 
 | Button         | Description |
-|----------------|-------------|
+|---------       |---------------------------------------|
 | Export DXF     | Exports the active part's flat pattern to a DXF file using the current settings. |
 | DXF Settings   | Opens the layer and line-type configuration dialog. |
 | Export Options | Opens the output location and overwrite-behaviour dialog. |
@@ -112,7 +112,7 @@ are persisted per user in the .NET user-scoped settings store.
 ## Outer Profile
 
 | Setting      | Description |
-|--------------|-------------|
+|---------     |---------------------------------------|
 | Layer name   | Name of the DXF layer (default: `Outline`). |
 | Layer color  | RGB color assigned to the layer. |
 | Line type    | Line type applied to outer profile entities. |
@@ -120,7 +120,7 @@ are persisted per user in the .NET user-scoped settings store.
 ## Interior Profiles
 
 | Setting      | Description |
-|--------------|-------------|
+|---------     |---------------------------------------|
 | Layer name   | Default: `InnerOutlines`. |
 | Layer color  | RGB color for the layer. |
 | Line type    | Line type for interior profile entities. |
@@ -129,11 +129,11 @@ are persisted per user in the .NET user-scoped settings store.
 
 Bend line geometry can be separated by direction for downstream CAM compatibility.
 
-| Setting                              | Description |
-|--------------------------------------|-------------|
+| Setting                             | Description |
+|---------------                      |---------------------------------------|
 | Bend Up layer / color / line type   | Layer for upward bends. Default layer: `BendingLines`, color: blue. |
 | Bend Down layer / color / line type | Layer for downward bends. Default layer: `BendingLines`, color: magenta. |
-| Enable bend-down layer               | When unchecked, down-bend lines are written to the bend-up layer. |
+| Enable bend-down layer              | When unchecked, down-bend lines are written to the bend-up layer. |
 
 ---
 
@@ -161,7 +161,7 @@ reference the part's iProperties and sheet-metal data. Useful for organizing
 outputs into nested folders by material, thickness, and so on.
 
 | Field             | Description |
-|-------------------|-------------|
+|---------          |---------------------------------------|
 | Base directory    | Root folder under which the template path is built. |
 | Subfolder pattern | Template that creates nested subdirectories. Example: `{Material}\{Thickness:mm:2}` |
 | Filename pattern  | Template for the output filename (no extension). Leave blank to use the Inventor document filename. |
@@ -172,8 +172,8 @@ Tokens are written as `{TokenName}` in either template field and expanded at
 export time. Values are sanitized — characters illegal in Windows file names are
 replaced with underscores.
 
-| Token             | Source |
-|-------------------|--------|
+| Token              | Source |
+|---------           |---------------------------------------|
 | `{Material}`       | *Material* iProperty. |
 | `{PartNumber}`     | *Part Number* iProperty. |
 | `{Description}`    | *Description* iProperty. |
@@ -186,14 +186,13 @@ replaced with underscores.
 `{Thickness}` accepts optional unit and precision arguments separated by colons.
 All parts are optional.
 
-```
-{Thickness}        document units, auto precision
-{Thickness:mm}     millimetres, auto precision
-{Thickness:in}     inches, auto precision
-{Thickness:mm:2}   millimetres, 2 decimal places  ->  3.00mm
-{Thickness:in:3}   inches, 3 decimal places       ->  0.125in
-{Thickness::2}     document units, 2 decimal places
-```
+|---------          |---------------------------------------|
+| {Thickness}       | document units, auto precision  |
+| {Thickness:mm}    | millimetres, auto precision  |
+| {Thickness:in}    | inches, auto precision  |
+| {Thickness:mm:2}  | millimetres, 2 decimal places  ->  3.00mm  |
+| {Thickness:in:3}  | inches, 3 decimal places       ->  0.125in  |
+| {Thickness::2}    | document units, 2 decimal places  |
 
 Supported units: `mm`, `cm`, `m`, `in`, `ft`.
 
