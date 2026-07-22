@@ -33,9 +33,9 @@ jobs:
       - name: Add WiX UI extension
         run: wix extension add WixToolset.UI.wixext/4.0.5
 
-      - name: Install Pandoc and Tectonic
+      - name: Install Pandoc
         run: |
-          choco install pandoc tectonic --no-progress -y
+          choco install pandoc --no-progress -y
           $machinePath = [System.Environment]::GetEnvironmentVariable("PATH","Machine")
           $userPath    = [System.Environment]::GetEnvironmentVariable("PATH","User")
           echo "PATH=$machinePath;$userPath" >> $env:GITHUB_ENV
@@ -44,7 +44,7 @@ jobs:
         working-directory: docs
         run: |
           $version = (git describe --tags --always) -replace '-\d+-g', '-'
-          pandoc manual.md -o manual.pdf --pdf-engine=tectonic --lua-filter=strip-image-alt.lua --metadata "date=Version $version"
+          pandoc manual.md -o manual.pdf --pdf-engine=wkhtmltopdf --lua-filter=strip-image-alt.lua --metadata "date=Version $version"
 
       - name: Restore NuGet packages
         run: nuget restore InventorDxfExportAddin/InventorDxfExportAddin.csproj
