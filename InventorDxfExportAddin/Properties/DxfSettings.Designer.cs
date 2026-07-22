@@ -181,6 +181,18 @@ namespace InventorDxfExportAddin.Properties {
 
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
+        public double BendLineSetback {
+            get {
+                return ((double)(this["BendLineSetback"]));
+            }
+            set {
+                this["BendLineSetback"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("NextToSourceFile")]
         public string ExportMode {
             get {

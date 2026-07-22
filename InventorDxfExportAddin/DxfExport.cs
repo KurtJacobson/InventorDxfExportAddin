@@ -549,6 +549,14 @@ namespace InventorDxfExportAddin.DxfExport
                 file.Header.Version = DxfAcadVersion.R2007;
                 if (!ValidateAndRepairOutline(file, Properties.DxfSettings.Default.OuterProfileLayer)) return false;
                 if (!MergeOutlineToPolyline(file, Properties.DxfSettings.Default.OuterProfileLayer)) return false;
+
+                // Snapshot interior entities now — before XData / bend layers are added — for bend line trimming.
+                var _outerPolyline = file.Entities
+                    .OfType<DxfLwPolyline>()
+                    .FirstOrDefault(p => p.Layer == Properties.DxfSettings.Default.OuterProfileLayer);
+                var _interiorEntities = (IReadOnlyList<DxfEntity>)file.Entities
+                    .Where(e => e.Layer == Properties.DxfSettings.Default.InteriorProfilesLayer)
+                    .ToList();
                 file.ApplicationIds.Add(new DxfAppId("POS3000_V3_PRODUCT"));
                 file.ApplicationIds.Add(new DxfAppId("POS3000_V3_BENDINGLINE"));
 
@@ -660,38 +668,35 @@ namespace InventorDxfExportAddin.DxfExport
                     var x2 = toDocUnits(stopPoint.X);
                     var y2 = toDocUnits(stopPoint.Y);
 
-                    // shorten bend lines
-                    var d = Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-
-                    // new starting point
-                    var t = 0.1 / d;
-                    x1 = (1 - t) * x1 + t * x2;
-                    y1 = (1 - t) * y1 + t * y2;
-
-                    // new stopping point
-                    t = (d - 0.1) / d;
-                    x2 = (1 - t) * x1 + t * x2;
-                    y2 = (1 - t) * y1 + t * y2;
-
-                    var bLine = new DxfLine(new DxfPoint(x1, y1, 0.0), new DxfPoint(x2, y2, 0.0));
-                    bLine.Layer = bLayer;
-                    // custom colors can't be set on the layer (DxfLayer only supports ACI), so set per-entity
-                    if (layerCustomColors.TryGetValue(bLayer, out var customColor))
-                        bLine.Color24Bit = customColor.ToArgb() & 0xFFFFFF;
-                    // hems override the layer line type with DIVIDE
-                    if (Math.Abs(bAngle) > 179)
-                        bLine.LineTypeName = "DIVIDE";
-
-                    // add XData with bend info
-                    bLine.XData["POS3000_V3_BENDINGLINE"] = new DxfXDataApplicationItemCollection(
+                    var bendXData = new DxfXDataApplicationItemCollection(
                         new DxfXDataString(String.Format("BendAngleDeg={0:F3}", bAngle)),
                         new DxfXDataString(String.Format("InnerRadius={0:F4}", bRadius)),
                         new DxfXDataString(String.Format("K_Factor={0:F3}", oBend.kFactor))
-                    //new DxfXDataString(String.Format("BendShortening=-.5"))
                     );
 
-                    // add bend line to DXF
-                    file.Entities.Add(bLine);
+                    // Trim bend line against the outer profile and any cutouts.
+                    // Setback is applied at every boundary crossing (outer and interior).
+                    var setback = Properties.DxfSettings.Default.BendLineSetback;
+                    var segments = _outerPolyline != null
+                        ? BendLineTrimmer.Trim(
+                            new DxfPoint(x1, y1, 0), new DxfPoint(x2, y2, 0),
+                            _outerPolyline, _interiorEntities, setback)
+                        : new System.Collections.Generic.List<(DxfPoint, DxfPoint)>
+                          { (new DxfPoint(x1, y1, 0), new DxfPoint(x2, y2, 0)) };
+
+                    foreach (var (segStart, segEnd) in segments)
+                    {
+                        var bLine = new DxfLine(segStart, segEnd);
+                        bLine.Layer = bLayer;
+                        // custom colors can't be set on the layer (DxfLayer only supports ACI), so set per-entity
+                        if (layerCustomColors.TryGetValue(bLayer, out var customColor))
+                            bLine.Color24Bit = customColor.ToArgb() & 0xFFFFFF;
+                        // hems override the layer line type with DIVIDE
+                        if (Math.Abs(bAngle) > 179)
+                            bLine.LineTypeName = "DIVIDE";
+                        bLine.XData["POS3000_V3_BENDINGLINE"] = bendXData;
+                        file.Entities.Add(bLine);
+                    }
                 }
 
                 file.Save(ExportFullPath);
