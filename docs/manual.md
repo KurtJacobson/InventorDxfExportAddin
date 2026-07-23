@@ -5,23 +5,6 @@ date: "Development Build"
 lang: en-US
 toc: true
 toc-depth: 3
-colorlinks: true
-linkcolor: Black
-geometry: "a4paper, margin=2.8cm, top=2.5cm, bottom=2.5cm"
-fontsize: 11pt
-header-includes:
-  - \usepackage[sfdefault,lf]{FiraSans}
-  - \usepackage[scaled=0.87]{FiraMono}
-  - \usepackage{xcolor}
-  - \usepackage{titlesec}
-  - \definecolor{accent}{RGB}{120,120,120}
-  - \titleformat{\section}{\Large\bfseries\color{accent}}{}{0em}{}
-  - \titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
-  - \titleformat{\subsubsection}{\normalsize\itshape}{}{0em}{}
-  - \titlespacing{\section}{0pt}{1.6em}{0.5em}
-  - \titlespacing{\subsection}{0pt}{1.1em}{0.3em}
-  - \usepackage{float}
-  - \makeatletter\def\fps@figure{H}\makeatother
 ---
 
 # Overview
@@ -42,7 +25,6 @@ Key capabilities:
 - Overwrite protection with optional *Save As* fallback.
 - Structured log files for troubleshooting.
 
----
 
 # Installation
 
@@ -71,7 +53,6 @@ no manual uninstall step is required.
 Use *Settings → Apps* (Windows 11) or *Control Panel → Programs* to remove
 **Schröder DXF Export AddIn**.
 
----
 
 # Ribbon Buttons
 
@@ -87,7 +68,6 @@ The tab is only visible when a Part document with a flat pattern is active.
 | Export Options | Opens the output location and overwrite-behaviour dialog. |
 | About          | Shows the AddIn version, installation path, and log file location. |
 
----
 
 # Exporting a DXF
 
@@ -100,7 +80,6 @@ The tab is only visible when a Part document with a flat pattern is active.
 
 The AddIn automatically unfolds the flat pattern if one does not already exist.
 
----
 
 # DXF Settings
 
@@ -135,7 +114,6 @@ Bend line geometry can be separated by direction for downstream CAM compatibilit
 | Bend Down layer / color / line type | Layer for downward bends. Default layer: `BendingLines`, color: magenta. |
 | Enable bend-down layer              | When unchecked, down-bend lines are written to the bend-up layer. |
 
----
 
 # Export Options
 
@@ -186,6 +164,7 @@ replaced with underscores.
 `{Thickness}` accepts optional unit and precision arguments separated by colons.
 All parts are optional.
 
+| Pattern           | Result |
 |---------          |---------------------------------------|
 | {Thickness}       | document units, auto precision  |
 | {Thickness:mm}    | millimetres, auto precision  |
@@ -218,7 +197,6 @@ exists at the target path, a dialog asks:
 
 Disabling the option causes existing files to be overwritten silently.
 
----
 
 # POS3000 Integration
 
@@ -255,7 +233,6 @@ Written to each bend line entity on the bend-up or bend-down layer.
 Bend lines are shortened by 0.1 units at each end so they do not touch the part
 outline — this matches POS3000's expected geometry convention.
 
----
 
 # About Dialog
 
@@ -269,7 +246,6 @@ The **About** dialog displays:
 The **Open Error Log** button opens the current day's log file in the system
 default text editor.
 
----
 
 # Log Files
 
@@ -283,7 +259,6 @@ A separate `startup_error.txt` in the same folder captures fatal errors that occ
 before the main logger is initialized (e.g. a missing DLL or COM registration
 failure).
 
----
 
 # Troubleshooting
 
@@ -295,7 +270,6 @@ failure).
 | Empty or missing tokens | Populate the corresponding iProperty on the part, or adjust the template. |
 | Export lands in the wrong folder | In Export Options, verify the base directory and template strings. |
 
----
 
 # Version History
 

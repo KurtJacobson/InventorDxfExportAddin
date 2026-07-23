@@ -44,7 +44,16 @@ jobs:
         working-directory: docs
         run: |
           $version = (git describe --tags --always) -replace '-\d+-g', '-'
-          pandoc manual.md -o manual.pdf --pdf-engine=wkhtmltopdf --lua-filter=strip-image-alt.lua --metadata "date=Version $version"
+          pandoc manual.md -o manual.html `
+            --standalone `
+            --embed-resources `
+            --toc `
+            --toc-depth=3 `
+            --section-divs `
+            --css=manual.css `
+            --lua-filter=strip-image-alt.lua `
+            --lua-filter=html-layout.lua `
+            --metadata "date=Version $version"
 
       - name: Restore NuGet packages
         run: nuget restore InventorDxfExportAddin/InventorDxfExportAddin.csproj
@@ -66,7 +75,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: InventorDxfExportAddin-Manual
-          path: docs/manual.pdf
+          path: docs/manual.html
           if-no-files-found: warn
 
       - name: Create GitHub Release
@@ -75,9 +84,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $msi = Get-ChildItem -Recurse -Filter *.msi "InventorDxfExportAddin.Setup/bin/Release" | Select-Object -First 1
-          $pdf = "docs/manual.pdf"
+          $html = "docs/manual.html"
           $assets = @($msi.FullName)
-          if (Test-Path $pdf) { $assets += $pdf }
+          if (Test-Path $html) { $assets += $html }
           gh release create "${{ github.ref_name }}" @assets `
             --title "Release ${{ github.ref_name }}" `
             --generate-notes
