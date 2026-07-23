@@ -348,5 +348,6 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 
-# Generated documentation PDF (built from docs/manual.md by pandoc)
+# Generated documentation (built from docs/manual.md by pandoc / build.bat)
 docs/manual.pdf
+docs/manual.html
