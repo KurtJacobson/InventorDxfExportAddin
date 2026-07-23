@@ -263,3 +263,43 @@ img {
     max-width: 100%;
   }
 }
+
+@media print {
+  body {
+    display: block;
+    font-size: 10pt;
+    color: #000;
+  }
+
+  nav#TOC { display: none; }
+
+  header#title-block-header {
+    padding: 0 0 1rem;
+    margin-bottom: 1rem;
+  }
+
+  section.level1 {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  section.level1:first-of-type { padding-top: 0; }
+  section.level1 + section.level1 { padding-top: 1.25rem; }
+
+  h1 { font-size: 14pt; color: #000; border-bottom-color: #999; }
+  h2 { font-size: 11pt; }
+  h3 { font-size: 10pt; }
+
+  a { color: #000; text-decoration: none; }
+  a.anchor { display: none; }
+
+  pre, code { font-size: 8.5pt; }
+
+  img { max-width: 100%; }
+
+  /* avoid breaking inside tables or code blocks */
+  pre, table, img { page-break-inside: avoid; }
+
+  /* keep headings with the content that follows */
+  h1, h2, h3 { page-break-after: avoid; }
+}

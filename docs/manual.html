@@ -241,13 +241,42 @@ padding: 1.5rem 1.25rem;
 max-width: 100%;
 }
 }
+@media print {
+body {
+display: block;
+font-size: 10pt;
+color: #000;
+}
+nav#TOC { display: none; }
+header#title-block-header {
+padding: 0 0 1rem;
+margin-bottom: 1rem;
+}
+section.level1 {
+padding: 0;
+max-width: 100%;
+}
+section.level1:first-of-type { padding-top: 0; }
+section.level1 + section.level1 { padding-top: 1.25rem; }
+h1 { font-size: 14pt; color: #000; border-bottom-color: #999; }
+h2 { font-size: 11pt; }
+h3 { font-size: 10pt; }
+a { color: #000; text-decoration: none; }
+a.anchor { display: none; }
+pre, code { font-size: 8.5pt; }
+img { max-width: 100%; }
+
+pre, table, img { page-break-inside: avoid; }
+
+h1, h2, h3 { page-break-after: avoid; }
+}
 </style>
 </head>
 <body>
 <header id="title-block-header">
 <h1 class="title">Inventor DXF Export AddIn</h1>
 <p class="subtitle">User Manual</p>
-<p class="date">Version v0.1.5-3-gff4396e</p>
+<p class="date">Version v0.1.5-4-g7d46876</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -633,12 +662,40 @@ removed (e.g. <code>3mm</code>, <code>0.125in</code>).</td>
 options <a class="anchor" href="#thickness-token-options" aria-label="Link to this section">§</a></h3>
 <p><code>{Thickness}</code> accepts optional unit and precision
 arguments separated by colons. All parts are optional.</p>
-<p>|——— |—————————————| | {Thickness} | document units, auto precision |
-| {Thickness:mm} | millimetres, auto precision | | {Thickness:in} |
-inches, auto precision | | {Thickness:mm:2} | millimetres, 2 decimal
-places -&gt; 3.00mm | | {Thickness:in:3} | inches, 3 decimal places
--&gt; 0.125in | | {Thickness::2} | document units, 2 decimal places
-|</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>{Thickness}</td>
+<td>document units, auto precision</td>
+</tr>
+<tr>
+<td>{Thickness:mm}</td>
+<td>millimetres, auto precision</td>
+</tr>
+<tr>
+<td>{Thickness:in}</td>
+<td>inches, auto precision</td>
+</tr>
+<tr>
+<td>{Thickness:mm:2}</td>
+<td>millimetres, 2 decimal places -&gt; 3.00mm</td>
+</tr>
+<tr>
+<td>{Thickness:in:3}</td>
+<td>inches, 3 decimal places -&gt; 0.125in</td>
+</tr>
+<tr>
+<td>{Thickness::2}</td>
+<td>document units, 2 decimal places</td>
+</tr>
+</tbody>
+</table>
 <p>Supported units: <code>mm</code>, <code>cm</code>, <code>m</code>,
 <code>in</code>, <code>ft</code>.</p>
 <p><strong>Example</strong> — with base directory
